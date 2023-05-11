@@ -20,7 +20,9 @@ import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
 import com.squaredcandy.waypoint.core.action.addAction
 import com.squaredcandy.waypoint.core.action.waypointActions
 import com.squaredcandy.waypoint.core.feature.WaypointContext
+import com.squaredcandy.waypoint.core.holder.ModifierLocalMutableWaypointHolder
 import com.squaredcandy.waypoint.core.holder.ModifierLocalWaypointHolder
+import com.squaredcandy.waypoint.core.holder.MutableWaypointHolder
 import com.squaredcandy.waypoint.core.holder.WaypointHolder
 import com.squaredcandy.waypoint.core.holder.WaypointNavigationType
 import com.squaredcandy.waypoint.core.holder.waypointHolder
@@ -33,7 +35,7 @@ import com.squaredcandy.waypoint.core.route.waypointRoutes
 
 @Composable
 private fun Navigation(
-    waypointHolder: WaypointHolder,
+    mutableWaypointHolder: MutableWaypointHolder,
     waypointRouteProvider: WaypointRouteProvider,
     waypointActionProvider: WaypointActionProvider,
 ) {
@@ -56,7 +58,7 @@ private fun Navigation(
                     derivedStateOf {
                         WaypointContext(
                             waypointId = waypoint.id,
-                            waypointHolder = waypointHolder,
+                            mutableWaypointHolder = mutableWaypointHolder,
                             waypointActionProvider = waypointActionProvider,
                         )
                     }
@@ -77,7 +79,7 @@ private fun Navigation(
         sideWaypointList.forEach { waypoint ->
             val context = WaypointContext(
                 waypointId = waypoint.id,
-                waypointHolder = waypointHolder,
+                mutableWaypointHolder = mutableWaypointHolder,
                 waypointActionProvider = waypointActionProvider,
             )
             with(context) {
@@ -107,8 +109,8 @@ fun Example() {
                 addRoute(WaypointRouteKey.side, ::SideWaypointRoute)
             }
             .composed {
-                var waypointHolder by remember {
-                    mutableStateOf<WaypointHolder?>(null)
+                var mutableWaypointHolder by remember {
+                    mutableStateOf<MutableWaypointHolder?>(null)
                 }
                 var waypointRouteProvider by remember {
                     mutableStateOf<WaypointRouteProvider?>(null)
@@ -118,13 +120,13 @@ fun Example() {
                 }
 
                 val modifier = modifierLocalConsumer {
-                    waypointHolder = ModifierLocalWaypointHolder.current
+                    mutableWaypointHolder = ModifierLocalMutableWaypointHolder.current
                     waypointRouteProvider = ModifierLocalWaypointRouteProvider.current
                     waypointActionProvider = ModifierLocalWaypointActionProvider.current
                 }
 
                 Navigation(
-                    waypointHolder = waypointHolder ?: return@composed modifier,
+                    mutableWaypointHolder = mutableWaypointHolder ?: return@composed modifier,
                     waypointRouteProvider = waypointRouteProvider ?: return@composed modifier,
                     waypointActionProvider = waypointActionProvider ?: return@composed modifier,
                 )

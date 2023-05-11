@@ -33,7 +33,7 @@ class ExampleWaypointContent : WaypointContent {
                     onClick = {
                         waypointActionProvider.getAction<NavigateWaypointAction>()
                             ?.invoke(
-                                waypointHolder,
+                                mutableWaypointHolder,
                                 NavigateWaypointAction(Waypoint(feature = ExampleWaypointFeature))
                             )
                     },

@@ -1,7 +1,7 @@
 [versions]
 # Gradle
 activity-compose = "1.7.1"
-gradle-agp = "8.2.0-alpha02"
+gradle-agp = "8.2.0-alpha03"
 gradle-compile-min = "27"
 gradle-compile-target = "33"
 gradle-jvm-target = "17"

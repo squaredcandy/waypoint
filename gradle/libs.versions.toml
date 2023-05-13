@@ -1,33 +1,46 @@
 [versions]
 # Gradle
-activity-compose = "1.7.1"
 gradle-agp = "8.2.0-alpha03"
 gradle-compile-min = "27"
 gradle-compile-target = "33"
 gradle-jvm-target = "17"
 
 # Kotlin
+# https://github.com/JetBrains/kotlin/releases
 kotlin = "1.8.21"
-kotlinx-coroutines = "1.6.4"
+# https://github.com/Kotlin/kotlinx.coroutines/releases
+kotlinx-coroutines = "1.7.1"
+# https://github.com/Kotlin/kotlinx.collections.immutable/releases
 kotlinx-collections = "0.3.5"
 
 # Androidx
-androidx-activity-compose = "1.6.1"
+# https://developer.android.com/jetpack/androidx/releases/activity
+androidx-activity-compose = "1.7.1"
+# https://developer.android.com/jetpack/androidx/releases/appcompat
 androidx-appcompat = "1.6.1"
-androidx-compose-base = "1.5.0-alpha03"
+# https://developer.android.com/jetpack/androidx/releases/compose
+androidx-compose-base = "1.5.0-alpha04"
+# https://developer.android.com/jetpack/androidx/releases/compose-compiler
 androidx-compose-compiler = "1.4.7"
-androidx-compose-material3 = "1.1.0-rc01"
+# https://developer.android.com/jetpack/androidx/releases/compose-material3
+androidx-compose-material3 = "1.1.0"
+# https://developer.android.com/jetpack/androidx/releases/test
 androidx-test-base = "1.5.0"
+# https://developer.android.com/jetpack/androidx/releases/test
 androidx-test-runner = "1.5.2"
+# https://developer.android.com/jetpack/androidx/releases/test
 androidx-test-ext-junit-ktx = "1.1.5"
 
+# https://github.com/material-components/material-components-android/releases
 material = "1.9.0"
 
 # Other testing
+# https://github.com/junit-team/junit4/releases
 junit = "4.13.2"
-robolectric = "4.10.1"
+# https://github.com/robolectric/robolectric/releases
+robolectric = "4.10.2"
+# https://github.com/google/truth/releases
 truth = "1.1.3"
-androidx-test-ext-junit = "1.1.5"
 
 [libraries]
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines"}
@@ -35,7 +48,7 @@ kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines"}
 kotlinx-collections = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinx-collections"}
 
-androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity-compose" }
 
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
 

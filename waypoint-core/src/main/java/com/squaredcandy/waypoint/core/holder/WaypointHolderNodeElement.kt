@@ -10,9 +10,8 @@ internal data class WaypointHolderNodeElement(
 ) : ModifierNodeElement<WaypointHolderNode>() {
     override fun create(): WaypointHolderNode = WaypointHolderNode(snapshotWaypointList)
 
-    override fun update(node: WaypointHolderNode): WaypointHolderNode {
+    override fun update(node: WaypointHolderNode) {
         node.mutableWaypointList = snapshotWaypointList
-        return node
     }
 
     override fun InspectorInfo.inspectableProperties() {

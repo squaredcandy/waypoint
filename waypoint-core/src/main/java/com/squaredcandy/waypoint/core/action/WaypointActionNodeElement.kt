@@ -10,9 +10,8 @@ internal data class WaypointActionNodeElement(
 ) : ModifierNodeElement<WaypointActionNode>() {
     override fun create(): WaypointActionNode = WaypointActionNode(waypointActionMapBuilderState)
 
-    override fun update(node: WaypointActionNode): WaypointActionNode {
+    override fun update(node: WaypointActionNode) {
         node.waypointActionMapBuilderState = waypointActionMapBuilderState
-        return node
     }
 
     override fun InspectorInfo.inspectableProperties() {

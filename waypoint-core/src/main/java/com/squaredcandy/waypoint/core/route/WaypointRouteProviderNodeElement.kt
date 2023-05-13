@@ -10,9 +10,8 @@ internal data class WaypointRouteProviderNodeElement(
 ) : ModifierNodeElement<WaypointRouteProviderNode>() {
     override fun create(): WaypointRouteProviderNode = WaypointRouteProviderNode(generateWaypointRouteMap)
 
-    override fun update(node: WaypointRouteProviderNode): WaypointRouteProviderNode {
+    override fun update(node: WaypointRouteProviderNode) {
         node.generateWaypointRouteMap = generateWaypointRouteMap
-        return node
     }
 
     override fun InspectorInfo.inspectableProperties() {

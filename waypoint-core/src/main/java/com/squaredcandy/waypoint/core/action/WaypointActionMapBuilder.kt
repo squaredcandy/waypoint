@@ -1,5 +1,6 @@
 package com.squaredcandy.waypoint.core.action
 
+import androidx.compose.ui.modifier.ModifierLocalReadScope
 import com.squaredcandy.waypoint.core.holder.MutableWaypointHolder
 import com.squaredcandy.waypoint.core.holder.WaypointHolder
 import kotlinx.collections.immutable.ImmutableList
@@ -16,10 +17,12 @@ class WaypointActionMapBuilder {
     private var actionResolvers = persistentHashMapOf<KClass<*>, WaypointActionResolver>()
     private var hooks = persistentHashMapOf<KClass<*>, ImmutableList<WaypointActionHook>>()
 
+    context(ModifierLocalReadScope)
     fun <T: WaypointAction> addAction(waypointActionClass: KClass<T>, waypointActionResolver: WaypointActionResolver) {
         actionResolvers = actionResolvers.put(waypointActionClass, waypointActionResolver)
     }
 
+    context(ModifierLocalReadScope)
     fun <T: WaypointAction> addHook(waypointActionClass: KClass<T>, hook: WaypointActionHook) {
         val hookList = hooks.getOrDefault(waypointActionClass, persistentListOf())
         hooks = hooks.put(waypointActionClass, hookList.toPersistentList().add(hook))
@@ -31,19 +34,23 @@ class WaypointActionMapBuilder {
     )
 }
 
-inline fun <reified T: WaypointAction> WaypointActionMapBuilder.addAction(
+context(ModifierLocalReadScope, WaypointActionMapBuilder)
+inline fun <reified T: WaypointAction> addAction(
     noinline waypointActionResolverBuilder: () -> WaypointActionResolver,
 ) = addAction(T::class, waypointActionResolverBuilder())
 
-inline fun <reified T: WaypointAction> WaypointActionMapBuilder.addAction(
+context(ModifierLocalReadScope, WaypointActionMapBuilder)
+inline fun <reified T: WaypointAction> addAction(
     noinline block: (waypointHolder: MutableWaypointHolder, waypointAction: T) -> Unit,
 ) = addAction(T::class, waypointActionResolver<T>(block = block))
 
-inline fun <reified T: WaypointAction> WaypointActionMapBuilder.addHook(
+context(ModifierLocalReadScope, WaypointActionMapBuilder)
+inline fun <reified T: WaypointAction> addHook(
     hook: WaypointActionHook
 ) = addHook(waypointActionClass = T::class, hook = hook)
 
-inline fun <reified T: WaypointAction> WaypointActionMapBuilder.addHook(
+context(ModifierLocalReadScope, WaypointActionMapBuilder)
+inline fun <reified T: WaypointAction> addHook(
     crossinline preResolveHook: (waypointHolder: WaypointHolder, waypointAction: WaypointAction) -> Unit,
     crossinline postResolveHook: (waypointHolder: WaypointHolder, waypointAction: WaypointAction) -> Unit,
 ) = addHook(
@@ -61,6 +68,8 @@ inline fun <reified T: WaypointAction> WaypointActionMapBuilder.addHook(
     }
 )
 
-fun buildWaypointActions(builder: WaypointActionMapBuilder.() -> Unit): WaypointActionMap {
-    return WaypointActionMapBuilder().apply(builder).build()
+fun ModifierLocalReadScope.buildWaypointActions(
+    builder: context(ModifierLocalReadScope) WaypointActionMapBuilder.() -> Unit,
+): WaypointActionMap {
+    return WaypointActionMapBuilder().apply { builder(this@buildWaypointActions, this) }.build()
 }

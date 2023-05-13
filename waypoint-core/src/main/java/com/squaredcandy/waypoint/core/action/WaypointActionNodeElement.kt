@@ -1,15 +1,17 @@
 package com.squaredcandy.waypoint.core.action
 
+import androidx.compose.runtime.State
+import androidx.compose.ui.modifier.ModifierLocalReadScope
 import androidx.compose.ui.node.ModifierNodeElement
 import androidx.compose.ui.platform.InspectorInfo
 
 internal data class WaypointActionNodeElement(
-    val waypointActionMap: WaypointActionMap,
+    val waypointActionMapBuilderState: State<context(ModifierLocalReadScope) WaypointActionMapBuilder.() -> Unit>,
 ) : ModifierNodeElement<WaypointActionNode>() {
-    override fun create(): WaypointActionNode = WaypointActionNode(waypointActionMap)
+    override fun create(): WaypointActionNode = WaypointActionNode(waypointActionMapBuilderState)
 
     override fun update(node: WaypointActionNode): WaypointActionNode {
-        node.waypointActionMap = waypointActionMap
+        node.waypointActionMapBuilderState = waypointActionMapBuilderState
         return node
     }
 

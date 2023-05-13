@@ -172,4 +172,135 @@ class WaypointActionsTest {
         Truth.assertThat(preHookReceived).isTrue()
         Truth.assertThat(postHookReceived).isTrue()
     }
+
+    @Test
+    fun `GIVEN waypoints are added to parent and child waypoint lists WHEN waypoint is added to parent waypoint list THEN parent and child waypoint list is updated`() {
+        val list = listOf(Waypoint())
+        val newWaypoint = Waypoint()
+
+        var waypointHolder1: WaypointHolder? = null
+        var waypointHolder2: MutableWaypointHolder? = null
+        var waypointActionProvider: WaypointActionProvider? = null
+        composeTestRule.setContent {
+            Box(
+                modifier = Modifier
+                    .waypointHolder(list)
+                    .modifierLocalConsumer {
+                        waypointHolder1 = ModifierLocalWaypointHolder.current
+                    }
+                    .waypointHolder(list)
+                    .waypointActions {
+                        addAction<NavigateWaypointAction> { waypointHolder, waypointAction ->
+                            waypointHolder.updateWaypointList(WaypointNavigationType.Push) {
+                                add(waypointAction.waypoint)
+                            }
+                            // Add it to the parent too
+                            ModifierLocalMutableWaypointHolder.current
+                                ?.parent
+                                ?.updateWaypointList(WaypointNavigationType.Push) {
+                                    add(waypointAction.waypoint)
+                                }
+                        }
+                    }
+                    .modifierLocalConsumer {
+                        waypointHolder2 = ModifierLocalMutableWaypointHolder.current
+                        waypointActionProvider = ModifierLocalWaypointActionProvider.current
+                    }
+            )
+        }
+
+        Truth.assertThat(waypointHolder1).isNotNull()
+        Truth.assertThat(waypointHolder2).isNotNull()
+        Truth.assertThat(waypointActionProvider).isNotNull()
+        Truth.assertThat(waypointHolder1?.waypointList).isEqualTo(list)
+        Truth.assertThat(waypointHolder2?.waypointList).isEqualTo(list)
+        Truth.assertThat(waypointHolder2?.parent).isEqualTo(waypointHolder1)
+        val waypointAction = waypointActionProvider?.getAction<NavigateWaypointAction>()
+        waypointAction?.invoke(waypointHolder2!!, NavigateWaypointAction(newWaypoint))
+        Truth.assertThat(waypointHolder1?.waypointList).isEqualTo(list + newWaypoint)
+        Truth.assertThat(waypointHolder2?.waypointList).isEqualTo(list + newWaypoint)
+    }
+
+    @Test
+    fun `GIVEN that there is a waypoint holder, waypoint actions and waypoint holder WHEN waypoint actions is getting the current waypoint holder THEN the one above it is retrieved`() {
+        val list = listOf(Waypoint())
+        val list2 = listOf(Waypoint())
+
+        var waypointHolder1: WaypointHolder? = null
+        var waypointHolder2: WaypointHolder? = null
+        var waypointActionProvider: WaypointActionProvider? = null
+        composeTestRule.setContent {
+            Box(
+                modifier = Modifier
+                    .waypointHolder(list)
+                    .waypointActions {
+                        waypointHolder1 = ModifierLocalMutableWaypointHolder.current
+                        addAction<NavigateWaypointAction> { waypointHolder, waypointAction ->
+                            waypointHolder.updateWaypointList(WaypointNavigationType.Push) {
+                                add(waypointAction.waypoint)
+                            }
+                        }
+                    }
+                    .waypointHolder(list2)
+                    .modifierLocalConsumer {
+                        waypointHolder2 = ModifierLocalMutableWaypointHolder.current
+                        waypointActionProvider = ModifierLocalWaypointActionProvider.current
+                    }
+            )
+        }
+
+        Truth.assertThat(waypointHolder1).isNotNull()
+        Truth.assertThat(waypointHolder2).isNotNull()
+        Truth.assertThat(waypointActionProvider).isNotNull()
+        Truth.assertThat(waypointHolder1?.waypointList).isEqualTo(list)
+        Truth.assertThat(waypointHolder2?.waypointList).isEqualTo(list2)
+    }
+
+    @Test
+    fun `GIVEN we are trying to get the same waypoint holder in multiple places WHEN we compare waypoint holder lists THEN all lists should also be kept in sync`() {
+        val list = listOf(Waypoint())
+        val newWaypoint = Waypoint()
+
+        var waypointHolder1: MutableWaypointHolder? = null
+        var waypointHolder2: WaypointHolder? = null
+        var waypointHolder3: WaypointHolder? = null
+        var waypointActionProvider: WaypointActionProvider? = null
+        composeTestRule.setContent {
+            Box(
+                modifier = Modifier
+                    .waypointHolder(list)
+                    .modifierLocalConsumer {
+                        waypointHolder1 = ModifierLocalMutableWaypointHolder.current
+                        waypointActionProvider = ModifierLocalWaypointActionProvider.current
+                    }
+                    .waypointActions {
+                        waypointHolder2 = ModifierLocalMutableWaypointHolder.current
+                        addAction<NavigateWaypointAction> { waypointHolder, waypointAction ->
+                            waypointHolder.updateWaypointList(WaypointNavigationType.Push) {
+                                add(waypointAction.waypoint)
+                            }
+                            waypointHolder3 = ModifierLocalMutableWaypointHolder.current
+                        }
+                    }
+                    .modifierLocalConsumer {
+                        waypointActionProvider = ModifierLocalWaypointActionProvider.current
+                    }
+            )
+        }
+
+
+        Truth.assertThat(waypointHolder1).isNotNull()
+        Truth.assertThat(waypointHolder2).isNotNull()
+        Truth.assertThat(waypointHolder3).isNull()
+        Truth.assertThat(waypointActionProvider).isNotNull()
+        Truth.assertThat(waypointHolder1?.waypointList).isEqualTo(list)
+        Truth.assertThat(waypointHolder2?.waypointList).isEqualTo(list)
+
+        val waypointAction = waypointActionProvider?.getAction<NavigateWaypointAction>()
+        waypointAction?.invoke(waypointHolder1!!, NavigateWaypointAction(newWaypoint))
+        Truth.assertThat(waypointHolder3).isNotNull()
+        Truth.assertThat(waypointHolder1?.waypointList).isEqualTo(list + newWaypoint)
+        Truth.assertThat(waypointHolder2?.waypointList).isEqualTo(list + newWaypoint)
+        Truth.assertThat(waypointHolder3?.waypointList).isEqualTo(list + newWaypoint)
+    }
 }

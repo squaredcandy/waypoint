@@ -4,11 +4,13 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.modifier.ModifierLocalReadScope
+import com.squaredcandy.waypoint.core.holder.WaypointHolder
 
 /**
- * Modifier that provides a set of actions that be taken on a waypoint as directly modifying the waypoints could lead to unexpected results.
+ * Modifier that creates a set of actions that can be used in child nodes to modify the
+ * [WaypointHolder] in a standardised manner instead of directly modifying the [WaypointHolder].
  *
- * This could also be useful for overriding or disallowing certain actions.
+ * The actions are exposed to child nodes via [ModifierLocalWaypointActionProvider].
  */
 fun Modifier.waypointActions(
     builder: context(ModifierLocalReadScope) WaypointActionMapBuilder.() -> Unit,

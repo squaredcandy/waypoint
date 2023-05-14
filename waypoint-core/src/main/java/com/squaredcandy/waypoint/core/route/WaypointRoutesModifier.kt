@@ -1,11 +1,15 @@
 package com.squaredcandy.waypoint.core.route
 
 import androidx.compose.ui.Modifier
+import com.squaredcandy.waypoint.core.holder.WaypointHolder
 
 /**
- * Provides a waypoint route provider for consumers to use.
+ * Modifier that creates routes from a given [WaypointHolder]. Routes are used in child nodes to
+ * present the relevant nodes to the screen.
  *
- * The waypoint route provider allows consumers to create 'routes' based on the key they provide.
+ * Multiple routes can be provided to allow different views with the same [WaypointHolder].
+ *
+ * Routes are exposed to child nodes via [ModifierLocalWaypointRouteProvider].
  */
 fun Modifier.waypointRoutes(builder: WaypointRouteMapBuilder.() -> Unit): Modifier =
     this.then(WaypointRouteProviderNodeElement(WaypointRouteMapBuilder().apply(builder).build()))

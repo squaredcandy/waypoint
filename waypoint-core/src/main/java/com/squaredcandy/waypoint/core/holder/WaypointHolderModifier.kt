@@ -8,7 +8,10 @@ import androidx.compose.ui.composed
 import com.squaredcandy.waypoint.core.Waypoint
 
 /**
- * Modifier that provides a [WaypointHolder] for nodes underneath this modifier to modify.
+ * The backbone of the waypoint navigation system.
+ *
+ * This holds a list of [Waypoints][Waypoint] and provides a [ModifierLocalWaypointHolder] &
+ * [ModifierLocalMutableWaypointHolder] to child nodes to read and write.
  */
 fun Modifier.waypointHolder(
     initialWaypointList: List<Waypoint>,

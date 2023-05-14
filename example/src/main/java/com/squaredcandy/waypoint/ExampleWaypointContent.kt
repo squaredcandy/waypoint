@@ -11,9 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.squaredcandy.waypoint.core.Waypoint
 import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
-import com.squaredcandy.waypoint.core.action.getAction
 import com.squaredcandy.waypoint.core.feature.WaypointContent
 import com.squaredcandy.waypoint.core.feature.WaypointContext
+import com.squaredcandy.waypoint.core.feature.sendAction
 
 class ExampleWaypointContent : WaypointContent {
     context(WaypointContext)
@@ -31,11 +31,7 @@ class ExampleWaypointContent : WaypointContent {
                 Text(text = "Test")
                 Button(
                     onClick = {
-                        waypointActionProvider.getAction<NavigateWaypointAction>()
-                            ?.invoke(
-                                mutableWaypointHolder,
-                                NavigateWaypointAction(Waypoint(feature = ExampleWaypointFeature))
-                            )
+                        sendAction(NavigateWaypointAction(Waypoint(feature = ExampleWaypointFeature)))
                     },
                 ) {
                     Text(text = "Next ${waypointId.id}")

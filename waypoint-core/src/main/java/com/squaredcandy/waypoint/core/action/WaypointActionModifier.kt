@@ -13,9 +13,10 @@ import com.squaredcandy.waypoint.core.holder.WaypointHolder
  * The actions are exposed to child nodes via [ModifierLocalWaypointActionProvider].
  */
 fun Modifier.waypointActions(
+    mergeParentActions: Boolean = true,
     builder: context(ModifierLocalReadScope) WaypointActionMapBuilder.() -> Unit,
 ): Modifier = composed {
     val builderState = rememberUpdatedState(newValue = builder)
 
-    WaypointActionNodeElement(builderState)
+    WaypointActionNodeElement(mergeParentActions, builderState)
 }

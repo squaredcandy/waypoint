@@ -8,6 +8,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth
 import com.squaredcandy.waypoint.core.Waypoint
+import com.squaredcandy.waypoint.core.action.actions.BacktrackWaypointAction
 import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
 import com.squaredcandy.waypoint.core.holder.ModifierLocalMutableWaypointHolder
 import com.squaredcandy.waypoint.core.holder.ModifierLocalWaypointHolder
@@ -15,6 +16,7 @@ import com.squaredcandy.waypoint.core.holder.MutableWaypointHolder
 import com.squaredcandy.waypoint.core.holder.WaypointHolder
 import com.squaredcandy.waypoint.core.holder.WaypointNavigationType
 import com.squaredcandy.waypoint.core.holder.waypointHolder
+import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -288,7 +290,6 @@ class WaypointActionsTest {
             )
         }
 
-
         Truth.assertThat(waypointHolder1).isNotNull()
         Truth.assertThat(waypointHolder2).isNotNull()
         Truth.assertThat(waypointHolder3).isNull()
@@ -302,5 +303,91 @@ class WaypointActionsTest {
         Truth.assertThat(waypointHolder1?.waypointList).isEqualTo(list + newWaypoint)
         Truth.assertThat(waypointHolder2?.waypointList).isEqualTo(list + newWaypoint)
         Truth.assertThat(waypointHolder3?.waypointList).isEqualTo(list + newWaypoint)
+    }
+
+    @Test
+    fun `GIVEN parent waypoint actions are merged WHEN waypoint is added via actions THEN waypoint list is updated`() = runTest {
+        val list = listOf(Waypoint())
+        val newWaypoint = Waypoint()
+
+        var waypointHolder: MutableWaypointHolder? = null
+        var waypointActionProvider: WaypointActionProvider? = null
+        composeTestRule.setContent {
+            Box(
+                modifier = Modifier
+                    .waypointHolder(list)
+                    .waypointActions {
+                        addAction<NavigateWaypointAction> { waypointHolder, waypointAction ->
+                            waypointHolder.updateWaypointList(WaypointNavigationType.Push) {
+                                add(waypointAction.waypoint)
+                            }
+                        }
+                    }
+                    .waypointActions {
+                        addAction<BacktrackWaypointAction> { waypointHolder, waypointAction ->
+                            waypointHolder.updateWaypointList(WaypointNavigationType.Push) {
+                                removeIf { it.id == waypointAction.waypointId }
+                            }
+                        }
+                    }
+                    .modifierLocalConsumer {
+                        waypointHolder = ModifierLocalMutableWaypointHolder.current
+                        waypointActionProvider = ModifierLocalWaypointActionProvider.current
+                    }
+            )
+        }
+
+        Truth.assertThat(waypointHolder).isNotNull()
+        Truth.assertThat(waypointActionProvider).isNotNull()
+        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list)
+        val navigateWaypointResolver = waypointActionProvider?.getAction<NavigateWaypointAction>()
+        navigateWaypointResolver?.invoke(waypointHolder!!, NavigateWaypointAction(newWaypoint))
+        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list + newWaypoint)
+        val backtrackWaypointResolver = waypointActionProvider?.getAction<BacktrackWaypointAction>()
+        backtrackWaypointResolver?.invoke(waypointHolder!!, BacktrackWaypointAction(newWaypoint.id))
+        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list)
+    }
+
+    @Test
+    fun `GIVEN parent waypoint actions are not merged WHEN waypoint is added via actions THEN waypoint list is not updated`() = runTest {
+        val list = listOf(Waypoint())
+        val newWaypoint = Waypoint()
+
+        var waypointHolder: MutableWaypointHolder? = null
+        var waypointActionProvider: WaypointActionProvider? = null
+        composeTestRule.setContent {
+            Box(
+                modifier = Modifier
+                    .waypointHolder(list)
+                    .waypointActions {
+                        addAction<NavigateWaypointAction> { waypointHolder, waypointAction ->
+                            waypointHolder.updateWaypointList(WaypointNavigationType.Push) {
+                                add(waypointAction.waypoint)
+                            }
+                        }
+                    }
+                    .waypointActions(mergeParentActions = false) {
+                        addAction<BacktrackWaypointAction> { waypointHolder, waypointAction ->
+                            waypointHolder.updateWaypointList(WaypointNavigationType.Push) {
+                                removeIf { it.id == waypointAction.waypointId }
+                            }
+                        }
+                    }
+                    .modifierLocalConsumer {
+                        waypointHolder = ModifierLocalMutableWaypointHolder.current
+                        waypointActionProvider = ModifierLocalWaypointActionProvider.current
+                    }
+            )
+        }
+
+        Truth.assertThat(waypointHolder).isNotNull()
+        Truth.assertThat(waypointActionProvider).isNotNull()
+        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list)
+        val waypointAction = waypointActionProvider?.getAction<NavigateWaypointAction>()
+        waypointAction?.invoke(waypointHolder!!, NavigateWaypointAction(newWaypoint))
+        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list)
+        val backtrackWaypointResolver = waypointActionProvider?.getAction<BacktrackWaypointAction>()
+        backtrackWaypointResolver?.invoke(waypointHolder!!, BacktrackWaypointAction(list.first().id))
+        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(emptyList<Waypoint>())
     }
 }

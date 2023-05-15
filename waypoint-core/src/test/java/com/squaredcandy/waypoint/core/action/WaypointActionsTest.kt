@@ -234,14 +234,17 @@ class WaypointActionsTest {
     }
 
     @Test
-    fun `GIVEN waypoint action has multiple hooks across multiple actions WHEN waypoint is added via actions THEN waypoint list is updated AND all hooks are invoked`() {
+    fun `GIVEN waypoint action has hooks across multiple actions WHEN waypoint is added via actions THEN waypoint list is updated AND hooks are invoked oldest to newest`() {
         val list = listOf(Waypoint())
         val newWaypoint = Waypoint()
 
         var waypointHolder: MutableWaypointHolder? = null
         var waypointActionProvider: WaypointActionProvider? = null
+        val baseNumber = 10
         var preHookReceived = 0
         var postHookReceived = 0
+        var preHookReceived2 = 0
+        var postHookReceived2 = 0
         composeTestRule.setContent {
             Box(
                 modifier = Modifier
@@ -249,10 +252,10 @@ class WaypointActionsTest {
                     .waypointActions {
                         addHook<NavigateWaypointAction>(
                             preResolveHook = { _, _ ->
-                                preHookReceived++
+                                preHookReceived = baseNumber
                             },
                             postResolveHook = { _, _ ->
-                                postHookReceived++
+                                postHookReceived = baseNumber
                             },
                         )
                     }
@@ -264,10 +267,10 @@ class WaypointActionsTest {
                         }
                         addHook<NavigateWaypointAction>(
                             preResolveHook = { _, _ ->
-                                preHookReceived++
+                                preHookReceived2 = preHookReceived
                             },
                             postResolveHook = { _, _ ->
-                                postHookReceived++
+                                postHookReceived2 = postHookReceived
                             },
                         )
                     }
@@ -284,8 +287,10 @@ class WaypointActionsTest {
         val waypointAction = waypointActionProvider?.getAction<NavigateWaypointAction>()
         waypointAction?.invoke(waypointHolder!!, NavigateWaypointAction(newWaypoint))
         Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list + newWaypoint)
-        Truth.assertThat(preHookReceived).isEqualTo(2)
-        Truth.assertThat(postHookReceived).isEqualTo(2)
+        Truth.assertThat(preHookReceived).isEqualTo(baseNumber)
+        Truth.assertThat(postHookReceived).isEqualTo(baseNumber)
+        Truth.assertThat(preHookReceived2).isEqualTo(baseNumber)
+        Truth.assertThat(postHookReceived2).isEqualTo(baseNumber)
     }
 
     @Test

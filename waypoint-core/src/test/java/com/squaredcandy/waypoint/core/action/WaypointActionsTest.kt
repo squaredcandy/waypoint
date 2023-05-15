@@ -181,6 +181,114 @@ class WaypointActionsTest {
     }
 
     @Test
+    fun `GIVEN waypoint action has multiple hooks WHEN waypoint is added via actions THEN waypoint list is updated AND all hooks are invoked`() {
+        val list = listOf(Waypoint())
+        val newWaypoint = Waypoint()
+
+        var waypointHolder: MutableWaypointHolder? = null
+        var waypointActionProvider: WaypointActionProvider? = null
+        var preHookReceived = 0
+        var postHookReceived = 0
+        composeTestRule.setContent {
+            Box(
+                modifier = Modifier
+                    .waypointHolder(list)
+                    .waypointActions {
+                        onAction<NavigateWaypointAction> { waypointHolder, waypointAction ->
+                            waypointHolder.updateWaypointList(WaypointNavigationType.Push) {
+                                add(waypointAction.waypoint)
+                            }
+                        }
+                        addHook<NavigateWaypointAction>(
+                            preResolveHook = { _, _ ->
+                                preHookReceived++
+                            },
+                            postResolveHook = { _, _ ->
+                                postHookReceived++
+                            },
+                        )
+                        addHook<NavigateWaypointAction>(
+                            preResolveHook = { _, _ ->
+                                preHookReceived++
+                            },
+                            postResolveHook = { _, _ ->
+                                postHookReceived++
+                            },
+                        )
+                    }
+                    .modifierLocalConsumer {
+                        waypointHolder = ModifierLocalMutableWaypointHolder.current
+                        waypointActionProvider = ModifierLocalWaypointActionProvider.current
+                    }
+            )
+        }
+
+        Truth.assertThat(waypointHolder).isNotNull()
+        Truth.assertThat(waypointActionProvider).isNotNull()
+        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list)
+        val waypointAction = waypointActionProvider?.getAction<NavigateWaypointAction>()
+        waypointAction?.invoke(waypointHolder!!, NavigateWaypointAction(newWaypoint))
+        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list + newWaypoint)
+        Truth.assertThat(preHookReceived).isEqualTo(2)
+        Truth.assertThat(postHookReceived).isEqualTo(2)
+    }
+
+    @Test
+    fun `GIVEN waypoint action has multiple hooks across multiple actions WHEN waypoint is added via actions THEN waypoint list is updated AND all hooks are invoked`() {
+        val list = listOf(Waypoint())
+        val newWaypoint = Waypoint()
+
+        var waypointHolder: MutableWaypointHolder? = null
+        var waypointActionProvider: WaypointActionProvider? = null
+        var preHookReceived = 0
+        var postHookReceived = 0
+        composeTestRule.setContent {
+            Box(
+                modifier = Modifier
+                    .waypointHolder(list)
+                    .waypointActions {
+                        addHook<NavigateWaypointAction>(
+                            preResolveHook = { _, _ ->
+                                preHookReceived++
+                            },
+                            postResolveHook = { _, _ ->
+                                postHookReceived++
+                            },
+                        )
+                    }
+                    .waypointActions {
+                        onAction<NavigateWaypointAction> { waypointHolder, waypointAction ->
+                            waypointHolder.updateWaypointList(WaypointNavigationType.Push) {
+                                add(waypointAction.waypoint)
+                            }
+                        }
+                        addHook<NavigateWaypointAction>(
+                            preResolveHook = { _, _ ->
+                                preHookReceived++
+                            },
+                            postResolveHook = { _, _ ->
+                                postHookReceived++
+                            },
+                        )
+                    }
+                    .modifierLocalConsumer {
+                        waypointHolder = ModifierLocalMutableWaypointHolder.current
+                        waypointActionProvider = ModifierLocalWaypointActionProvider.current
+                    }
+            )
+        }
+
+        Truth.assertThat(waypointHolder).isNotNull()
+        Truth.assertThat(waypointActionProvider).isNotNull()
+        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list)
+        val waypointAction = waypointActionProvider?.getAction<NavigateWaypointAction>()
+        waypointAction?.invoke(waypointHolder!!, NavigateWaypointAction(newWaypoint))
+        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list + newWaypoint)
+        Truth.assertThat(preHookReceived).isEqualTo(2)
+        Truth.assertThat(postHookReceived).isEqualTo(2)
+    }
+
+    @Test
     fun `GIVEN waypoints are added to parent and child waypoint lists WHEN waypoint is added to parent waypoint list THEN parent and child waypoint list is updated`() {
         val list = listOf(Waypoint())
         val newWaypoint = Waypoint()

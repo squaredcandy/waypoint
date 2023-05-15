@@ -9,6 +9,10 @@ import androidx.compose.ui.modifier.ModifierLocalMap
 import androidx.compose.ui.modifier.ModifierLocalNode
 import androidx.compose.ui.modifier.modifierLocalMapOf
 import androidx.compose.ui.modifier.modifierLocalOf
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.plus
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.collections.immutable.toPersistentMap
 
 private val ModifierLocalWaypointActionMap = modifierLocalOf<WaypointActionMap?> { null }
@@ -52,9 +56,23 @@ private operator fun WaypointActionMap?.plus(otherWaypointActionMap: WaypointAct
     return if (this != null) {
         WaypointActionMap(
             resolvers = this.resolvers.toPersistentMap().putAll(otherWaypointActionMap.resolvers),
-            hooks = this.hooks.toPersistentMap().putAll(otherWaypointActionMap.hooks),
+            hooks = this.hooks.mergeWith(otherWaypointActionMap.hooks),
         )
     } else {
         otherWaypointActionMap
     }
+}
+
+fun <K, V> ImmutableMap<K, ImmutableList<V>>.mergeWith(otherMap: Map<K, ImmutableList<V>>): ImmutableMap<K, ImmutableList<V>> {
+    var newMap = this.toPersistentMap()
+    otherMap.forEach { (key, value) ->
+        val existingValue = this[key]
+        newMap = if (existingValue != null) {
+            newMap.put(key, existingValue.toPersistentList().plus(value))
+        } else {
+            newMap.put(key, value)
+        }
+    }
+
+    return newMap
 }

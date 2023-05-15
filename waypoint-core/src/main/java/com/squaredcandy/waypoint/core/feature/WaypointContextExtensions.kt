@@ -9,8 +9,8 @@ import com.squaredcandy.waypoint.core.action.getAction
 context(WaypointContext)
 inline fun <reified T: WaypointAction> sendAction(waypointAction: T): Result<Unit> {
     return runCatching {
-        val actionProvider = waypointActionProvider!!
+        val actionProvider = waypointActionProvider
         val action = actionProvider.getAction<T>()!!
-        action.invoke(mutableWaypointHolder!!, waypointAction)
+        action.invoke(mutableWaypointHolder, waypointAction)
     }
 }

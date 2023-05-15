@@ -1,9 +1,6 @@
 package com.squaredcandy.waypoint.core.action
 
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
-import androidx.compose.ui.modifier.ModifierLocalReadScope
 import com.squaredcandy.waypoint.core.holder.WaypointHolder
 
 /**
@@ -14,9 +11,5 @@ import com.squaredcandy.waypoint.core.holder.WaypointHolder
  */
 fun Modifier.waypointActions(
     mergeParentActions: Boolean = true,
-    builder: context(ModifierLocalReadScope) WaypointActionMapBuilder.() -> Unit,
-): Modifier = composed {
-    val builderState = rememberUpdatedState(newValue = builder)
-
-    WaypointActionNodeElement(mergeParentActions, builderState)
-}
+    builder: WaypointActionMapBuilder.() -> Unit,
+): Modifier = this.then(WaypointActionNodeElement(mergeParentActions, buildWaypointActions(builder)))

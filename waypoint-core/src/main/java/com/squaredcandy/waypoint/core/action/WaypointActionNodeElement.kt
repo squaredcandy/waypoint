@@ -1,22 +1,20 @@
 package com.squaredcandy.waypoint.core.action
 
-import androidx.compose.runtime.State
-import androidx.compose.ui.modifier.ModifierLocalReadScope
 import androidx.compose.ui.node.ModifierNodeElement
 import androidx.compose.ui.platform.InspectorInfo
 
 internal data class WaypointActionNodeElement(
     val mergeParentActions: Boolean,
-    val waypointActionMapBuilderState: State<context(ModifierLocalReadScope) WaypointActionMapBuilder.() -> Unit>,
+    val waypointActionMap: WaypointActionMap,
 ) : ModifierNodeElement<WaypointActionNode>() {
     override fun create(): WaypointActionNode = WaypointActionNode(
         mergeParentActions,
-        waypointActionMapBuilderState,
+        waypointActionMap,
     )
 
     override fun update(node: WaypointActionNode) {
         node.mergeParentActions = mergeParentActions
-        node.waypointActionMapBuilderState = waypointActionMapBuilderState
+        node.waypointActionMap = waypointActionMap
     }
 
     override fun InspectorInfo.inspectableProperties() {

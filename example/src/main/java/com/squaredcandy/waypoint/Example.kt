@@ -8,6 +8,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -17,13 +18,11 @@ import com.squaredcandy.waypoint.core.Waypoint
 import com.squaredcandy.waypoint.core.action.ModifierLocalWaypointActionProvider
 import com.squaredcandy.waypoint.core.action.WaypointActionProvider
 import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
-import com.squaredcandy.waypoint.core.action.addAction
+import com.squaredcandy.waypoint.core.action.onAction
 import com.squaredcandy.waypoint.core.action.waypointActions
 import com.squaredcandy.waypoint.core.feature.WaypointContext
 import com.squaredcandy.waypoint.core.holder.ModifierLocalMutableWaypointHolder
-import com.squaredcandy.waypoint.core.holder.ModifierLocalWaypointHolder
 import com.squaredcandy.waypoint.core.holder.MutableWaypointHolder
-import com.squaredcandy.waypoint.core.holder.WaypointHolder
 import com.squaredcandy.waypoint.core.holder.WaypointNavigationType
 import com.squaredcandy.waypoint.core.holder.waypointHolder
 import com.squaredcandy.waypoint.core.route.MainWaypointRoute
@@ -35,10 +34,12 @@ import com.squaredcandy.waypoint.core.route.waypointRoutes
 
 @Composable
 private fun Navigation(
-    mutableWaypointHolder: MutableWaypointHolder,
     waypointRouteProvider: WaypointRouteProvider,
+    mutableWaypointHolder: MutableWaypointHolder,
     waypointActionProvider: WaypointActionProvider,
 ) {
+    // TODO temporary fix, find a more long term solution
+    val updatedWaypointActionProvider by rememberUpdatedState(newValue = waypointActionProvider)
     Box(modifier = Modifier.fillMaxSize()) {
         val mainWaypointList by remember {
             derivedStateOf {
@@ -59,7 +60,7 @@ private fun Navigation(
                         WaypointContext(
                             waypointId = waypoint.id,
                             mutableWaypointHolder = mutableWaypointHolder,
-                            waypointActionProvider = waypointActionProvider,
+                            waypointActionProvider = updatedWaypointActionProvider,
                         )
                     }
                 }
@@ -98,7 +99,7 @@ fun Example() {
         modifier = Modifier
             .waypointHolder(listOf(Waypoint(feature = ExampleWaypointFeature)))
             .waypointActions {
-                addAction<NavigateWaypointAction> { waypointHolder, waypointAction ->
+                onAction<NavigateWaypointAction> { waypointHolder, waypointAction ->
                     waypointHolder.updateWaypointList(WaypointNavigationType.Push) {
                         add(waypointAction.waypoint)
                     }
@@ -126,8 +127,8 @@ fun Example() {
                 }
 
                 Navigation(
-                    mutableWaypointHolder = mutableWaypointHolder ?: return@composed modifier,
                     waypointRouteProvider = waypointRouteProvider ?: return@composed modifier,
+                    mutableWaypointHolder = mutableWaypointHolder ?: return@composed modifier,
                     waypointActionProvider = waypointActionProvider ?: return@composed modifier,
                 )
 

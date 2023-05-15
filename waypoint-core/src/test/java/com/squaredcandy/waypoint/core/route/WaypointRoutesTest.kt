@@ -11,7 +11,7 @@ import com.squaredcandy.waypoint.core.Waypoint
 import com.squaredcandy.waypoint.core.action.ModifierLocalWaypointActionProvider
 import com.squaredcandy.waypoint.core.action.WaypointActionProvider
 import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
-import com.squaredcandy.waypoint.core.action.addAction
+import com.squaredcandy.waypoint.core.action.onAction
 import com.squaredcandy.waypoint.core.action.getAction
 import com.squaredcandy.waypoint.core.action.waypointActions
 import com.squaredcandy.waypoint.core.holder.ModifierLocalMutableWaypointHolder
@@ -41,7 +41,7 @@ class WaypointRoutesTest {
                 modifier = Modifier
                     .waypointHolder(list)
                     .waypointActions {
-                        addAction<NavigateWaypointAction> { waypointHolder, waypointAction ->
+                        onAction<NavigateWaypointAction> { waypointHolder, waypointAction ->
                             waypointHolder.updateWaypointList(WaypointNavigationType.Push) {
                                 add(waypointAction.waypoint)
                             }

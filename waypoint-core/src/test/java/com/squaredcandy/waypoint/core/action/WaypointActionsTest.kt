@@ -1,6 +1,7 @@
 package com.squaredcandy.waypoint.core.action
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.modifier.modifierLocalConsumer
@@ -17,7 +18,6 @@ import com.squaredcandy.waypoint.core.holder.WaypointHolder
 import com.squaredcandy.waypoint.core.holder.WaypointNavigationType
 import com.squaredcandy.waypoint.core.holder.waypointHolder
 import kotlinx.coroutines.test.runTest
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -89,9 +89,45 @@ class WaypointActionsTest {
         Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list)
     }
 
-    @Ignore("Figure out a way to update a modifier parameter inputs")
     @Test
-    fun `WHEN waypoint actions are changed THEN action list is updated`() {}
+    fun `WHEN waypoint actions are changed THEN action list is updated`() {
+        val list = listOf(Waypoint())
+        val newWaypoint = Waypoint()
+
+        var waypointHolder: MutableWaypointHolder? = null
+        var waypointActionProvider: WaypointActionProvider? = null
+        val waypointActionBuilderState = mutableStateOf<WaypointActionMapBuilder.() -> Unit>({})
+        composeTestRule.setContent {
+            Box(
+                modifier = Modifier
+                    .waypointHolder(list)
+                    .waypointActions(builder = waypointActionBuilderState.value)
+                    .modifierLocalConsumer {
+                        waypointHolder = ModifierLocalMutableWaypointHolder.current
+                        waypointActionProvider = ModifierLocalWaypointActionProvider.current
+                    }
+            )
+        }
+
+        Truth.assertThat(waypointHolder).isNotNull()
+        Truth.assertThat(waypointActionProvider).isNotNull()
+        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list)
+        val waypointAction = waypointActionProvider?.getAction<NavigateWaypointAction>()
+        waypointAction?.invoke(waypointHolder!!, NavigateWaypointAction(newWaypoint))
+        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list)
+
+        waypointActionBuilderState.value = {
+            onAction<NavigateWaypointAction> { waypointHolder, waypointAction ->
+                waypointHolder.updateWaypointList(WaypointNavigationType.Push) {
+                    add(waypointAction.waypoint)
+                }
+            }
+        }
+        composeTestRule.waitForIdle()
+        val newWaypointAction = waypointActionProvider?.getAction<NavigateWaypointAction>()
+        newWaypointAction?.invoke(waypointHolder!!, NavigateWaypointAction(newWaypoint))
+        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list + newWaypoint)
+    }
 
     @Test
     fun `WHEN waypoint is added to parent waypoint list THEN parent waypoint list is updated AND child waypoint list is not changed`() {

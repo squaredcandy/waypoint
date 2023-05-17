@@ -4,12 +4,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.modifier.ModifierLocalMap
 import androidx.compose.ui.modifier.ModifierLocalNode
 import androidx.compose.ui.modifier.modifierLocalMapOf
-import com.squaredcandy.waypoint.core.Identifier
 import com.squaredcandy.waypoint.core.holder.ModifierLocalWaypointHolder
-import kotlinx.collections.immutable.ImmutableMap
 
 class WaypointRouteProviderNode(
-    var generateWaypointRouteMap: ImmutableMap<Identifier<WaypointRouteKey>, GenerateWaypointRoute>,
+    var waypointRouteGenerator: WaypointRouteGenerator,
 ) : ModifierLocalNode, Modifier.Node() {
     private val waypointRouteProvider: WaypointRouteProvider
         get() = if (isAttached) {
@@ -17,7 +15,7 @@ class WaypointRouteProviderNode(
                 ?: throw IllegalStateException("Missing Waypoint Holder")
             RealWaypointRouteProvider(
                 waypointHolder = waypointHolder,
-                generateWaypointRouteMap = generateWaypointRouteMap,
+                waypointRouteGenerator = waypointRouteGenerator,
             )
         } else {
             EmptyWaypointRouteProvider()

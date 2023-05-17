@@ -4,6 +4,6 @@ import com.squaredcandy.waypoint.core.Waypoint
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
-class EmptyWaypointRoute : WaypointRoute {
+object EmptyWaypointRoute : WaypointRoute {
     override val waypointList: ImmutableList<Waypoint> = persistentListOf()
 }

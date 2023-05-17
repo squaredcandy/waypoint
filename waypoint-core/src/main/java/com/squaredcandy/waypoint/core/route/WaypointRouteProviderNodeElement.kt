@@ -2,16 +2,14 @@ package com.squaredcandy.waypoint.core.route
 
 import androidx.compose.ui.node.ModifierNodeElement
 import androidx.compose.ui.platform.InspectorInfo
-import com.squaredcandy.waypoint.core.Identifier
-import kotlinx.collections.immutable.ImmutableMap
 
 internal data class WaypointRouteProviderNodeElement(
-    val generateWaypointRouteMap: ImmutableMap<Identifier<WaypointRouteKey>, GenerateWaypointRoute>,
+    val waypointRouteGenerator: WaypointRouteGenerator,
 ) : ModifierNodeElement<WaypointRouteProviderNode>() {
-    override fun create(): WaypointRouteProviderNode = WaypointRouteProviderNode(generateWaypointRouteMap)
+    override fun create(): WaypointRouteProviderNode = WaypointRouteProviderNode(waypointRouteGenerator)
 
     override fun update(node: WaypointRouteProviderNode) {
-        node.generateWaypointRouteMap = generateWaypointRouteMap
+        node.waypointRouteGenerator = waypointRouteGenerator
     }
 
     override fun InspectorInfo.inspectableProperties() {

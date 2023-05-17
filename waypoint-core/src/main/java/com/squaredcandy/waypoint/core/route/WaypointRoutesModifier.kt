@@ -11,5 +11,5 @@ import com.squaredcandy.waypoint.core.holder.WaypointHolder
  *
  * Routes are exposed to child nodes via [ModifierLocalWaypointRouteProvider].
  */
-fun Modifier.waypointRoutes(builder: WaypointRouteMapBuilder.() -> Unit): Modifier =
+fun Modifier.waypointRoutes(builder: WaypointRouteMapScope.() -> Unit): Modifier =
     this.then(WaypointRouteProviderNodeElement(WaypointRouteMapBuilder().apply(builder).build()))

@@ -61,7 +61,7 @@ inline fun <reified T: WaypointAction> WaypointActionMapBuilder.addHook(
     }
 )
 
-fun buildWaypointActions(
+internal fun buildWaypointActions(
     builder: WaypointActionMapBuilder.() -> Unit,
 ): WaypointActionMap {
     return WaypointActionMapBuilder().apply(builder).build()

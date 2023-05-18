@@ -6,7 +6,7 @@ import androidx.compose.ui.modifier.ModifierLocalNode
 import androidx.compose.ui.modifier.modifierLocalMapOf
 import com.squaredcandy.waypoint.core.holder.ModifierLocalWaypointHolder
 
-class WaypointRouteProviderNode(
+internal class WaypointRouteProviderNode(
     var waypointRouteGenerator: WaypointRouteGenerator,
 ) : ModifierLocalNode, Modifier.Node() {
     private val waypointRouteProvider: WaypointRouteProvider

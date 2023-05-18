@@ -5,7 +5,7 @@ import com.squaredcandy.waypoint.core.holder.WaypointHolder
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 
-class RealWaypointRouteProvider(
+internal class RealWaypointRouteProvider(
     private val waypointHolder: WaypointHolder,
     waypointRouteGenerator: WaypointRouteGenerator,
 ) : WaypointRouteProvider {

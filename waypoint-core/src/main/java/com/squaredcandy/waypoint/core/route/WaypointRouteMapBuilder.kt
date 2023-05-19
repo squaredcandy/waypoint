@@ -14,7 +14,7 @@ class WaypointRouteMapBuilder : WaypointRouteMapScope {
         generateWaypointRouteMap = generateWaypointRouteMap.put(key, generateWaypointRoute)
     }
 
-    fun build(): WaypointRouteGenerator = WaypointRouteGenerator(
+    internal fun build(): WaypointRouteGenerator = WaypointRouteGenerator(
         generateWaypointRouteMap = generateWaypointRouteMap.toImmutableMap(),
     )
 }

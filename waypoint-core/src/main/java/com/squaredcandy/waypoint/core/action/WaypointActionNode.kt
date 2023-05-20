@@ -9,6 +9,9 @@ import androidx.compose.ui.modifier.ModifierLocalMap
 import androidx.compose.ui.modifier.ModifierLocalNode
 import androidx.compose.ui.modifier.modifierLocalMapOf
 import androidx.compose.ui.modifier.modifierLocalOf
+import androidx.compose.ui.node.SemanticsModifierNode
+import androidx.compose.ui.semantics.SemanticsConfiguration
+import com.squaredcandy.waypoint.core.semantics.SemanticsProperties
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.plus
@@ -20,7 +23,7 @@ private val ModifierLocalWaypointActionMap = modifierLocalOf<WaypointActionMap?>
 internal class WaypointActionNode(
     var mergeParentActions: Boolean,
     initialWaypointActionMap: WaypointActionMap,
-) : ModifierLocalNode, Modifier.Node() {
+) : ModifierLocalNode, SemanticsModifierNode, Modifier.Node() {
 
     var waypointActionMap by mutableStateOf(initialWaypointActionMap)
 
@@ -50,6 +53,12 @@ internal class WaypointActionNode(
             ModifierLocalWaypointActionProvider to waypointActionProvider,
             ModifierLocalWaypointActionMap to waypointActionMap,
         )
+
+    override val semanticsConfiguration: SemanticsConfiguration
+        get() = SemanticsConfiguration()
+            .apply {
+                this[SemanticsProperties.WaypointActionProviderSemanticsKey] = waypointActionProvider
+            }
 }
 
 private operator fun WaypointActionMap?.plus(otherWaypointActionMap: WaypointActionMap): WaypointActionMap {

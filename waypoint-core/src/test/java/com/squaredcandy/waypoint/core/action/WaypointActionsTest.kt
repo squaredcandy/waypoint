@@ -12,11 +12,20 @@ import com.squaredcandy.waypoint.core.Waypoint
 import com.squaredcandy.waypoint.core.action.actions.BacktrackWaypointAction
 import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
 import com.squaredcandy.waypoint.core.holder.ModifierLocalMutableWaypointHolder
-import com.squaredcandy.waypoint.core.holder.ModifierLocalWaypointHolder
-import com.squaredcandy.waypoint.core.holder.MutableWaypointHolder
 import com.squaredcandy.waypoint.core.holder.WaypointHolder
 import com.squaredcandy.waypoint.core.holder.WaypointNavigationType
 import com.squaredcandy.waypoint.core.holder.waypointHolder
+import com.squaredcandy.waypoint.core.semantics.assertAllWaypointListEqualTo
+import com.squaredcandy.waypoint.core.semantics.assertCorrectWaypointHolderParentTree
+import com.squaredcandy.waypoint.core.semantics.assertWaypointActionDoesNotExist
+import com.squaredcandy.waypoint.core.semantics.assertWaypointActionExists
+import com.squaredcandy.waypoint.core.semantics.assertWaypointListEqualTo
+import com.squaredcandy.waypoint.core.semantics.invokeWaypointAction
+import com.squaredcandy.waypoint.core.semantics.invokeWaypointActionOnNode
+import com.squaredcandy.waypoint.core.semantics.onWaypointActionProviderNode
+import com.squaredcandy.waypoint.core.semantics.onWaypointActionProviderNodes
+import com.squaredcandy.waypoint.core.semantics.onWaypointHolderNode
+import com.squaredcandy.waypoint.core.semantics.onWaypointHolderNodes
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -34,8 +43,6 @@ class WaypointActionsTest {
         val list = listOf(Waypoint())
         val newWaypoint = Waypoint()
 
-        var waypointHolder: MutableWaypointHolder? = null
-        var waypointActionProvider: WaypointActionProvider? = null
         composeTestRule.setContent {
             Box(
                 modifier = Modifier
@@ -47,19 +54,14 @@ class WaypointActionsTest {
                             }
                         }
                     }
-                    .modifierLocalConsumer {
-                        waypointHolder = ModifierLocalMutableWaypointHolder.current
-                        waypointActionProvider = ModifierLocalWaypointActionProvider.current
-                    }
             )
         }
 
-        Truth.assertThat(waypointHolder).isNotNull()
-        Truth.assertThat(waypointActionProvider).isNotNull()
-        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list)
-        val waypointAction = waypointActionProvider?.getAction<NavigateWaypointAction>()
-        waypointAction?.invoke(waypointHolder!!, NavigateWaypointAction(newWaypoint))
-        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list + newWaypoint)
+        composeTestRule.onWaypointActionProviderNode()
+            .assertWaypointListEqualTo(list)
+            .assertWaypointActionExists<NavigateWaypointAction>()
+            .invokeWaypointAction<NavigateWaypointAction>(NavigateWaypointAction(newWaypoint))
+            .assertWaypointListEqualTo(list + newWaypoint)
     }
 
     @Test
@@ -67,26 +69,18 @@ class WaypointActionsTest {
         val list = listOf(Waypoint())
         val newWaypoint = Waypoint()
 
-        var waypointHolder: MutableWaypointHolder? = null
-        var waypointActionProvider: WaypointActionProvider? = null
         composeTestRule.setContent {
             Box(
                 modifier = Modifier
                     .waypointHolder(list)
                     .waypointActions {}
-                    .modifierLocalConsumer {
-                        waypointHolder = ModifierLocalMutableWaypointHolder.current
-                        waypointActionProvider = ModifierLocalWaypointActionProvider.current
-                    }
             )
         }
 
-        Truth.assertThat(waypointHolder).isNotNull()
-        Truth.assertThat(waypointActionProvider).isNotNull()
-        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list)
-        val waypointAction = waypointActionProvider?.getAction<NavigateWaypointAction>()
-        waypointAction?.invoke(waypointHolder!!, NavigateWaypointAction(newWaypoint))
-        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list)
+        composeTestRule.onWaypointActionProviderNode()
+            .assertWaypointActionDoesNotExist<NavigateWaypointAction>()
+            .invokeWaypointAction<NavigateWaypointAction>(NavigateWaypointAction(newWaypoint))
+            .assertWaypointListEqualTo(list)
     }
 
     @Test
@@ -94,27 +88,19 @@ class WaypointActionsTest {
         val list = listOf(Waypoint())
         val newWaypoint = Waypoint()
 
-        var waypointHolder: MutableWaypointHolder? = null
-        var waypointActionProvider: WaypointActionProvider? = null
         val waypointActionBuilderState = mutableStateOf<WaypointActionMapBuilder.() -> Unit>({})
         composeTestRule.setContent {
             Box(
                 modifier = Modifier
                     .waypointHolder(list)
                     .waypointActions(builder = waypointActionBuilderState.value)
-                    .modifierLocalConsumer {
-                        waypointHolder = ModifierLocalMutableWaypointHolder.current
-                        waypointActionProvider = ModifierLocalWaypointActionProvider.current
-                    }
             )
         }
 
-        Truth.assertThat(waypointHolder).isNotNull()
-        Truth.assertThat(waypointActionProvider).isNotNull()
-        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list)
-        val waypointAction = waypointActionProvider?.getAction<NavigateWaypointAction>()
-        waypointAction?.invoke(waypointHolder!!, NavigateWaypointAction(newWaypoint))
-        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list)
+        composeTestRule.onWaypointActionProviderNode()
+            .assertWaypointActionDoesNotExist<NavigateWaypointAction>()
+            .invokeWaypointAction<NavigateWaypointAction>(NavigateWaypointAction(newWaypoint))
+            .assertWaypointListEqualTo(list)
 
         waypointActionBuilderState.value = {
             onAction<NavigateWaypointAction> { waypointHolder, waypointAction ->
@@ -124,9 +110,11 @@ class WaypointActionsTest {
             }
         }
         composeTestRule.waitForIdle()
-        val newWaypointAction = waypointActionProvider?.getAction<NavigateWaypointAction>()
-        newWaypointAction?.invoke(waypointHolder!!, NavigateWaypointAction(newWaypoint))
-        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list + newWaypoint)
+
+        composeTestRule.onWaypointActionProviderNode()
+            .assertWaypointActionExists<NavigateWaypointAction>()
+            .invokeWaypointAction<NavigateWaypointAction>(NavigateWaypointAction(newWaypoint))
+            .assertWaypointListEqualTo(list + newWaypoint)
     }
 
     @Test
@@ -134,41 +122,39 @@ class WaypointActionsTest {
         val list = listOf(Waypoint())
         val newWaypoint = Waypoint()
 
-        var waypointHolder1: WaypointHolder? = null
-        var waypointHolder2: MutableWaypointHolder? = null
-        var waypointActionProvider: WaypointActionProvider? = null
         composeTestRule.setContent {
             Box(
                 modifier = Modifier
                     .waypointHolder(list)
-                    .modifierLocalConsumer {
-                        waypointHolder1 = ModifierLocalWaypointHolder.current
-                    }
-                    .waypointHolder(list)
-                    .waypointActions {
-                        onAction<NavigateWaypointAction> { waypointHolder, waypointAction ->
-                            waypointHolder.updateWaypointList(WaypointNavigationType.Push) {
-                                add(waypointAction.waypoint)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .waypointHolder(list)
+                        .waypointActions {
+                            onAction<NavigateWaypointAction> { waypointHolder, waypointAction ->
+                                waypointHolder.updateWaypointList(WaypointNavigationType.Push) {
+                                    add(waypointAction.waypoint)
+                                }
                             }
                         }
-                    }
-                    .modifierLocalConsumer {
-                        waypointHolder2 = ModifierLocalMutableWaypointHolder.current
-                        waypointActionProvider = ModifierLocalWaypointActionProvider.current
-                    }
-            )
+                )
+            }
         }
 
-        Truth.assertThat(waypointHolder1).isNotNull()
-        Truth.assertThat(waypointHolder2).isNotNull()
-        Truth.assertThat(waypointActionProvider).isNotNull()
-        Truth.assertThat(waypointHolder1?.waypointList).isEqualTo(list)
-        Truth.assertThat(waypointHolder2?.waypointList).isEqualTo(list)
-        Truth.assertThat(waypointHolder2?.parent).isEqualTo(waypointHolder1)
-        val waypointAction = waypointActionProvider?.getAction<NavigateWaypointAction>()
-        waypointAction?.invoke(waypointHolder2!!.parent!!, NavigateWaypointAction(newWaypoint))
-        Truth.assertThat(waypointHolder1?.waypointList).isEqualTo(list + newWaypoint)
-        Truth.assertThat(waypointHolder2?.waypointList).isEqualTo(list)
+        composeTestRule.onWaypointHolderNodes()
+            .assertAllWaypointListEqualTo(list)
+            .assertCorrectWaypointHolderParentTree()
+
+        composeTestRule.onWaypointActionProviderNode()
+            .assertWaypointActionExists<NavigateWaypointAction>()
+            .invokeWaypointActionOnNode<NavigateWaypointAction>(
+                node = { composeTestRule.onWaypointHolderNodes()[0] },
+                action = NavigateWaypointAction(newWaypoint),
+            )
+
+        composeTestRule.onWaypointHolderNodes()
+            .assertWaypointListEqualTo(0, list + newWaypoint)
+            .assertWaypointListEqualTo(1, list)
     }
 
     @Test
@@ -176,8 +162,6 @@ class WaypointActionsTest {
         val list = listOf(Waypoint())
         val newWaypoint = Waypoint()
 
-        var waypointHolder: MutableWaypointHolder? = null
-        var waypointActionProvider: WaypointActionProvider? = null
         var preHookReceived = false
         var postHookReceived = false
         composeTestRule.setContent {
@@ -199,19 +183,15 @@ class WaypointActionsTest {
                             },
                         )
                     }
-                    .modifierLocalConsumer {
-                        waypointHolder = ModifierLocalMutableWaypointHolder.current
-                        waypointActionProvider = ModifierLocalWaypointActionProvider.current
-                    }
             )
         }
 
-        Truth.assertThat(waypointHolder).isNotNull()
-        Truth.assertThat(waypointActionProvider).isNotNull()
-        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list)
-        val waypointAction = waypointActionProvider?.getAction<NavigateWaypointAction>()
-        waypointAction?.invoke(waypointHolder!!, NavigateWaypointAction(newWaypoint))
-        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list + newWaypoint)
+        composeTestRule.onWaypointActionProviderNode()
+            .assertWaypointListEqualTo(list)
+            .assertWaypointActionExists<NavigateWaypointAction>()
+            .invokeWaypointAction<NavigateWaypointAction>(NavigateWaypointAction(newWaypoint))
+            .assertWaypointListEqualTo(list + newWaypoint)
+
         Truth.assertThat(preHookReceived).isTrue()
         Truth.assertThat(postHookReceived).isTrue()
     }
@@ -221,8 +201,6 @@ class WaypointActionsTest {
         val list = listOf(Waypoint())
         val newWaypoint = Waypoint()
 
-        var waypointHolder: MutableWaypointHolder? = null
-        var waypointActionProvider: WaypointActionProvider? = null
         var preHookReceived = 0
         var postHookReceived = 0
         composeTestRule.setContent {
@@ -252,19 +230,15 @@ class WaypointActionsTest {
                             },
                         )
                     }
-                    .modifierLocalConsumer {
-                        waypointHolder = ModifierLocalMutableWaypointHolder.current
-                        waypointActionProvider = ModifierLocalWaypointActionProvider.current
-                    }
             )
         }
 
-        Truth.assertThat(waypointHolder).isNotNull()
-        Truth.assertThat(waypointActionProvider).isNotNull()
-        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list)
-        val waypointAction = waypointActionProvider?.getAction<NavigateWaypointAction>()
-        waypointAction?.invoke(waypointHolder!!, NavigateWaypointAction(newWaypoint))
-        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list + newWaypoint)
+        composeTestRule.onWaypointActionProviderNode()
+            .assertWaypointListEqualTo(list)
+            .assertWaypointActionExists<NavigateWaypointAction>()
+            .invokeWaypointAction<NavigateWaypointAction>(NavigateWaypointAction(newWaypoint))
+            .assertWaypointListEqualTo(list + newWaypoint)
+
         Truth.assertThat(preHookReceived).isEqualTo(2)
         Truth.assertThat(postHookReceived).isEqualTo(2)
     }
@@ -274,8 +248,6 @@ class WaypointActionsTest {
         val list = listOf(Waypoint())
         val newWaypoint = Waypoint()
 
-        var waypointHolder: MutableWaypointHolder? = null
-        var waypointActionProvider: WaypointActionProvider? = null
         val baseNumber = 10
         var preHookReceived = 0
         var postHookReceived = 0
@@ -295,34 +267,44 @@ class WaypointActionsTest {
                             },
                         )
                     }
-                    .waypointActions {
-                        onAction<NavigateWaypointAction> { waypointHolder, waypointAction ->
-                            waypointHolder.updateWaypointList(WaypointNavigationType.Push) {
-                                add(waypointAction.waypoint)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .waypointActions {
+                            onAction<NavigateWaypointAction> { waypointHolder, waypointAction ->
+                                waypointHolder.updateWaypointList(WaypointNavigationType.Push) {
+                                    add(waypointAction.waypoint)
+                                }
                             }
+                            addHook<NavigateWaypointAction>(
+                                preResolveHook = { _, _ ->
+                                    preHookReceived2 = preHookReceived
+                                },
+                                postResolveHook = { _, _ ->
+                                    postHookReceived2 = postHookReceived
+                                },
+                            )
                         }
-                        addHook<NavigateWaypointAction>(
-                            preResolveHook = { _, _ ->
-                                preHookReceived2 = preHookReceived
-                            },
-                            postResolveHook = { _, _ ->
-                                postHookReceived2 = postHookReceived
-                            },
-                        )
-                    }
-                    .modifierLocalConsumer {
-                        waypointHolder = ModifierLocalMutableWaypointHolder.current
-                        waypointActionProvider = ModifierLocalWaypointActionProvider.current
-                    }
-            )
+                )
+            }
         }
 
-        Truth.assertThat(waypointHolder).isNotNull()
-        Truth.assertThat(waypointActionProvider).isNotNull()
-        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list)
-        val waypointAction = waypointActionProvider?.getAction<NavigateWaypointAction>()
-        waypointAction?.invoke(waypointHolder!!, NavigateWaypointAction(newWaypoint))
-        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list + newWaypoint)
+        composeTestRule.onWaypointHolderNode()
+            .assertWaypointListEqualTo(list)
+
+        composeTestRule.onWaypointActionProviderNodes()[0]
+            .assertWaypointActionDoesNotExist<NavigateWaypointAction>()
+
+        composeTestRule.onWaypointActionProviderNodes()[1]
+            .assertWaypointActionExists<NavigateWaypointAction>()
+            .invokeWaypointActionOnNode<NavigateWaypointAction>(
+                node = { composeTestRule.onWaypointHolderNode() },
+                action = NavigateWaypointAction(newWaypoint),
+            )
+
+        composeTestRule.onWaypointHolderNode()
+            .assertWaypointListEqualTo(list + newWaypoint)
+
         Truth.assertThat(preHookReceived).isEqualTo(baseNumber)
         Truth.assertThat(postHookReceived).isEqualTo(baseNumber)
         Truth.assertThat(preHookReceived2).isEqualTo(baseNumber)
@@ -334,46 +316,40 @@ class WaypointActionsTest {
         val list = listOf(Waypoint())
         val newWaypoint = Waypoint()
 
-        var waypointHolder1: WaypointHolder? = null
-        var waypointHolder2: MutableWaypointHolder? = null
-        var waypointActionProvider: WaypointActionProvider? = null
         composeTestRule.setContent {
             Box(
                 modifier = Modifier
                     .waypointHolder(list)
-                    .modifierLocalConsumer {
-                        waypointHolder1 = ModifierLocalWaypointHolder.current
-                    }
-                    .waypointHolder(list)
-                    .waypointActions {
-                        onAction<NavigateWaypointAction> { waypointHolder, waypointAction ->
-                            waypointHolder.updateWaypointList(WaypointNavigationType.Push) {
-                                add(waypointAction.waypoint)
-                            }
-                            // Add it to the parent too
-                            waypointHolder.parent
-                                ?.updateWaypointList(WaypointNavigationType.Push) {
+            ) {
+                Box(
+                    modifier = Modifier
+                        .waypointHolder(list)
+                        .waypointActions {
+                            onAction<NavigateWaypointAction> { waypointHolder, waypointAction ->
+                                waypointHolder.updateWaypointList(WaypointNavigationType.Push) {
                                     add(waypointAction.waypoint)
                                 }
+                                // Add it to the parent too
+                                waypointHolder.parent
+                                    ?.updateWaypointList(WaypointNavigationType.Push) {
+                                        add(waypointAction.waypoint)
+                                    }
+                            }
                         }
-                    }
-                    .modifierLocalConsumer {
-                        waypointHolder2 = ModifierLocalMutableWaypointHolder.current
-                        waypointActionProvider = ModifierLocalWaypointActionProvider.current
-                    }
-            )
+                )
+            }
         }
 
-        Truth.assertThat(waypointHolder1).isNotNull()
-        Truth.assertThat(waypointHolder2).isNotNull()
-        Truth.assertThat(waypointActionProvider).isNotNull()
-        Truth.assertThat(waypointHolder1?.waypointList).isEqualTo(list)
-        Truth.assertThat(waypointHolder2?.waypointList).isEqualTo(list)
-        Truth.assertThat(waypointHolder2?.parent).isEqualTo(waypointHolder1)
-        val waypointAction = waypointActionProvider?.getAction<NavigateWaypointAction>()
-        waypointAction?.invoke(waypointHolder2!!, NavigateWaypointAction(newWaypoint))
-        Truth.assertThat(waypointHolder1?.waypointList).isEqualTo(list + newWaypoint)
-        Truth.assertThat(waypointHolder2?.waypointList).isEqualTo(list + newWaypoint)
+        composeTestRule.onWaypointHolderNodes()
+            .assertAllWaypointListEqualTo(list)
+            .assertCorrectWaypointHolderParentTree()
+
+        composeTestRule.onWaypointActionProviderNode()
+            .assertWaypointActionExists<NavigateWaypointAction>()
+            .invokeWaypointAction<NavigateWaypointAction>(NavigateWaypointAction(newWaypoint))
+
+        composeTestRule.onWaypointHolderNodes()
+            .assertAllWaypointListEqualTo(list + newWaypoint)
     }
 
     @Test
@@ -418,8 +394,6 @@ class WaypointActionsTest {
         val list = listOf(Waypoint())
         val newWaypoint = Waypoint()
 
-        var waypointHolder: MutableWaypointHolder? = null
-        var waypointActionProvider: WaypointActionProvider? = null
         composeTestRule.setContent {
             Box(
                 modifier = Modifier
@@ -431,29 +405,36 @@ class WaypointActionsTest {
                             }
                         }
                     }
-                    .waypointActions {
-                        onAction<BacktrackWaypointAction> { waypointHolder, waypointAction ->
-                            waypointHolder.updateWaypointList(WaypointNavigationType.Push) {
-                                removeIf { it.id == waypointAction.waypointId }
+            ) {
+                Box(
+                    modifier = Modifier
+                        .waypointActions {
+                            onAction<BacktrackWaypointAction> { waypointHolder, waypointAction ->
+                                waypointHolder.updateWaypointList(WaypointNavigationType.Pop) {
+                                    removeIf { it.id == waypointAction.waypointId }
+                                }
                             }
                         }
-                    }
-                    .modifierLocalConsumer {
-                        waypointHolder = ModifierLocalMutableWaypointHolder.current
-                        waypointActionProvider = ModifierLocalWaypointActionProvider.current
-                    }
-            )
+                )
+            }
         }
 
-        Truth.assertThat(waypointHolder).isNotNull()
-        Truth.assertThat(waypointActionProvider).isNotNull()
-        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list)
-        val navigateWaypointResolver = waypointActionProvider?.getAction<NavigateWaypointAction>()
-        navigateWaypointResolver?.invoke(waypointHolder!!, NavigateWaypointAction(newWaypoint))
-        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list + newWaypoint)
-        val backtrackWaypointResolver = waypointActionProvider?.getAction<BacktrackWaypointAction>()
-        backtrackWaypointResolver?.invoke(waypointHolder!!, BacktrackWaypointAction(newWaypoint.id))
-        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list)
+        composeTestRule.onWaypointActionProviderNodes()[0]
+            .assertWaypointListEqualTo(list)
+            .assertWaypointActionExists<NavigateWaypointAction>()
+            .invokeWaypointAction<NavigateWaypointAction>(NavigateWaypointAction(newWaypoint))
+            .assertWaypointListEqualTo(list + newWaypoint)
+
+        composeTestRule.onWaypointActionProviderNodes()[1]
+            .assertWaypointActionExists<NavigateWaypointAction>()
+            .assertWaypointActionExists<BacktrackWaypointAction>()
+            .invokeWaypointActionOnNode<BacktrackWaypointAction>(
+                node = { composeTestRule.onWaypointHolderNode() },
+                action = BacktrackWaypointAction(newWaypoint.id),
+            )
+
+        composeTestRule.onWaypointHolderNode()
+            .assertWaypointListEqualTo(list)
     }
 
     @Test
@@ -461,8 +442,6 @@ class WaypointActionsTest {
         val list = listOf(Waypoint())
         val newWaypoint = Waypoint()
 
-        var waypointHolder: MutableWaypointHolder? = null
-        var waypointActionProvider: WaypointActionProvider? = null
         composeTestRule.setContent {
             Box(
                 modifier = Modifier
@@ -474,28 +453,38 @@ class WaypointActionsTest {
                             }
                         }
                     }
-                    .waypointActions(mergeParentActions = false) {
-                        onAction<BacktrackWaypointAction> { waypointHolder, waypointAction ->
-                            waypointHolder.updateWaypointList(WaypointNavigationType.Push) {
-                                removeIf { it.id == waypointAction.waypointId }
+            ) {
+                Box(
+                    modifier = Modifier
+                        .waypointActions(mergeParentActions = false) {
+                            onAction<BacktrackWaypointAction> { waypointHolder, waypointAction ->
+                                waypointHolder.updateWaypointList(WaypointNavigationType.Pop) {
+                                    removeIf { it.id == waypointAction.waypointId }
+                                }
                             }
                         }
-                    }
-                    .modifierLocalConsumer {
-                        waypointHolder = ModifierLocalMutableWaypointHolder.current
-                        waypointActionProvider = ModifierLocalWaypointActionProvider.current
-                    }
-            )
+                )
+            }
         }
 
-        Truth.assertThat(waypointHolder).isNotNull()
-        Truth.assertThat(waypointActionProvider).isNotNull()
-        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list)
-        val waypointAction = waypointActionProvider?.getAction<NavigateWaypointAction>()
-        waypointAction?.invoke(waypointHolder!!, NavigateWaypointAction(newWaypoint))
-        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(list)
-        val backtrackWaypointResolver = waypointActionProvider?.getAction<BacktrackWaypointAction>()
-        backtrackWaypointResolver?.invoke(waypointHolder!!, BacktrackWaypointAction(list.first().id))
-        Truth.assertThat(waypointHolder?.waypointList).isEqualTo(emptyList<Waypoint>())
+        composeTestRule.onWaypointActionProviderNodes()[1]
+            .assertWaypointActionDoesNotExist<NavigateWaypointAction>()
+            .invokeWaypointActionOnNode<NavigateWaypointAction>(
+                node = { composeTestRule.onWaypointHolderNode() },
+                action = NavigateWaypointAction(newWaypoint),
+            )
+
+        composeTestRule.onWaypointHolderNode()
+            .assertWaypointListEqualTo(list)
+
+        composeTestRule.onWaypointActionProviderNodes()[1]
+            .assertWaypointActionExists<BacktrackWaypointAction>()
+            .invokeWaypointActionOnNode<BacktrackWaypointAction>(
+                node = { composeTestRule.onWaypointHolderNode() },
+                action = BacktrackWaypointAction(list.first().id),
+            )
+
+        composeTestRule.onWaypointHolderNode()
+            .assertWaypointListEqualTo(emptyList())
     }
 }

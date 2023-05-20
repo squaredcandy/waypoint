@@ -7,12 +7,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.modifier.ModifierLocalMap
 import androidx.compose.ui.modifier.ModifierLocalNode
 import androidx.compose.ui.modifier.modifierLocalMapOf
+import androidx.compose.ui.node.SemanticsModifierNode
+import androidx.compose.ui.semantics.SemanticsConfiguration
 import com.squaredcandy.waypoint.core.Waypoint
+import com.squaredcandy.waypoint.core.semantics.SemanticsProperties
 
 // A modifier that holds a single list of waypoints
 internal class WaypointHolderNode(
     var mutableWaypointList: SnapshotStateList<Waypoint>,
-) : ModifierLocalNode, Modifier.Node() {
+) : ModifierLocalNode, SemanticsModifierNode, Modifier.Node() {
 
     private val waypointHolder: MutableWaypointHolder by derivedStateOf {
         DefaultWaypointHolder(mutableWaypointList, parentWaypointHolder)
@@ -26,4 +29,10 @@ internal class WaypointHolderNode(
             ModifierLocalWaypointHolder to waypointHolder,
             ModifierLocalMutableWaypointHolder to waypointHolder,
         )
+
+    override val semanticsConfiguration: SemanticsConfiguration
+        get() = SemanticsConfiguration()
+            .apply {
+                this[SemanticsProperties.WaypointHolderSemanticsKey] = waypointHolder
+            }
 }

@@ -7,23 +7,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.compose.ui.modifier.ModifierLocalReadScope
 import androidx.compose.ui.modifier.modifierLocalConsumer
 
-// TODO Maybe wrap ModifierLocalReadScope inside our own scope to handle nullable better
 fun Modifier.waypointContent(
-    content: @Composable ModifierLocalReadScope.() -> Unit,
+    content: @Composable WaypointContentScope.() -> Unit,
 ): Modifier = composed {
     var modifierLocalReadScope by remember {
-        mutableStateOf<ModifierLocalReadScope?>(null)
+        mutableStateOf<WaypointContentScope>(EmptyWaypointContentScope)
     }
-    modifierLocalReadScope?.let { scope ->
-        with(scope) {
-            content()
-        }
+    with(modifierLocalReadScope) {
+        content()
     }
 
     modifierLocalConsumer {
-        modifierLocalReadScope = this
+        modifierLocalReadScope = RealWaypointContentScope(this)
     }
 }

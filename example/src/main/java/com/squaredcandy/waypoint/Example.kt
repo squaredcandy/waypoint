@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
@@ -16,6 +15,7 @@ import com.squaredcandy.waypoint.core.action.WaypointActionProvider
 import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
 import com.squaredcandy.waypoint.core.action.onAction
 import com.squaredcandy.waypoint.core.action.waypointActions
+import com.squaredcandy.waypoint.core.content.rememberModifierLocalState
 import com.squaredcandy.waypoint.core.content.waypointContent
 import com.squaredcandy.waypoint.core.feature.WaypointContext
 import com.squaredcandy.waypoint.core.holder.ModifierLocalMutableWaypointHolder
@@ -106,20 +106,14 @@ fun Example() {
                 addRoute(WaypointRouteKey.side, ::SideWaypointRoute)
             }
             .waypointContent {
-                val mutableWaypointHolder by remember {
-                    mutableStateOf(ModifierLocalMutableWaypointHolder.current)
-                }
-                val waypointRouteProvider by remember {
-                    mutableStateOf(ModifierLocalWaypointRouteProvider.current)
-                }
-                val waypointActionProvider by remember {
-                    mutableStateOf(ModifierLocalWaypointActionProvider.current)
-                }
+                val mutableWaypointHolder by rememberModifierLocalState(ModifierLocalMutableWaypointHolder)
+                val waypointRouteProvider by rememberModifierLocalState(ModifierLocalWaypointRouteProvider)
+                val waypointActionProvider by rememberModifierLocalState(ModifierLocalWaypointActionProvider)
 
                 Navigation(
                     mutableWaypointHolder = mutableWaypointHolder ?: return@waypointContent,
-                    waypointRouteProvider = waypointRouteProvider,
-                    waypointActionProvider = waypointActionProvider,
+                    waypointRouteProvider = waypointRouteProvider ?: return@waypointContent,
+                    waypointActionProvider = waypointActionProvider ?: return@waypointContent,
                 )
             },
         content = {},

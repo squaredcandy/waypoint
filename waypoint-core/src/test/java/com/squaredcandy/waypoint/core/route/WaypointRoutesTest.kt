@@ -42,17 +42,18 @@ class WaypointRoutesTest {
                         }
                     }
                     .waypointRoutes {
-                        addRoute(WaypointRouteKey.main, ::MainWaypointRoute)
+                        addRoute(::MainWaypointRoute)
                     }
             )
         }
 
+
         composeTestRule.onWaypointRouteNode()
-            .assertWaypointRouteExists(WaypointRouteKey.main)
-            .assertWaypointRouteEqualTo(WaypointRouteKey.main, list)
+            .assertWaypointRouteExists(MainWaypointRoute.key)
+            .assertWaypointRouteEqualTo(MainWaypointRoute.key, list)
             .invokeWaypointAction<NavigateWaypointAction>(NavigateWaypointAction(newWaypoint))
             .assertWaypointListEqualTo(list + newWaypoint)
-            .assertWaypointRouteEqualTo(WaypointRouteKey.main, listOf(newWaypoint))
+            .assertWaypointRouteEqualTo(MainWaypointRoute.key, listOf(newWaypoint))
     }
 
     @Test
@@ -62,12 +63,12 @@ class WaypointRoutesTest {
                 modifier = Modifier
                     .waypointHolder(emptyList())
                     .waypointRoutes {
-                        addRoute(WaypointRouteKey.main, ::MainWaypointRoute)
+                        addRoute(::MainWaypointRoute)
                     }
             )
         }
 
         composeTestRule.onWaypointRouteNode()
-            .assertWaypointRouteDoesNotExist(WaypointRouteKey.side)
+            .assertWaypointRouteDoesNotExist(SideWaypointRoute.key)
     }
 }

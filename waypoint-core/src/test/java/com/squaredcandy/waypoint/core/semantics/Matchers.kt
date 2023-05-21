@@ -7,7 +7,7 @@ import androidx.compose.ui.test.assertAll
 import com.squaredcandy.waypoint.core.Identifier
 import com.squaredcandy.waypoint.core.Waypoint
 import com.squaredcandy.waypoint.core.action.WaypointAction
-import com.squaredcandy.waypoint.core.route.WaypointRouteKey
+import com.squaredcandy.waypoint.core.route.WaypointRoute
 import com.squaredcandy.waypoint.core.semantics.SemanticsProperties.WaypointHolderSemanticsKey
 
 //region Waypoint Holder
@@ -65,16 +65,16 @@ inline fun <reified T : WaypointAction> SemanticsNodeInteraction.assertWaypointA
 //endregion
 
 //region Waypoint Route
-fun SemanticsNodeInteraction.assertWaypointRouteExists(
-    routeKey: Identifier<WaypointRouteKey>,
+fun <T : WaypointRoute<T>> SemanticsNodeInteraction.assertWaypointRouteExists(
+    routeKey: Identifier<T>,
 ): SemanticsNodeInteraction = assert(hasWaypointRouteKey(routeKey))
 
-fun SemanticsNodeInteraction.assertWaypointRouteDoesNotExist(
-    routeKey: Identifier<WaypointRouteKey>,
+fun <T: WaypointRoute<T>> SemanticsNodeInteraction.assertWaypointRouteDoesNotExist(
+    routeKey: Identifier<T>,
 ): SemanticsNodeInteraction = assert(hasNotWaypointRouteKey(routeKey))
 
-fun SemanticsNodeInteraction.assertWaypointRouteEqualTo(
-    routeKey: Identifier<WaypointRouteKey>,
+fun <T: WaypointRoute<T>> SemanticsNodeInteraction.assertWaypointRouteEqualTo(
+    routeKey: Identifier<T>,
     waypointList: List<Waypoint>?,
 ): SemanticsNodeInteraction = assert(hasWaypointRouteExactly(routeKey, waypointList))
 //endregion

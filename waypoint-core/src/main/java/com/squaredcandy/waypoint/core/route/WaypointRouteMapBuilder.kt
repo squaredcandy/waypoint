@@ -1,20 +1,18 @@
 package com.squaredcandy.waypoint.core.route
 
-import com.squaredcandy.waypoint.core.Identifier
-import kotlinx.collections.immutable.persistentHashMapOf
-import kotlinx.collections.immutable.toImmutableMap
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 
 class WaypointRouteMapBuilder : WaypointRouteMapScope {
-    private var generateWaypointRouteMap = persistentHashMapOf<Identifier<WaypointRouteKey>, GenerateWaypointRoute>()
+    private var generateWaypointRouteList = persistentListOf<GenerateWaypointRoute<*>>()
 
-    override fun addRoute(
-        key: Identifier<WaypointRouteKey>,
-        generateWaypointRoute: GenerateWaypointRoute,
+    override fun <T : WaypointRoute<T>> addRoute(
+        generateWaypointRoute: GenerateWaypointRoute<T>
     ) {
-        generateWaypointRouteMap = generateWaypointRouteMap.put(key, generateWaypointRoute)
+        generateWaypointRouteList = generateWaypointRouteList.add(generateWaypointRoute)
     }
 
     internal fun build(): WaypointRouteGenerator = WaypointRouteGenerator(
-        generateWaypointRouteMap = generateWaypointRouteMap.toImmutableMap(),
+        generateWaypointRouteList = generateWaypointRouteList.toImmutableList(),
     )
 }

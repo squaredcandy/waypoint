@@ -5,7 +5,7 @@ import com.squaredcandy.waypoint.core.Identifier
 import com.squaredcandy.waypoint.core.Waypoint
 import com.squaredcandy.waypoint.core.action.WaypointAction
 import com.squaredcandy.waypoint.core.holder.WaypointHolder
-import com.squaredcandy.waypoint.core.route.WaypointRouteKey
+import com.squaredcandy.waypoint.core.route.WaypointRoute
 import com.squaredcandy.waypoint.core.semantics.SemanticsProperties.WaypointActionProviderSemanticsKey
 import com.squaredcandy.waypoint.core.semantics.SemanticsProperties.WaypointHolderSemanticsKey
 import com.squaredcandy.waypoint.core.semantics.SemanticsProperties.WaypointRouteProviderSemanticsKey
@@ -74,24 +74,24 @@ fun <T: WaypointAction> hasWaypointActionNotExactly(clazz: KClass<T>) = Semantic
 //region Waypoint Route
 fun hasWaypointRoute() = SemanticsMatcher.keyIsDefined(WaypointRouteProviderSemanticsKey)
 
-fun hasWaypointRouteKey(
-    routeKey: Identifier<WaypointRouteKey>,
+fun <T: WaypointRoute<T>> hasWaypointRouteKey(
+    routeKey: Identifier<T>,
 ) = SemanticsMatcher("Has $routeKey") { semanticsNode ->
     val waypointRouteProvider = semanticsNode
         .getSemanticsProperty(WaypointRouteProviderSemanticsKey)
     waypointRouteProvider?.getRoute(routeKey) != null
 }
 
-fun hasNotWaypointRouteKey(
-    routeKey: Identifier<WaypointRouteKey>,
+fun <T: WaypointRoute<T>> hasNotWaypointRouteKey(
+    routeKey: Identifier<T>,
 ) = SemanticsMatcher("Has $routeKey") { semanticsNode ->
     val waypointRouteProvider = semanticsNode
         .getSemanticsProperty(WaypointRouteProviderSemanticsKey)
     runCatching { waypointRouteProvider?.getRoute(routeKey) }.isFailure
 }
 
-fun hasWaypointRouteExactly(
-    routeKey: Identifier<WaypointRouteKey>,
+fun <T: WaypointRoute<T>> hasWaypointRouteExactly(
+    routeKey: Identifier<T>,
     waypointList: List<Waypoint>?,
 ) = SemanticsMatcher("$routeKey is exactly $waypointList") { semanticsNode ->
     val waypointRouteProvider = semanticsNode

@@ -12,7 +12,7 @@ import com.squaredcandy.waypoint.core.semantics.SemanticsProperties.WaypointRout
 internal class WaypointRouteProviderNode(
     var waypointRouteGenerator: WaypointRouteGenerator,
 ) : ModifierLocalNode, SemanticsModifierNode, Modifier.Node() {
-    private val waypointRouteProvider: WaypointRouteProvider
+    private val waypointRouteProvider: WaypointRouteProvider?
         get() = if (isAttached) {
             val waypointHolder = ModifierLocalWaypointHolder.current
                 ?: throw IllegalStateException("Missing Waypoint Holder")
@@ -21,7 +21,7 @@ internal class WaypointRouteProviderNode(
                 waypointRouteGenerator = waypointRouteGenerator,
             )
         } else {
-            EmptyWaypointRouteProvider()
+            null
         }
 
     override val providedValues: ModifierLocalMap

@@ -25,7 +25,7 @@ import com.squaredcandy.waypoint.core.holder.waypointHolder
 import com.squaredcandy.waypoint.core.route.MainWaypointRoute
 import com.squaredcandy.waypoint.core.route.ModifierLocalWaypointRouteProvider
 import com.squaredcandy.waypoint.core.route.SideWaypointRoute
-import com.squaredcandy.waypoint.core.route.WaypointRouteKey
+import com.squaredcandy.waypoint.core.route.WaypointRoute
 import com.squaredcandy.waypoint.core.route.WaypointRouteProvider
 import com.squaredcandy.waypoint.core.route.waypointRoutes
 
@@ -40,7 +40,7 @@ private fun Navigation(
     Box(modifier = Modifier.fillMaxSize()) {
         val mainWaypointList by remember {
             derivedStateOf {
-                waypointRouteProvider.getRoute(WaypointRouteKey.main).waypointList
+                waypointRouteProvider.getRoute(MainWaypointRoute.key).waypointList
             }
         }
         if (mainWaypointList.isNotEmpty()) {
@@ -71,7 +71,7 @@ private fun Navigation(
 
         val sideWaypointList by remember {
             derivedStateOf {
-                waypointRouteProvider.getRoute(WaypointRouteKey.side).waypointList
+                waypointRouteProvider.getRoute(SideWaypointRoute.key).waypointList
             }
         }
         sideWaypointList.forEach { waypoint ->
@@ -102,8 +102,8 @@ fun Example() {
                 }
             }
             .waypointRoutes {
-                addRoute(WaypointRouteKey.main, ::MainWaypointRoute)
-                addRoute(WaypointRouteKey.side, ::SideWaypointRoute)
+                addRoute(::MainWaypointRoute)
+                addRoute(::SideWaypointRoute)
             }
             .waypointContent {
                 val mutableWaypointHolder by rememberModifierLocalState(ModifierLocalMutableWaypointHolder)

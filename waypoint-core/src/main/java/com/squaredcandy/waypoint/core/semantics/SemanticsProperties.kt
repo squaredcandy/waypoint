@@ -8,5 +8,5 @@ import com.squaredcandy.waypoint.core.route.WaypointRouteProvider
 internal object SemanticsProperties {
     val WaypointHolderSemanticsKey = SemanticsPropertyKey<MutableWaypointHolder>("Mutable Waypoint Holder")
     val WaypointActionProviderSemanticsKey = SemanticsPropertyKey<WaypointActionProvider>("Waypoint Action Provider")
-    val WaypointRouteProviderSemanticsKey = SemanticsPropertyKey<WaypointRouteProvider>("Waypoint Route Provider")
+    val WaypointRouteProviderSemanticsKey = SemanticsPropertyKey<WaypointRouteProvider?>("Waypoint Route Provider")
 }

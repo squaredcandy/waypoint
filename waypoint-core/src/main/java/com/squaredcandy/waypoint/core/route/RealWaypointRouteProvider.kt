@@ -9,11 +9,15 @@ internal class RealWaypointRouteProvider(
     private val waypointHolder: WaypointHolder,
     waypointRouteGenerator: WaypointRouteGenerator,
 ) : WaypointRouteProvider {
-    private val waypointRouteMap: ImmutableMap<Identifier<WaypointRouteKey>, WaypointRoute> =
-        waypointRouteGenerator.generateWaypointRouteMap
-            .mapValues { it.value.generate(waypointHolder) }
+    private val waypointRouteMap: ImmutableMap<Identifier<out WaypointRoute<*>>, WaypointRoute<*>> =
+        waypointRouteGenerator.generateWaypointRouteList
+            .associate {
+                val waypointRoute = it.generate(waypointHolder)
+                waypointRoute.key to waypointRoute
+            }
             .toImmutableMap()
 
-    override fun getRoute(key: Identifier<WaypointRouteKey>): WaypointRoute = waypointRouteMap[key]
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : WaypointRoute<T>> getRoute(key: Identifier<T>): T = waypointRouteMap[key] as? T
         ?: throw IllegalArgumentException("Missing route for id $key")
 }

@@ -11,7 +11,7 @@ sealed interface WaypointContentScope {
     val <T> ModifierLocal<T>.currentOrNull: T?
 }
 
-object EmptyWaypointContentScope : WaypointContentScope {
+internal object EmptyWaypointContentScope : WaypointContentScope {
     override val <T> ModifierLocal<T>.currentOrNull: T?
         get() = null
 }

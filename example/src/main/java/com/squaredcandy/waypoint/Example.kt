@@ -6,9 +6,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.pointerInput
 import com.squaredcandy.waypoint.core.Waypoint
 import com.squaredcandy.waypoint.core.action.ModifierLocalWaypointActionProvider
 import com.squaredcandy.waypoint.core.action.WaypointActionProvider
@@ -43,11 +47,21 @@ private fun Navigation(
             }
         }
         if (mainWaypointList.isNotEmpty()) {
+            // To be used later own to decide what the user is focused on
+            var currentlyFocused by remember { mutableStateOf(MainWaypointRoute.key) }
             val mainWaypoint by remember {
                 derivedStateOf { mainWaypointList.last() }
             }
             AnimatedContent(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .pointerInput(currentlyFocused) {
+                        awaitPointerEventScope {
+                            if (currentEvent.type == PointerEventType.Press) {
+                                currentlyFocused = MainWaypointRoute.key
+                            }
+                        }
+                    },
                 targetState = mainWaypoint,
                 label = "main_waypoint",
             ) { waypoint ->

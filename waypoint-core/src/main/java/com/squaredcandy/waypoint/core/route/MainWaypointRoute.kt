@@ -6,10 +6,12 @@ import com.squaredcandy.waypoint.core.Identifier
 import com.squaredcandy.waypoint.core.Waypoint
 import com.squaredcandy.waypoint.core.feature.MainWaypointFeature
 import com.squaredcandy.waypoint.core.holder.WaypointHolder
+import com.squaredcandy.waypoint.core.holder.WaypointNavigationType
+import com.squaredcandy.waypoint.core.holder.WaypointTransitionSpecType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
-class MainWaypointRoute(waypointHolder: WaypointHolder) : WaypointRoute<MainWaypointRoute> {
+class MainWaypointRoute(private val waypointHolder: WaypointHolder) : WaypointRoute<MainWaypointRoute> {
     override val waypointList: ImmutableList<Waypoint> by derivedStateOf {
         listOfNotNull(
             waypointHolder.waypointList
@@ -18,7 +20,17 @@ class MainWaypointRoute(waypointHolder: WaypointHolder) : WaypointRoute<MainWayp
             .toImmutableList()
     }
 
+    private val lastNavigationType: WaypointNavigationType?
+        get() = waypointHolder.lastNavigationType
+
     override val key: Identifier<MainWaypointRoute> = MainWaypointRoute.key
+
+    fun getWaypointTransitionSpecType(initialWaypoint: Waypoint): WaypointTransitionSpecType {
+        return WaypointTransitionSpecType.of(
+            isNavigate = lastNavigationType != WaypointNavigationType.Pop,
+            isEnter = waypointHolder.waypointList.any { it.id == initialWaypoint.id },
+        )
+    }
 
     companion object {
         val key: Identifier<MainWaypointRoute> = Identifier("main")

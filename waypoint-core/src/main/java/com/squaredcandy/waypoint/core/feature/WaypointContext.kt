@@ -6,6 +6,7 @@ import com.squaredcandy.waypoint.core.action.WaypointActionProvider
 import com.squaredcandy.waypoint.core.holder.MutableWaypointHolder
 
 data class WaypointContext(
+    val canBacktrack: Boolean,
     val waypointId: Identifier<Waypoint>,
     val mutableWaypointHolder: MutableWaypointHolder,
     val waypointActionProvider: WaypointActionProvider,

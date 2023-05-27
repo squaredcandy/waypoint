@@ -7,7 +7,6 @@ import com.squaredcandy.waypoint.core.Waypoint
 import com.squaredcandy.waypoint.core.feature.MainWaypointFeature
 import com.squaredcandy.waypoint.core.holder.WaypointHolder
 import com.squaredcandy.waypoint.core.holder.WaypointNavigationType
-import com.squaredcandy.waypoint.core.holder.WaypointTransitionSpecType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 

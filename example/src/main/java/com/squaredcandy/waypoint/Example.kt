@@ -28,7 +28,7 @@ import com.squaredcandy.waypoint.core.feature.transition.WaypointTransition
 import com.squaredcandy.waypoint.core.holder.ModifierLocalMutableWaypointHolder
 import com.squaredcandy.waypoint.core.holder.MutableWaypointHolder
 import com.squaredcandy.waypoint.core.holder.WaypointNavigationType
-import com.squaredcandy.waypoint.core.holder.WaypointTransitionSpecType
+import com.squaredcandy.waypoint.core.route.WaypointTransitionSpecType
 import com.squaredcandy.waypoint.core.holder.waypointHolder
 import com.squaredcandy.waypoint.core.route.MainWaypointRoute
 import com.squaredcandy.waypoint.core.route.ModifierLocalWaypointRouteProvider

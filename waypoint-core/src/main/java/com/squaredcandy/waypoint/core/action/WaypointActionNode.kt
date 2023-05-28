@@ -15,6 +15,7 @@ import com.squaredcandy.waypoint.core.semantics.SemanticsProperties
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.plus
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.collections.immutable.toPersistentMap
 
@@ -34,16 +35,16 @@ internal class WaypointActionNode(
         val parentMap = if (mergeParentActions) parentWaypointActionMap else null
         val mergedWaypointActionMap = parentMap + waypointActionMap
         WaypointActionProvider { actionClass ->
-            val hooks = mergedWaypointActionMap.hooks[actionClass]
+            val hooks = mergedWaypointActionMap.hooks
             val waypointActionResolver = mergedWaypointActionMap.resolvers[actionClass]
-            if (hooks != null && waypointActionResolver != null) {
+            if (waypointActionResolver != null) {
                 WaypointActionResolver { waypointHolder, waypointAction ->
                     hooks.forEach { hook -> hook.preResolveHook(waypointHolder, waypointAction) }
                     waypointActionResolver.invoke(waypointHolder, waypointAction)
                     hooks.forEach { hook -> hook.postResolveHook(waypointHolder, waypointAction) }
                 }
             } else {
-                waypointActionResolver
+                null
             }
         }
     }
@@ -63,23 +64,9 @@ private operator fun WaypointActionMap?.plus(otherWaypointActionMap: WaypointAct
     return if (this != null) {
         WaypointActionMap(
             resolvers = this.resolvers.toPersistentMap().putAll(otherWaypointActionMap.resolvers),
-            hooks = this.hooks.mergeWith(otherWaypointActionMap.hooks),
+            hooks = this.hooks.plus(otherWaypointActionMap.hooks).toImmutableList(),
         )
     } else {
         otherWaypointActionMap
     }
-}
-
-fun <K, V> ImmutableMap<K, ImmutableList<V>>.mergeWith(otherMap: Map<K, ImmutableList<V>>): ImmutableMap<K, ImmutableList<V>> {
-    var newMap = this.toPersistentMap()
-    otherMap.forEach { (key, value) ->
-        val existingValue = this[key]
-        newMap = if (existingValue != null) {
-            newMap.put(key, existingValue.toPersistentList().plus(value))
-        } else {
-            newMap.put(key, value)
-        }
-    }
-
-    return newMap
 }

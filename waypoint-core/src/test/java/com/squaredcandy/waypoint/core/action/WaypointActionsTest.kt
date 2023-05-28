@@ -174,7 +174,7 @@ class WaypointActionsTest {
                                 add(waypointAction.waypoint)
                             }
                         }
-                        addHook<NavigateWaypointAction>(
+                        addHook(
                             preResolveHook = { _, _ ->
                                 preHookReceived = true
                             },
@@ -213,7 +213,7 @@ class WaypointActionsTest {
                                 add(waypointAction.waypoint)
                             }
                         }
-                        addHook<NavigateWaypointAction>(
+                        addHook(
                             preResolveHook = { _, _ ->
                                 preHookReceived++
                             },
@@ -221,7 +221,7 @@ class WaypointActionsTest {
                                 postHookReceived++
                             },
                         )
-                        addHook<NavigateWaypointAction>(
+                        addHook(
                             preResolveHook = { _, _ ->
                                 preHookReceived++
                             },
@@ -258,7 +258,7 @@ class WaypointActionsTest {
                 modifier = Modifier
                     .waypointHolder(list)
                     .waypointActions {
-                        addHook<NavigateWaypointAction>(
+                        addHook(
                             preResolveHook = { _, _ ->
                                 preHookReceived = baseNumber
                             },
@@ -276,7 +276,7 @@ class WaypointActionsTest {
                                     add(waypointAction.waypoint)
                                 }
                             }
-                            addHook<NavigateWaypointAction>(
+                            addHook(
                                 preResolveHook = { _, _ ->
                                     preHookReceived2 = preHookReceived
                                 },

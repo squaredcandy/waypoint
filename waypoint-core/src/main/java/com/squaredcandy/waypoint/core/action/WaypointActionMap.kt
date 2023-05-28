@@ -6,5 +6,5 @@ import kotlin.reflect.KClass
 
 internal data class WaypointActionMap(
     val resolvers: ImmutableMap<KClass<*>, WaypointActionResolver>,
-    val hooks: ImmutableMap<KClass<*>, ImmutableList<WaypointActionHook>>,
+    val hooks: ImmutableList<WaypointActionHook>,
 )

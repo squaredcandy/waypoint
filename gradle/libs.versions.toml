@@ -15,15 +15,15 @@ kotlinx-collections = "0.3.5"
 
 # Androidx
 # https://developer.android.com/jetpack/androidx/releases/activity
-androidx-activity-compose = "1.7.1"
+androidx-activity-compose = "1.7.2"
 # https://developer.android.com/jetpack/androidx/releases/appcompat
 androidx-appcompat = "1.6.1"
 # https://developer.android.com/jetpack/androidx/releases/compose
-androidx-compose-base = "1.5.0-alpha04"
+androidx-compose-base = "1.5.0-beta01"
 # https://developer.android.com/jetpack/androidx/releases/compose-compiler
 androidx-compose-compiler = "1.4.7"
 # https://developer.android.com/jetpack/androidx/releases/compose-material3
-androidx-compose-material3 = "1.1.0"
+androidx-compose-material3 = "1.2.0-alpha02"
 # https://developer.android.com/jetpack/androidx/releases/test
 androidx-test-base = "1.5.0"
 # https://developer.android.com/jetpack/androidx/releases/test
@@ -38,7 +38,7 @@ material = "1.9.0"
 # https://github.com/junit-team/junit4/releases
 junit = "4.13.2"
 # https://github.com/robolectric/robolectric/releases
-robolectric = "4.10.2"
+robolectric = "4.10.3"
 # https://github.com/google/truth/releases
 truth = "1.1.3"
 

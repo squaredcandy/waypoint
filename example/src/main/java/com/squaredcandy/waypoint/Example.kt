@@ -1,8 +1,10 @@
 package com.squaredcandy.waypoint
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -45,7 +47,11 @@ private fun Navigation(
 ) {
     // TODO temporary fix, find a more long term solution
     val updatedWaypointActionProvider by rememberUpdatedState(newValue = waypointActionProvider)
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         val mainWaypointRoute by remember {
             derivedStateOf {
                 waypointRouteProvider.getRoute(MainWaypointRoute.key)

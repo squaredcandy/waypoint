@@ -103,7 +103,7 @@ private fun Navigation(
                 val context by remember {
                     derivedStateOf {
                         WaypointContext(
-                            canBacktrack = mutableWaypointHolder.waypointList.size > 1,
+                            canBacktrack = mainWaypointRoute.canBacktrack,
                             waypointId = waypoint.id,
                             mutableWaypointHolder = mutableWaypointHolder,
                             waypointActionProvider = updatedWaypointActionProvider,

@@ -24,6 +24,12 @@ class MainWaypointRoute(private val waypointHolder: WaypointHolder) : WaypointRo
 
     override val key: Identifier<MainWaypointRoute> = MainWaypointRoute.key
 
+    override val canBacktrack: Boolean by derivedStateOf {
+        waypointHolder.waypointList
+            .filter { waypoint -> waypoint.feature is MainWaypointFeature }
+            .size > 1
+    }
+
     fun getWaypointTransitionSpecType(initialWaypoint: Waypoint): WaypointTransitionSpecType {
         return WaypointTransitionSpecType.of(
             isNavigate = lastNavigationType != WaypointNavigationType.Pop,

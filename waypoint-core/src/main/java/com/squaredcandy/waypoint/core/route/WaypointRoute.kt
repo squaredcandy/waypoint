@@ -7,4 +7,5 @@ import kotlinx.collections.immutable.ImmutableList
 interface WaypointRoute<T> {
     val waypointList: ImmutableList<Waypoint>
     val key: Identifier<T>
+    val canBacktrack: Boolean
 }

@@ -19,6 +19,8 @@ class SideWaypointRoute(waypointHolder: WaypointHolder) : WaypointRoute<SideWayp
 
     override val key: Identifier<SideWaypointRoute> = SideWaypointRoute.key
 
+    override val canBacktrack: Boolean = true
+
     companion object {
         val key: Identifier<SideWaypointRoute> = Identifier("side")
     }

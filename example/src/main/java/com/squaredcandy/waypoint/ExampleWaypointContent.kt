@@ -14,8 +14,8 @@ import com.squaredcandy.waypoint.core.Waypoint
 import com.squaredcandy.waypoint.core.action.actions.BacktrackWaypointAction
 import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
 import com.squaredcandy.waypoint.core.feature.WaypointContent
-import com.squaredcandy.waypoint.core.feature.WaypointContext
 import com.squaredcandy.waypoint.core.feature.sendAction
+import com.squaredcandy.waypoint.core.feature.WaypointContext
 
 class ExampleWaypointContent : WaypointContent {
     context(WaypointContext)

@@ -12,11 +12,7 @@ import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.node.SemanticsModifierNode
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import com.squaredcandy.waypoint.core.semantics.SemanticsProperties
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.ImmutableMap
-import kotlinx.collections.immutable.plus
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.collections.immutable.toPersistentList
 import kotlinx.collections.immutable.toPersistentMap
 
 private val ModifierLocalWaypointActionMap = modifierLocalOf<WaypointActionMap?> { null }

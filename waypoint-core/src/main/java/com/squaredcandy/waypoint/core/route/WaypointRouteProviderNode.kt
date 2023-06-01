@@ -13,15 +13,12 @@ internal class WaypointRouteProviderNode(
     var waypointRouteGenerator: WaypointRouteGenerator,
 ) : ModifierLocalModifierNode, SemanticsModifierNode, Modifier.Node() {
     private val waypointRouteProvider: WaypointRouteProvider?
-        get() = if (isAttached) {
-            val waypointHolder = ModifierLocalWaypointHolder.current
-                ?: throw IllegalStateException("Missing Waypoint Holder")
-            RealWaypointRouteProvider(
-                waypointHolder = waypointHolder,
+        get() {
+            if (!isAttached) return null
+            return RealWaypointRouteProvider(
+                waypointHolder = ModifierLocalWaypointHolder.current ?: return null,
                 waypointRouteGenerator = waypointRouteGenerator,
             )
-        } else {
-            null
         }
 
     override val providedValues: ModifierLocalMap

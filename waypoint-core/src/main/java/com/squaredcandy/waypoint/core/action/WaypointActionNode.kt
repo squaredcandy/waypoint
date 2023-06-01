@@ -14,6 +14,7 @@ import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import com.squaredcandy.waypoint.core.semantics.SemanticsProperties
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toPersistentMap
+import kotlin.reflect.KClass
 
 private val ModifierLocalWaypointActionMap = modifierLocalOf<WaypointActionMap?> { null }
 
@@ -30,17 +31,20 @@ internal class WaypointActionNode(
     private val waypointActionProvider by derivedStateOf {
         val parentMap = if (mergeParentActions) parentWaypointActionMap else null
         val mergedWaypointActionMap = parentMap + waypointActionMap
-        WaypointActionProvider { actionClass ->
-            val hooks = mergedWaypointActionMap.hooks
-            val waypointActionResolver = mergedWaypointActionMap.resolvers[actionClass]
-            if (waypointActionResolver != null) {
-                WaypointActionResolver { waypointHolder, waypointAction ->
-                    hooks.forEach { hook -> hook.preResolveHook(waypointHolder, waypointAction) }
-                    waypointActionResolver.invoke(waypointHolder, waypointAction)
-                    hooks.forEach { hook -> hook.postResolveHook(waypointHolder, waypointAction) }
+        object : WaypointActionProvider {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : WaypointAction> getAction(waypointActionClass: KClass<T>): WaypointActionResolver<T>? {
+                val hooks = mergedWaypointActionMap.hooks
+                val waypointActionResolver = mergedWaypointActionMap.resolvers[waypointActionClass] as? WaypointActionResolver<T>
+                return if (waypointActionResolver != null) {
+                    WaypointActionResolver { waypointHolder, waypointAction ->
+                        hooks.forEach { hook -> hook.preResolveHook(waypointHolder, waypointAction) }
+                        waypointActionResolver(waypointHolder, waypointAction)
+                        hooks.forEach { hook -> hook.postResolveHook(waypointHolder, waypointAction) }
+                    }
+                } else {
+                    null
                 }
-            } else {
-                null
             }
         }
     }

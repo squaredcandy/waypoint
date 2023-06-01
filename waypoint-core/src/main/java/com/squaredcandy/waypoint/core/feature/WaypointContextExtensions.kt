@@ -11,6 +11,6 @@ inline fun <reified T: WaypointAction> sendAction(waypointAction: T): Result<Uni
     return runCatching {
         val actionProvider = waypointActionProvider
         val action = actionProvider.getAction<T>()!!
-        action.invoke(mutableWaypointHolder, waypointAction)
+        action(mutableWaypointHolder, waypointAction)
     }
 }

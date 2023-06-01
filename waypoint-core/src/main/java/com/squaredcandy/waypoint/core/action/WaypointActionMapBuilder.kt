@@ -14,10 +14,10 @@ import kotlin.reflect.KClass
 
 @WaypointActionMapScope
 class WaypointActionMapBuilder {
-    private var actionResolvers = persistentHashMapOf<KClass<*>, WaypointActionResolver>()
+    private var actionResolvers = persistentHashMapOf<KClass<*>, WaypointActionResolver<*>>()
     private var hooks = persistentListOf<WaypointActionHook>()
 
-    fun <T: WaypointAction> onAction(waypointActionClass: KClass<T>, waypointActionResolver: WaypointActionResolver) {
+    fun <T: WaypointAction> onAction(waypointActionClass: KClass<T>, waypointActionResolver: WaypointActionResolver<T>) {
         actionResolvers = actionResolvers.put(waypointActionClass, waypointActionResolver)
     }
 
@@ -32,7 +32,7 @@ class WaypointActionMapBuilder {
 }
 
 inline fun <reified T: WaypointAction> WaypointActionMapBuilder.onAction(
-    noinline waypointActionResolverBuilder: () -> WaypointActionResolver,
+    noinline waypointActionResolverBuilder: () -> WaypointActionResolver<T>,
 ) = onAction(T::class, waypointActionResolverBuilder())
 
 inline fun <reified T: WaypointAction> WaypointActionMapBuilder.onAction(

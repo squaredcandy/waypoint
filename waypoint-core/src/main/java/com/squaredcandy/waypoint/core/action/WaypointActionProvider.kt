@@ -7,13 +7,6 @@ interface WaypointActionProvider {
     fun <T: WaypointAction> getAction(waypointActionClass: KClass<T>): WaypointActionResolver<T>?
 }
 
-inline fun <reified T: WaypointAction> waypointActionProvider() {
-   object : WaypointActionProvider {
-       override fun <T : WaypointAction> getAction(waypointActionClass: KClass<T>): WaypointActionResolver<T>? {
-       }
-   }
-}
-
 inline fun <reified T: WaypointAction> WaypointActionProvider.getAction(): WaypointActionResolver<T>? = getAction(T::class)
 
 val noOpWaypointActionProvider = object : WaypointActionProvider {

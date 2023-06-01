@@ -32,10 +32,6 @@ class WaypointActionMapBuilder {
 }
 
 inline fun <reified T: WaypointAction> WaypointActionMapBuilder.onAction(
-    noinline waypointActionResolverBuilder: () -> WaypointActionResolver<T>,
-) = onAction(T::class, waypointActionResolverBuilder())
-
-inline fun <reified T: WaypointAction> WaypointActionMapBuilder.onAction(
     noinline block: (waypointHolder: MutableWaypointHolder, waypointAction: T) -> Unit,
 ) = onAction(T::class, waypointActionResolver<T>(block = block))
 

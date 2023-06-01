@@ -1,10 +1,12 @@
 package com.squaredcandy.waypoint.core.content
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.Truth
 import com.squaredcandy.waypoint.core.Waypoint
 import com.squaredcandy.waypoint.core.holder.ModifierLocalMutableWaypointHolder
 import com.squaredcandy.waypoint.core.holder.MutableWaypointHolder
@@ -23,32 +25,32 @@ class WaypointContentTest {
     fun `GIVEN we have a waypoint holder WHEN we retrieve it in waypoint content THEN waypoint holder is not null`() {
         val list = listOf(Waypoint())
 
-        var waypointHolder: MutableWaypointHolder? = null
+        var waypointHolder: State<MutableWaypointHolder?> = mutableStateOf(null)
         composeTestRule.setContent {
             Box(
                 modifier = Modifier
                     .waypointHolder(list)
                     .waypointContent {
-                        waypointHolder = ModifierLocalMutableWaypointHolder.currentOrNull
+                        waypointHolder = rememberModifierLocalState(modifierLocal = ModifierLocalMutableWaypointHolder)
                     }
             )
         }
 
-        assertThat(waypointHolder).isNotNull()
+        Truth.assertThat(waypointHolder.value).isNotNull()
     }
 
     @Test
     fun `GIVEN we have don't have a waypoint holder WHEN we retrieve it in waypoint content THEN waypoint holder is null`() {
-        var waypointHolder: MutableWaypointHolder? = null
+        var waypointHolder: State<MutableWaypointHolder?> = mutableStateOf(null)
         composeTestRule.setContent {
             Box(
                 modifier = Modifier
                     .waypointContent {
-                        waypointHolder = ModifierLocalMutableWaypointHolder.currentOrNull
+                        waypointHolder = rememberModifierLocalState(modifierLocal = ModifierLocalMutableWaypointHolder)
                     }
             )
         }
 
-        assertThat(waypointHolder).isNull()
+        Truth.assertThat(waypointHolder.value).isNull()
     }
 }

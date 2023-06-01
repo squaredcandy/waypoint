@@ -2,12 +2,15 @@ package com.squaredcandy.waypoint.core.route
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth
 import com.squaredcandy.waypoint.core.Waypoint
 import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
 import com.squaredcandy.waypoint.core.action.onAction
 import com.squaredcandy.waypoint.core.action.waypointActions
+import com.squaredcandy.waypoint.core.content.waypointContent
 import com.squaredcandy.waypoint.core.holder.WaypointNavigationType
 import com.squaredcandy.waypoint.core.holder.waypointHolder
 import com.squaredcandy.waypoint.core.semantics.assertWaypointListEqualTo
@@ -47,7 +50,6 @@ class WaypointRoutesTest {
             )
         }
 
-
         composeTestRule.onWaypointRouteNode()
             .assertWaypointRouteExists(MainWaypointRoute.key)
             .assertWaypointRouteEqualTo(MainWaypointRoute.key, list)
@@ -70,5 +72,45 @@ class WaypointRoutesTest {
 
         composeTestRule.onWaypointRouteNode()
             .assertWaypointRouteDoesNotExist(SideWaypointRoute.key)
+    }
+
+    @Test
+    fun `GIVEN waypoint holder and waypoint route with main waypoint route WHEN getting the waypoint route provider THEN route exists`() {
+        val list = listOf(Waypoint())
+
+        var waypointRouteProvider: WaypointRouteProvider? = null
+        composeTestRule.setContent {
+            Box(
+                modifier = Modifier
+                    .waypointHolder(list)
+                    .waypointRoutes {
+                        addRoute(::MainWaypointRoute)
+                    }
+                    .modifierLocalConsumer {
+                        waypointRouteProvider = ModifierLocalWaypointRouteProvider.current
+                    }
+            )
+        }
+
+        Truth.assertThat(waypointRouteProvider).isNotNull()
+        Truth.assertThat(waypointRouteProvider?.getRoute(MainWaypointRoute.key)).isNotNull()
+    }
+
+    @Test
+    fun `GIVEN waypoint route with main waypoint route WHEN getting the waypoint route provider THEN provider is null`() {
+        var waypointRouteProvider: WaypointRouteProvider? = null
+        composeTestRule.setContent {
+            Box(
+                modifier = Modifier
+                    .waypointRoutes {
+                        addRoute(::MainWaypointRoute)
+                    }
+                    .modifierLocalConsumer {
+                        waypointRouteProvider = ModifierLocalWaypointRouteProvider.current
+                    }
+            )
+        }
+
+        Truth.assertThat(waypointRouteProvider).isNull()
     }
 }

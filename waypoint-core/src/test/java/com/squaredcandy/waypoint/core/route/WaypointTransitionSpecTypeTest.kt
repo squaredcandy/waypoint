@@ -1,6 +1,6 @@
 package com.squaredcandy.waypoint.core.route
 
-import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.Truth
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -16,7 +16,7 @@ class WaypointTransitionSpecTypeTest(
 
     @Test
     fun `TEST all WaypointTransitionSpecType combinations`() = runTest {
-        assertThat(WaypointTransitionSpecType.of(isNavigate, isEnter)).isEqualTo(result)
+        Truth.assertThat(WaypointTransitionSpecType.of(isNavigate, isEnter)).isEqualTo(result)
     }
 
     companion object {

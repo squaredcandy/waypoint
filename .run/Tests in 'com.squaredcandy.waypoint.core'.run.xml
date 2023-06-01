@@ -1,0 +1,78 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Tests in 'com.squaredcandy.waypoint.core'" type="GradleRunConfiguration" factoryName="Gradle">
+    <ExternalSystemSettings>
+      <option name="executionName" />
+      <option name="externalProjectPath" value="$PROJECT_DIR$" />
+      <option name="externalSystemIdString" value="GRADLE" />
+      <option name="scriptParameters" value="" />
+      <option name="taskDescriptions">
+        <list />
+      </option>
+      <option name="taskNames">
+        <list>
+          <option value=":waypoint-core:testDebugUnitTest" />
+          <option value="--tests" />
+          <option value="&quot;com.squaredcandy.waypoint.core.*&quot;" />
+        </list>
+      </option>
+      <option name="vmOptions" value="" />
+    </ExternalSystemSettings>
+    <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+    <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+    <EXTENSION ID="com.intellij.execution.ExternalSystemRunConfigurationJavaExtension">
+      <extension name="coverage" sample_coverage="false">
+        <pattern>
+          <option name="PATTERN" value="com.squaredcandy.waypoint.ExampleKt" />
+          <option name="ENABLED" value="true" />
+          <option name="INCLUDE" value="false" />
+        </pattern>
+        <pattern>
+          <option name="PATTERN" value="com.squaredcandy.waypoint.ExampleWaypointContent" />
+          <option name="ENABLED" value="true" />
+          <option name="INCLUDE" value="false" />
+        </pattern>
+        <pattern>
+          <option name="PATTERN" value="com.squaredcandy.waypoint.ExampleWaypointFeature" />
+          <option name="ENABLED" value="true" />
+          <option name="INCLUDE" value="false" />
+        </pattern>
+        <pattern>
+          <option name="PATTERN" value="com.squaredcandy.waypoint.core.feature.transition.*" />
+          <option name="ENABLED" value="true" />
+          <option name="INCLUDE" value="false" />
+        </pattern>
+        <pattern>
+          <option name="PATTERN" value="com.squaredcandy.waypoint.core.content.EmptyWaypointContentScope" />
+          <option name="ENABLED" value="true" />
+          <option name="INCLUDE" value="false" />
+        </pattern>
+        <pattern>
+          <option name="PATTERN" value="com.squaredcandy.waypoint.core.feature.EmptyWaypointFeature" />
+          <option name="ENABLED" value="true" />
+          <option name="INCLUDE" value="false" />
+        </pattern>
+        <pattern>
+          <option name="PATTERN" value="com.squaredcandy.waypoint.core.lifecycle.EmptyWaypointLifecycleOwner" />
+          <option name="ENABLED" value="true" />
+          <option name="INCLUDE" value="false" />
+        </pattern>
+        <pattern>
+          <option name="PATTERN" value="com.squaredcandy.waypoint.core.content.EmptyWaypointContent" />
+          <option name="ENABLED" value="true" />
+          <option name="INCLUDE" value="false" />
+        </pattern>
+        <pattern>
+          <option name="PATTERN" value="com.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+        <pattern>
+          <option name="PATTERN" value="com.squaredcandy.waypoint.MainActivity" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+    </EXTENSION>
+    <DebugAllEnabled>false</DebugAllEnabled>
+    <ForceTestExec>true</ForceTestExec>
+    <method v="2" />
+  </configuration>
+</component>

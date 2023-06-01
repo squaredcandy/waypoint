@@ -244,7 +244,7 @@ class WaypointActionsTest {
     }
 
     @Test
-    fun `GIVEN waypoint action has hooks across multiple actions WHEN waypoint is added via actions THEN waypoint list is updated AND hooks are invoked oldest to newest`() {
+    fun `GIVEN hooks across multiple actions WHEN waypoint is added via actions THEN hooks are invoked oldest to newest`() {
         val list = listOf(Waypoint())
         val newWaypoint = Waypoint()
 
@@ -312,7 +312,7 @@ class WaypointActionsTest {
     }
 
     @Test
-    fun `GIVEN waypoints are added to parent and child waypoint lists WHEN waypoint is added to parent waypoint list THEN parent and child waypoint list is updated`() {
+    fun `GIVEN parent and child waypoint lists receive waypoints WHEN waypoint is added THEN both waypoint lists are updated`() {
         val list = listOf(Waypoint())
         val newWaypoint = Waypoint()
 
@@ -353,7 +353,7 @@ class WaypointActionsTest {
     }
 
     @Test
-    fun `GIVEN that there is a waypoint holder, waypoint actions and waypoint holder WHEN waypoint actions is getting the current waypoint holder THEN the one above it is retrieved`() {
+    fun `GIVEN waypoint holder, actions, holder WHEN getting waypoint holder THEN the correct one is retrieved`() {
         val list = listOf(Waypoint())
         val list2 = listOf(Waypoint())
 

@@ -5,16 +5,15 @@ import androidx.compose.ui.platform.InspectorInfo
 
 internal data class WaypointActionNodeElement(
     val mergeParentActions: Boolean,
-    val waypointActionMap: WaypointActionMap,
+    val waypointActionSet: WaypointActionSet,
 ) : ModifierNodeElement<WaypointActionNode>() {
     override fun create(): WaypointActionNode = WaypointActionNode(
         mergeParentActions,
-        waypointActionMap,
+        waypointActionSet,
     )
 
     override fun update(node: WaypointActionNode) {
-        node.mergeParentActions = mergeParentActions
-        node.waypointActionMap = waypointActionMap
+        node.updateWaypointAction(mergeParentActions, waypointActionSet)
     }
 
     override fun InspectorInfo.inspectableProperties() {

@@ -11,5 +11,5 @@ import com.squaredcandy.waypoint.core.holder.WaypointHolder
  */
 fun Modifier.waypointActions(
     mergeParentActions: Boolean = true,
-    builder: WaypointActionMapBuilder.() -> Unit,
+    builder: WaypointActionSetBuilder.() -> Unit,
 ): Modifier = this.then(WaypointActionNodeElement(mergeParentActions, buildWaypointActions(builder)))

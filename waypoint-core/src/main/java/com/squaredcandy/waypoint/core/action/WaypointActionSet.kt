@@ -4,7 +4,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlin.reflect.KClass
 
-internal data class WaypointActionMap(
+internal data class WaypointActionSet(
     val resolvers: ImmutableMap<KClass<*>, WaypointActionResolver<*>>,
     val hooks: ImmutableList<WaypointActionHook>,
 )

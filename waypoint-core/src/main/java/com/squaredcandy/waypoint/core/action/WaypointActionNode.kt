@@ -12,25 +12,27 @@ import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.node.SemanticsModifierNode
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import com.squaredcandy.waypoint.core.semantics.SemanticsProperties
-import kotlinx.collections.immutable.toImmutableList
-import kotlinx.collections.immutable.toPersistentMap
 import kotlin.reflect.KClass
 
-private val ModifierLocalWaypointActionMap = modifierLocalOf<WaypointActionMap?> { null }
+private val ModifierLocalWaypointActionSetSource = modifierLocalOf<WaypointActionSetSource?> { null }
 
 internal class WaypointActionNode(
-    var mergeParentActions: Boolean,
-    initialWaypointActionMap: WaypointActionMap,
+    private var mergeParentActions: Boolean,
+    initialWaypointActionSet: WaypointActionSet,
 ) : ModifierLocalModifierNode, SemanticsModifierNode, Modifier.Node() {
 
-    var waypointActionMap by mutableStateOf(initialWaypointActionMap)
+    private val selfWaypointActionSetSource: WaypointActionSetSource = WaypointActionSetSource()
+    private val parentWaypointActionSetSource: WaypointActionSetSource?
+        get() = if (isAttached) ModifierLocalWaypointActionSetSource.current else null
 
-    private val parentWaypointActionMap: WaypointActionMap?
-        get() = if (isAttached) ModifierLocalWaypointActionMap.current else null
+    private val waypointActionSetSource: WaypointActionSetSource
+        get() = parentWaypointActionSetSource.takeIf { mergeParentActions }
+            ?: selfWaypointActionSetSource
+
+    private var waypointActionSet by mutableStateOf(initialWaypointActionSet)
 
     private val waypointActionProvider by derivedStateOf {
-        val parentMap = if (mergeParentActions) parentWaypointActionMap else null
-        val mergedWaypointActionMap = parentMap + waypointActionMap
+        val mergedWaypointActionMap = waypointActionSetSource.waypointActionMap
         object : WaypointActionProvider {
             @Suppress("UNCHECKED_CAST")
             override fun <T : WaypointAction> getAction(waypointActionClass: KClass<T>): WaypointActionResolver<T>? {
@@ -49,24 +51,36 @@ internal class WaypointActionNode(
         }
     }
 
-    override val providedValues: ModifierLocalMap
-        get() = modifierLocalMapOf(
-            ModifierLocalWaypointActionProvider to waypointActionProvider,
-            ModifierLocalWaypointActionMap to waypointActionMap,
-        )
+    override fun onAttach() {
+        updateWaypointActionSetSources()
+    }
+
+    override fun onDetach() {
+        selfWaypointActionSetSource.remove(this)
+        waypointActionSetSource.remove(this)
+    }
 
     override fun SemanticsPropertyReceiver.applySemantics() {
         this[SemanticsProperties.WaypointActionProviderSemanticsKey] = waypointActionProvider
     }
-}
 
-private operator fun WaypointActionMap?.plus(otherWaypointActionMap: WaypointActionMap): WaypointActionMap {
-    return if (this != null) {
-        WaypointActionMap(
-            resolvers = this.resolvers.toPersistentMap().putAll(otherWaypointActionMap.resolvers),
-            hooks = this.hooks.plus(otherWaypointActionMap.hooks).toImmutableList(),
+    override val providedValues: ModifierLocalMap
+        get() = modifierLocalMapOf(
+            ModifierLocalWaypointActionProvider to waypointActionProvider,
+            ModifierLocalWaypointActionSetSource to waypointActionSetSource,
         )
-    } else {
-        otherWaypointActionMap
+
+    fun updateWaypointAction(
+        mergeParentActions: Boolean,
+        waypointActionSet: WaypointActionSet,
+    ) {
+        this.mergeParentActions = mergeParentActions
+        this.waypointActionSet = waypointActionSet
+        updateWaypointActionSetSources()
+    }
+
+    private fun updateWaypointActionSetSources() {
+        selfWaypointActionSetSource[this] = waypointActionSet
+        waypointActionSetSource[this] = waypointActionSet
     }
 }

@@ -88,7 +88,7 @@ class WaypointActionsTest {
         val list = listOf(Waypoint())
         val newWaypoint = Waypoint()
 
-        val waypointActionBuilderState = mutableStateOf<WaypointActionMapBuilder.() -> Unit>({})
+        val waypointActionBuilderState = mutableStateOf<WaypointActionSetBuilder.() -> Unit>({})
         composeTestRule.setContent {
             Box(
                 modifier = Modifier
@@ -293,7 +293,7 @@ class WaypointActionsTest {
             .assertWaypointListEqualTo(list)
 
         composeTestRule.onWaypointActionProviderNodes()[0]
-            .assertWaypointActionDoesNotExist<NavigateWaypointAction>()
+            .assertWaypointActionExists<NavigateWaypointAction>()
 
         composeTestRule.onWaypointActionProviderNodes()[1]
             .assertWaypointActionExists<NavigateWaypointAction>()

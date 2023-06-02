@@ -56,8 +56,10 @@ internal class WaypointActionNode(
     }
 
     override fun onDetach() {
-        selfWaypointActionSetSource.remove(this)
-        waypointActionSetSource.remove(this)
+        selfWaypointActionSetSource.removeIf { it.first == this }
+        if (selfWaypointActionSetSource != waypointActionSetSource) {
+            waypointActionSetSource.removeIf { it.first == this }
+        }
     }
 
     override fun SemanticsPropertyReceiver.applySemantics() {
@@ -80,7 +82,11 @@ internal class WaypointActionNode(
     }
 
     private fun updateWaypointActionSetSources() {
-        selfWaypointActionSetSource[this] = waypointActionSet
-        waypointActionSetSource[this] = waypointActionSet
+        selfWaypointActionSetSource.removeIf { it.first == this }
+        waypointActionSetSource.removeIf { it.first == this }
+        selfWaypointActionSetSource.add(this to waypointActionSet)
+        if (waypointActionSetSource != selfWaypointActionSetSource) {
+            waypointActionSetSource.add(this to waypointActionSet)
+        }
     }
 }

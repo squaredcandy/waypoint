@@ -2,19 +2,20 @@ package com.squaredcandy.waypoint.core.action
 
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.snapshots.SnapshotStateMap
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
-import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.collections.immutable.toPersistentMap
 
 internal class WaypointActionSetSource(
-    private val waypointActionSetMap: SnapshotStateMap<Modifier.Node, WaypointActionSet> = mutableStateMapOf(),
-): MutableMap<Modifier.Node, WaypointActionSet> by waypointActionSetMap {
+    // Using SnapshotStateList instead of SnapshotStateMap as it preserves insertion order. Not the best solution as we lose the ergonomics of a map.
+    private val waypointActionSetList: SnapshotStateList<Pair<Modifier.Node, WaypointActionSet>> = mutableStateListOf(),
+): MutableList<Pair<Modifier.Node, WaypointActionSet>> by waypointActionSetList {
     val waypointActionMap by derivedStateOf {
-        val sets = waypointActionSetMap.values
+        val sets = waypointActionSetList.map(Pair<Modifier.Node, WaypointActionSet>::second)
         if (sets.isEmpty()) {
             WaypointActionSet(persistentMapOf(), persistentListOf())
         } else {
@@ -23,13 +24,9 @@ internal class WaypointActionSetSource(
     }
 }
 
-private operator fun WaypointActionSet?.plus(otherWaypointActionSet: WaypointActionSet): WaypointActionSet {
-    return if (this != null) {
-        WaypointActionSet(
-            resolvers = this.resolvers.toPersistentMap().putAll(otherWaypointActionSet.resolvers),
-            hooks = this.hooks.plus(otherWaypointActionSet.hooks).toImmutableList(),
-        )
-    } else {
-        otherWaypointActionSet
-    }
+private operator fun WaypointActionSet.plus(otherWaypointActionSet: WaypointActionSet): WaypointActionSet {
+    return WaypointActionSet(
+        resolvers = this.resolvers.toPersistentMap().putAll(otherWaypointActionSet.resolvers),
+        hooks = this.hooks.toPersistentList().addAll(otherWaypointActionSet.hooks),
+    )
 }

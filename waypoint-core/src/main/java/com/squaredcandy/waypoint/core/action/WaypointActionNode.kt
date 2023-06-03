@@ -32,12 +32,12 @@ internal class WaypointActionNode(
     private var waypointActionSet by mutableStateOf(initialWaypointActionSet)
 
     private val waypointActionProvider by derivedStateOf {
-        val mergedWaypointActionMap = waypointActionSetSource.waypointActionMap
+        val mergedWaypointActionSet = waypointActionSetSource.waypointActionSet
         object : WaypointActionProvider {
             @Suppress("UNCHECKED_CAST")
             override fun <T : WaypointAction> getAction(waypointActionClass: KClass<T>): WaypointActionResolver<T>? {
-                val hooks = mergedWaypointActionMap.hooks
-                val waypointActionResolver = mergedWaypointActionMap.resolvers[waypointActionClass] as? WaypointActionResolver<T>
+                val hooks = mergedWaypointActionSet.hooks
+                val waypointActionResolver = mergedWaypointActionSet.resolvers[waypointActionClass] as? WaypointActionResolver<T>
                 return if (waypointActionResolver != null) {
                     WaypointActionResolver { waypointHolder, waypointAction ->
                         hooks.forEach { hook -> hook.preResolveHook(waypointHolder, waypointAction) }
@@ -52,13 +52,13 @@ internal class WaypointActionNode(
     }
 
     override fun onAttach() {
-        updateWaypointActionSetSources()
+        updateWaypointActionSetSources(waypointActionSet)
     }
 
     override fun onDetach() {
-        selfWaypointActionSetSource.removeIf { it.first == this }
+        selfWaypointActionSetSource.removeIf { it == waypointActionSet }
         if (selfWaypointActionSetSource != waypointActionSetSource) {
-            waypointActionSetSource.removeIf { it.first == this }
+            waypointActionSetSource.removeIf { it == waypointActionSet }
         }
     }
 
@@ -77,16 +77,19 @@ internal class WaypointActionNode(
         waypointActionSet: WaypointActionSet,
     ) {
         this.mergeParentActions = mergeParentActions
-        this.waypointActionSet = waypointActionSet
-        updateWaypointActionSetSources()
+        updateWaypointActionSetSources(waypointActionSet)
     }
 
-    private fun updateWaypointActionSetSources() {
-        selfWaypointActionSetSource.removeIf { it.first == this }
-        waypointActionSetSource.removeIf { it.first == this }
-        selfWaypointActionSetSource.add(this to waypointActionSet)
+    private fun updateWaypointActionSetSources(newWaypointActionSet: WaypointActionSet) {
+        selfWaypointActionSetSource.removeIf { it == waypointActionSet }
+        if (selfWaypointActionSetSource != waypointActionSetSource) {
+            waypointActionSetSource.removeIf { it == waypointActionSet }
+        }
+
+        waypointActionSet = newWaypointActionSet
+        selfWaypointActionSetSource.add(waypointActionSet)
         if (waypointActionSetSource != selfWaypointActionSetSource) {
-            waypointActionSetSource.add(this to waypointActionSet)
+            waypointActionSetSource.add(waypointActionSet)
         }
     }
 }

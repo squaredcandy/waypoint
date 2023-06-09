@@ -2,7 +2,8 @@ package com.squaredcandy.waypoint
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.background
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.ContentTransform
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -56,6 +57,30 @@ private fun Navigation(
     }
 }
 
+private fun AnimatedContentTransitionScope<Waypoint>.getTransition(
+    waypointTransitionSpecType: WaypointTransitionSpecType,
+    fallbackTransition: WaypointTransition,
+): ContentTransform {
+    val transition = when (waypointTransitionSpecType) {
+        WaypointTransitionSpecType.NavigateEnter -> targetState.feature.overrideTransition()
+            ?: fallbackTransition
+
+        WaypointTransitionSpecType.NavigateExit -> targetState.feature.overrideTransition()
+            ?.backtrackWaypointTransition()
+            ?: fallbackTransition.backtrackWaypointTransition()
+
+        WaypointTransitionSpecType.BacktrackEnter -> initialState.feature.overrideTransition()
+            ?: fallbackTransition
+
+        WaypointTransitionSpecType.BacktrackExit -> initialState.feature.overrideTransition()
+            ?.backtrackWaypointTransition()
+            ?: fallbackTransition.backtrackWaypointTransition()
+    }
+    return with (transition) {
+        this@getTransition.transition()
+    }
+}
+
 @Composable
 private fun MainWaypointRoute(
     waypointRouteProvider: WaypointRouteProvider,
@@ -88,23 +113,10 @@ private fun MainWaypointRoute(
             targetState = mainWaypoint,
             label = "main_waypoint",
             transitionSpec = {
-                val transition = when (
-                    mainWaypointRoute.getWaypointTransitionSpecType(initialState)
-                ) {
-                    WaypointTransitionSpecType.NavigateEnter ->
-                        targetState.feature.overrideTransition() ?: fallbackTransition
-                    WaypointTransitionSpecType.NavigateExit ->
-                        targetState.feature.overrideTransition()?.backtrackWaypointTransition()
-                            ?: fallbackTransition.backtrackWaypointTransition()
-                    WaypointTransitionSpecType.BacktrackEnter ->
-                        initialState.feature.overrideTransition() ?: fallbackTransition
-                    WaypointTransitionSpecType.BacktrackExit ->
-                        initialState.feature.overrideTransition()?.backtrackWaypointTransition()
-                            ?: fallbackTransition.backtrackWaypointTransition()
-                }
-                with (transition) {
-                    this@AnimatedContent.transition()
-                }
+                getTransition(
+                    waypointTransitionSpecType = mainWaypointRoute.getWaypointTransitionSpecType(initialState),
+                    fallbackTransition = fallbackTransition,
+                )
             },
             contentKey = (Waypoint::id),
         ) { waypoint ->

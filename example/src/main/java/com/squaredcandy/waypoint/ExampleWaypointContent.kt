@@ -9,6 +9,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.squaredcandy.waypoint.core.Waypoint
 import com.squaredcandy.waypoint.core.action.actions.BacktrackWaypointAction
@@ -16,14 +23,12 @@ import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
 import com.squaredcandy.waypoint.core.content.WaypointContent
 import com.squaredcandy.waypoint.core.feature.sendAction
 import com.squaredcandy.waypoint.core.feature.WaypointContext
+import kotlinx.coroutines.delay
 
 class ExampleWaypointContent : WaypointContent {
     context(WaypointContext)
     @Composable
     override fun Content() {
-        BackHandler(enabled = canBacktrack) {
-            sendAction(BacktrackWaypointAction(waypointId))
-        }
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
@@ -33,7 +38,14 @@ class ExampleWaypointContent : WaypointContent {
             Column(
                 modifier = Modifier.padding(it),
             ) {
-                Text(text = "Test")
+                var count by rememberSaveable { mutableIntStateOf(0) }
+                Text(text = "Test $count")
+                LaunchedEffect(key1 = Unit) {
+                    repeat(100000) {
+                        count++
+                        delay(1000L)
+                    }
+                }
                 Button(
                     onClick = {
                         sendAction(NavigateWaypointAction(Waypoint(feature = ExampleWaypointFeature)))

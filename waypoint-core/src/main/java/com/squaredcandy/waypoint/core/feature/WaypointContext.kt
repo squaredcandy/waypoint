@@ -2,12 +2,10 @@ package com.squaredcandy.waypoint.core.feature
 
 import com.squaredcandy.waypoint.core.Identifier
 import com.squaredcandy.waypoint.core.Waypoint
-import com.squaredcandy.waypoint.core.action.WaypointActionProvider
-import com.squaredcandy.waypoint.core.holder.MutableWaypointHolder
+import com.squaredcandy.waypoint.core.action.WaypointAction
+import kotlin.reflect.KClass
 
-data class WaypointContext(
-    val canBacktrack: Boolean,
-    val waypointId: Identifier<Waypoint>,
-    val mutableWaypointHolder: MutableWaypointHolder,
-    val waypointActionProvider: WaypointActionProvider,
-)
+interface WaypointContext {
+    val waypointId: Identifier<Waypoint>
+    fun <T: WaypointAction> sendAction(waypointActionClass: KClass<T>, waypointAction: T): Result<Unit>
+}

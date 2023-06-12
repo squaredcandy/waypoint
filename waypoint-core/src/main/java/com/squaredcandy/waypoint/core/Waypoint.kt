@@ -9,4 +9,5 @@ import java.io.Serializable
 data class Waypoint(
     val id: Identifier<Waypoint> = randomIdentifier(),
     val feature: WaypointFeature = EmptyWaypointFeature,
+    val tags: Set<WaypointTag> = emptySet(),
 ) : Serializable

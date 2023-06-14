@@ -75,6 +75,7 @@ fun <T: WaypointRoute<T>> SemanticsNodeInteraction.assertWaypointRouteDoesNotExi
 
 fun <T: WaypointRoute<T>> SemanticsNodeInteraction.assertWaypointRouteEqualTo(
     routeKey: Identifier<T>,
+    routeWaypointList: T.() -> List<Waypoint>,
     waypointList: List<Waypoint>?,
-): SemanticsNodeInteraction = assert(hasWaypointRouteExactly(routeKey, waypointList))
+): SemanticsNodeInteraction = assert(hasWaypointRouteExactly(routeKey, routeWaypointList, waypointList))
 //endregion

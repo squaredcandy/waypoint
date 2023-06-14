@@ -93,11 +93,12 @@ fun <T: WaypointRoute<T>> hasNotWaypointRouteKey(
 
 fun <T: WaypointRoute<T>> hasWaypointRouteExactly(
     routeKey: Identifier<T>,
+    routeWaypointList: T.() -> List<Waypoint>,
     waypointList: List<Waypoint>?,
 ) = SemanticsMatcher("$routeKey is exactly $waypointList") { semanticsNode ->
     val waypointRouteProvider = semanticsNode
         .getSemanticsProperty(WaypointRouteProviderSemanticsKey)
-    waypointRouteProvider?.getRoute(routeKey)?.waypointList == waypointList
+    waypointRouteProvider?.getRoute(routeKey)?.routeWaypointList() == waypointList
 }
 //endregion
 

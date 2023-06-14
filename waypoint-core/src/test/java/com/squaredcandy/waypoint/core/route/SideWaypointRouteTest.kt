@@ -15,7 +15,6 @@ class SideWaypointRouteTest {
         val waypointHolder = DefaultWaypointHolder(mutableListOf())
         val waypointRoute = SideWaypointRoute(waypointHolder)
         Truth.assertThat(waypointRoute.waypointList).isEmpty()
-        Truth.assertThat(waypointRoute.canBacktrack).isTrue()
     }
 
     @Test
@@ -24,7 +23,6 @@ class SideWaypointRouteTest {
         val waypointHolder = DefaultWaypointHolder(mutableListOf(waypoint))
         val waypointRoute = SideWaypointRoute(waypointHolder)
         Truth.assertThat(waypointRoute.waypointList).isEmpty()
-        Truth.assertThat(waypointRoute.canBacktrack).isTrue()
     }
 
     @Test
@@ -38,6 +36,5 @@ class SideWaypointRouteTest {
         val waypointHolder = DefaultWaypointHolder(mutableListOf(waypoint1, waypoint2))
         val waypointRoute = SideWaypointRoute(waypointHolder)
         Truth.assertThat(waypointRoute.waypointList).isNotEmpty()
-        Truth.assertThat(waypointRoute.canBacktrack).isTrue()
     }
 }

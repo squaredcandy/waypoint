@@ -145,7 +145,7 @@ private fun SideWaypointRoute(
     }
     sideWaypointList.forEach { waypoint ->
         waypointLifecycleOwner.WithLifecycle(waypoint) {
-            BackHandler(enabled = sideWaypointRoute.canBacktrack) {
+            BackHandler {
                 sendAction(BacktrackWaypointAction(waypointId))
             }
             waypoint.feature

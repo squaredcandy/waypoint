@@ -52,10 +52,10 @@ class WaypointRoutesTest {
 
         composeTestRule.onWaypointRouteNode()
             .assertWaypointRouteExists(MainWaypointRoute.key)
-            .assertWaypointRouteEqualTo(MainWaypointRoute.key, list)
+            .assertWaypointRouteEqualTo(MainWaypointRoute.key, MainWaypointRoute::waypointList, list)
             .invokeWaypointAction<NavigateWaypointAction>(NavigateWaypointAction(newWaypoint))
             .assertWaypointListEqualTo(list + newWaypoint)
-            .assertWaypointRouteEqualTo(MainWaypointRoute.key, listOf(newWaypoint))
+            .assertWaypointRouteEqualTo(MainWaypointRoute.key, MainWaypointRoute::waypointList, listOf(newWaypoint))
     }
 
     @Test

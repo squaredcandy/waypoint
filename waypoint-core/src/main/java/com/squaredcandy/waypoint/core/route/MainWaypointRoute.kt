@@ -11,7 +11,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
 class MainWaypointRoute(private val waypointHolder: WaypointHolder) : WaypointRoute<MainWaypointRoute> {
-    override val waypointList: ImmutableList<Waypoint> by derivedStateOf {
+    val waypointList: ImmutableList<Waypoint> by derivedStateOf {
         listOfNotNull(
             waypointHolder.waypointList
                 .lastOrNull { waypoint -> waypoint.feature is MainWaypointFeature },
@@ -24,7 +24,7 @@ class MainWaypointRoute(private val waypointHolder: WaypointHolder) : WaypointRo
 
     override val key: Identifier<MainWaypointRoute> = MainWaypointRoute.key
 
-    override val canBacktrack: Boolean by derivedStateOf {
+    val canBacktrack: Boolean by derivedStateOf {
         waypointHolder.waypointList
             .filter { waypoint -> waypoint.feature is MainWaypointFeature }
             .size > 1

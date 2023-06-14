@@ -1,6 +1,5 @@
-package com.squaredcandy.waypoint
+package com.squaredcandy.waypoint.simple
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -12,20 +11,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.squaredcandy.waypoint.core.Waypoint
-import com.squaredcandy.waypoint.core.action.actions.BacktrackWaypointAction
 import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
 import com.squaredcandy.waypoint.core.content.WaypointContent
 import com.squaredcandy.waypoint.core.feature.sendAction
 import com.squaredcandy.waypoint.core.feature.WaypointContext
 import kotlinx.coroutines.delay
 
-class ExampleWaypointContent : WaypointContent {
+class SimpleWaypointContent : WaypointContent {
     context(WaypointContext)
     @Composable
     override fun Content() {
@@ -48,7 +44,7 @@ class ExampleWaypointContent : WaypointContent {
                 }
                 Button(
                     onClick = {
-                        sendAction(NavigateWaypointAction(Waypoint(feature = ExampleWaypointFeature)))
+                        sendAction(NavigateWaypointAction(Waypoint(feature = SimpleWaypointFeature)))
                     },
                 ) {
                     Text(text = "Next ${waypointId.id}")

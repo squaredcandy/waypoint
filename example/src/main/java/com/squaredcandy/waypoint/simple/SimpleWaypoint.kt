@@ -1,4 +1,4 @@
-package com.squaredcandy.waypoint
+package com.squaredcandy.waypoint.simple
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
@@ -156,10 +156,10 @@ private fun SideWaypointRoute(
 }
 
 @Composable
-fun Example() {
+fun SimpleWaypoint() {
     Box(
         modifier = Modifier
-            .waypointHolder(listOf(Waypoint(feature = ExampleWaypointFeature)))
+            .waypointHolder(listOf(Waypoint(feature = SimpleWaypointFeature)))
             .waypointActions {
                 onAction<NavigateWaypointAction> { waypointHolder, waypointAction ->
                     waypointHolder.updateWaypointList(WaypointNavigationType.Push) {

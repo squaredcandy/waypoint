@@ -1,4 +1,4 @@
-package com.squaredcandy.waypoint
+package com.squaredcandy.waypoint.simple
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
                 colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme(),
             ) {
                 Surface {
-                    Example()
+                    SimpleWaypoint()
                 }
             }
         }

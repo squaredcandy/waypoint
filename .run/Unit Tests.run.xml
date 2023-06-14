@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Unit Tests" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name="Unit Tests" type="GradleRunConfiguration" factoryName="Gradle" activateToolWindowBeforeRun="false">
     <ExternalSystemSettings>
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -15,27 +15,12 @@
           <option value="&quot;com.squaredcandy.waypoint.core.*&quot;" />
         </list>
       </option>
-      <option name="vmOptions" value="" />
+      <option name="vmOptions" />
     </ExternalSystemSettings>
     <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
     <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
     <EXTENSION ID="com.intellij.execution.ExternalSystemRunConfigurationJavaExtension">
       <extension name="coverage" sample_coverage="false">
-        <pattern>
-          <option name="PATTERN" value="com.squaredcandy.waypoint.ExampleKt" />
-          <option name="ENABLED" value="true" />
-          <option name="INCLUDE" value="false" />
-        </pattern>
-        <pattern>
-          <option name="PATTERN" value="com.squaredcandy.waypoint.ExampleWaypointContent" />
-          <option name="ENABLED" value="true" />
-          <option name="INCLUDE" value="false" />
-        </pattern>
-        <pattern>
-          <option name="PATTERN" value="com.squaredcandy.waypoint.ExampleWaypointFeature" />
-          <option name="ENABLED" value="true" />
-          <option name="INCLUDE" value="false" />
-        </pattern>
         <pattern>
           <option name="PATTERN" value="com.squaredcandy.waypoint.core.feature.transition.*" />
           <option name="ENABLED" value="true" />
@@ -62,11 +47,16 @@
           <option name="INCLUDE" value="false" />
         </pattern>
         <pattern>
+          <option name="PATTERN" value="com.squaredcandy.waypoint.simple.*" />
+          <option name="ENABLED" value="true" />
+          <option name="INCLUDE" value="false" />
+        </pattern>
+        <pattern>
           <option name="PATTERN" value="com.*" />
           <option name="ENABLED" value="true" />
         </pattern>
         <pattern>
-          <option name="PATTERN" value="com.squaredcandy.waypoint.MainActivity" />
+          <option name="PATTERN" value="com.squaredcandy.waypoint.simple.MainActivity" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>

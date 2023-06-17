@@ -1,6 +1,5 @@
 package com.squaredcandy.waypoint.core.feature
 
-import androidx.compose.runtime.mutableStateOf
 import com.google.common.truth.Truth
 import com.squaredcandy.waypoint.core.Waypoint
 import com.squaredcandy.waypoint.core.action.WaypointAction
@@ -31,13 +30,10 @@ class RealWaypointContextTest {
             }
         }
 
-        val waypointHolderState = mutableStateOf(waypointHolder)
-        val waypointActionProviderState = mutableStateOf(waypointActionProvider)
-
         val waypointContext = RealWaypointContext(
             waypoint = waypoint,
-            mutableWaypointHolderState = waypointHolderState,
-            waypointActionProviderState = waypointActionProviderState,
+            mutableWaypointHolder = waypointHolder,
+            waypointActionProvider = waypointActionProvider,
         )
 
         val result = with (waypointContext) {
@@ -53,13 +49,10 @@ class RealWaypointContextTest {
         val waypointHolder = DefaultWaypointHolder(mutableListOf())
         val waypointActionProvider = noOpWaypointActionProvider
 
-        val waypointHolderState = mutableStateOf(waypointHolder)
-        val waypointActionProviderState = mutableStateOf(waypointActionProvider)
-
         val waypointContext = RealWaypointContext(
             waypoint = waypoint,
-            mutableWaypointHolderState = waypointHolderState,
-            waypointActionProviderState = waypointActionProviderState,
+            mutableWaypointHolder = waypointHolder,
+            waypointActionProvider = waypointActionProvider,
         )
 
         val result = with (waypointContext) {

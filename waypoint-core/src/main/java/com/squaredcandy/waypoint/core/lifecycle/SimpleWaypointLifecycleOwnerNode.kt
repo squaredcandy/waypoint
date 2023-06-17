@@ -1,10 +1,7 @@
 package com.squaredcandy.waypoint.core.lifecycle
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.SaveableStateHolder
 import androidx.compose.ui.modifier.ModifierLocalModifierNode
 import com.squaredcandy.waypoint.core.Waypoint
@@ -21,20 +18,20 @@ class SimpleWaypointLifecycleOwnerNode(
         waypoint: Waypoint,
         block: @Composable WaypointContext.() -> Unit,
     ) {
-        val mutableWaypointHolder =
-            rememberUpdatedState(newValue = ModifierLocalMutableWaypointHolder.current)
-        val waypointActionProvider =
-            rememberUpdatedState(newValue = ModifierLocalWaypointActionProvider.current)
-        val waypointContext by remember {
-            derivedStateOf {
-                RealWaypointContext(
-                    waypoint = waypoint,
-                    mutableWaypointHolderState = mutableWaypointHolder,
-                    waypointActionProviderState = waypointActionProvider,
-                )
-            }
+        val mutableWaypointHolder = ModifierLocalMutableWaypointHolder.current
+        val waypointActionProvider = ModifierLocalWaypointActionProvider.current
+        val waypointContext = remember(
+            key1 = waypoint,
+            key2 = mutableWaypointHolder,
+            key3 = waypointActionProvider,
+        ) {
+            RealWaypointContext(
+                waypoint = waypoint,
+                mutableWaypointHolder = mutableWaypointHolder,
+                waypointActionProvider = waypointActionProvider,
+            )
         }
-        savedStateHolder.SaveableStateProvider(key = waypoint.id) {
+        savedStateHolder.SaveableStateProvider(key = waypointContext.waypointId) {
             block(waypointContext)
         }
     }

@@ -1,6 +1,5 @@
 package com.squaredcandy.waypoint.core.feature
 
-import androidx.compose.runtime.State
 import com.squaredcandy.waypoint.core.Identifier
 import com.squaredcandy.waypoint.core.Waypoint
 import com.squaredcandy.waypoint.core.action.WaypointAction
@@ -10,8 +9,8 @@ import kotlin.reflect.KClass
 
 class RealWaypointContext(
     waypoint: Waypoint,
-    private val mutableWaypointHolderState: State<MutableWaypointHolder?>,
-    private val waypointActionProviderState: State<WaypointActionProvider>,
+    private val mutableWaypointHolder: MutableWaypointHolder?,
+    private val waypointActionProvider: WaypointActionProvider,
 ) : WaypointContext {
     override val waypointId: Identifier<Waypoint> = waypoint.id
 
@@ -20,10 +19,9 @@ class RealWaypointContext(
         waypointAction: T,
     ): Result<Unit> {
         return runCatching {
-            val mutableWaypointHolder = mutableWaypointHolderState.value!!
-            val actionProvider = waypointActionProviderState.value
+            val actionProvider = waypointActionProvider
             val action = actionProvider.getAction(waypointActionClass)!!
-            action.invoke(mutableWaypointHolder, waypointAction)
+            action.invoke(mutableWaypointHolder!!, waypointAction)
         }
     }
 }

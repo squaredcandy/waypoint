@@ -2,8 +2,6 @@ package com.squaredcandy.waypoint.simple
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.ContentTransform
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -34,8 +32,8 @@ import com.squaredcandy.waypoint.core.route.MainWaypointRoute
 import com.squaredcandy.waypoint.core.route.ModifierLocalWaypointRouteProvider
 import com.squaredcandy.waypoint.core.route.SideWaypointRoute
 import com.squaredcandy.waypoint.core.route.WaypointRouteProvider
-import com.squaredcandy.waypoint.core.route.WaypointTransitionSpecType
 import com.squaredcandy.waypoint.core.route.waypointRoutes
+import com.squaredcandy.waypoint.util.getTransition
 
 @Composable
 private fun Navigation(
@@ -54,30 +52,6 @@ private fun Navigation(
             waypointRouteProvider = waypointRouteProvider,
             waypointLifecycleOwner = waypointLifecycleOwner,
         )
-    }
-}
-
-private fun AnimatedContentTransitionScope<Waypoint>.getTransition(
-    waypointTransitionSpecType: WaypointTransitionSpecType,
-    fallbackTransition: WaypointTransition,
-): ContentTransform {
-    val transition = when (waypointTransitionSpecType) {
-        WaypointTransitionSpecType.NavigateEnter -> targetState.feature.overrideTransition()
-            ?: fallbackTransition
-
-        WaypointTransitionSpecType.NavigateExit -> targetState.feature.overrideTransition()
-            ?.backtrackWaypointTransition()
-            ?: fallbackTransition.backtrackWaypointTransition()
-
-        WaypointTransitionSpecType.BacktrackEnter -> initialState.feature.overrideTransition()
-            ?: fallbackTransition
-
-        WaypointTransitionSpecType.BacktrackExit -> initialState.feature.overrideTransition()
-            ?.backtrackWaypointTransition()
-            ?: fallbackTransition.backtrackWaypointTransition()
-    }
-    return with (transition) {
-        this@getTransition.transition()
     }
 }
 
@@ -159,7 +133,7 @@ private fun SideWaypointRoute(
 fun SimpleWaypoint() {
     Box(
         modifier = Modifier
-            .waypointHolder(listOf(Waypoint(feature = SimpleWaypointFeature)))
+            .waypointHolder(listOf(Waypoint(feature = SimpleWaypointFeature())))
             .waypointActions {
                 onAction<NavigateWaypointAction> { waypointHolder, waypointAction ->
                     waypointHolder.updateWaypointList(WaypointNavigationType.Push) {

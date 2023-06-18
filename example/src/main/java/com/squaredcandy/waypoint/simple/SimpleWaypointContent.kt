@@ -17,8 +17,9 @@ import androidx.compose.ui.Modifier
 import com.squaredcandy.waypoint.core.Waypoint
 import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
 import com.squaredcandy.waypoint.core.content.WaypointContent
-import com.squaredcandy.waypoint.core.feature.sendAction
 import com.squaredcandy.waypoint.core.feature.WaypointContext
+import com.squaredcandy.waypoint.core.feature.sendAction
+import com.squaredcandy.waypoint.core.feature.transition.MaterialSharedAxisXScreenTransition
 import kotlinx.coroutines.delay
 
 class SimpleWaypointContent : WaypointContent {
@@ -44,7 +45,7 @@ class SimpleWaypointContent : WaypointContent {
                 }
                 Button(
                     onClick = {
-                        sendAction(NavigateWaypointAction(Waypoint(feature = SimpleWaypointFeature)))
+                        sendAction(NavigateWaypointAction(Waypoint(feature = SimpleWaypointFeature(MaterialSharedAxisXScreenTransition))))
                     },
                 ) {
                     Text(text = "Next ${waypointId.id}")

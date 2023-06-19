@@ -20,17 +20,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.squaredcandy.waypoint.bottom_nav.emails.EmailRepository
+import com.squaredcandy.waypoint.bottom_nav.emails.LocalEmailRepository
 import com.squaredcandy.waypoint.bottom_nav.new_emails.NewEmailsWaypointFeature
 import com.squaredcandy.waypoint.bottom_nav.starred_emails.StarredEmailsWaypointFeature
 import com.squaredcandy.waypoint.core.Waypoint
@@ -53,7 +57,10 @@ import com.squaredcandy.waypoint.core.route.ModifierLocalWaypointRouteProvider
 import com.squaredcandy.waypoint.core.route.WaypointRouteProvider
 import com.squaredcandy.waypoint.core.route.waypointRoutes
 import com.squaredcandy.waypoint.util.getTransition
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlin.random.Random
+import kotlin.random.nextLong
 
 private val NewEmailsWaypointTag = WaypointTag("new_emails")
 private val StarredEmailsWaypointTag = WaypointTag("starred_emails")
@@ -124,11 +131,25 @@ fun BottomNavigationWaypoint() {
                     ModifierLocalWaypointLifecycleOwner
                 )
 
-                Navigation(
-                    selectedTab = selectedTab,
-                    waypointRouteProvider = waypointRouteProvider ?: return@waypointContent,
-                    waypointLifecycleOwner = waypointLifecycleOwner ?: return@waypointContent,
-                )
+                val emailRepository = rememberSaveable(
+                    saver = EmailRepository.saver,
+                ) {
+                    EmailRepository()
+                }
+                LaunchedEffect(key1 = emailRepository) {
+                    while (true) {
+                        delay(Random.nextLong(3000L, 30000L))
+                        emailRepository.addNewEmail()
+                    }
+                }
+
+                CompositionLocalProvider(LocalEmailRepository provides emailRepository) {
+                    Navigation(
+                        selectedTab = selectedTab,
+                        waypointRouteProvider = waypointRouteProvider ?: return@CompositionLocalProvider,
+                        waypointLifecycleOwner = waypointLifecycleOwner ?: return@CompositionLocalProvider,
+                    )
+                }
             },
         content = {},
     )

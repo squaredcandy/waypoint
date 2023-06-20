@@ -29,7 +29,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.squaredcandy.waypoint.bottom_nav.email_details.EmailDetailsWaypointFeature
+import com.squaredcandy.waypoint.core.Waypoint
+import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
+import com.squaredcandy.waypoint.core.feature.WaypointContext
+import com.squaredcandy.waypoint.core.feature.sendAction
 
+context(WaypointContext)
 @Composable
 internal fun EmailLazyColumn(
     paddingValues: PaddingValues,
@@ -52,7 +58,7 @@ internal fun EmailLazyColumn(
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 8.dp, bottom = 8.dp, start = 8.dp),
+                            .padding(top = 8.dp, bottom = 8.dp, start = 16.dp),
                         text = key,
                         style = MaterialTheme.typography.labelMedium,
                     )
@@ -63,11 +69,21 @@ internal fun EmailLazyColumn(
                 key = Email::id,
                 contentType = { "email_item" },
             ) { email ->
+                val onEmailClicked: () -> Unit = remember(email) {
+                    {
+                        sendAction(
+                            NavigateWaypointAction(
+                                Waypoint(feature = EmailDetailsWaypointFeature(email.id))
+                            )
+                        )
+                    }
+                }
                 val onEmailStarClicked = remember(email) {
                     { emailRepository.updateEmailStarred(email.id) }
                 }
                 EmailItem(
                     email = email,
+                    onEmailClicked = onEmailClicked,
                     onEmailStarClicked = onEmailStarClicked,
                 )
             }
@@ -76,12 +92,16 @@ internal fun EmailLazyColumn(
 }
 
 @Composable
-internal fun LazyItemScope.EmailItem(email: Email, onEmailStarClicked: () -> Unit) {
+internal fun LazyItemScope.EmailItem(
+    email: Email,
+    onEmailClicked: () -> Unit,
+    onEmailStarClicked: () -> Unit,
+) {
     Card(
         modifier = Modifier
             .animateItemPlacement()
             .padding(8.dp),
-        onClick = {},
+        onClick = onEmailClicked,
     ) {
         ListItem(
             leadingContent = {

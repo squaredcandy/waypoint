@@ -27,7 +27,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshotFlow
@@ -57,10 +56,10 @@ import com.squaredcandy.waypoint.core.route.ModifierLocalWaypointRouteProvider
 import com.squaredcandy.waypoint.core.route.WaypointRouteProvider
 import com.squaredcandy.waypoint.core.route.waypointRoutes
 import com.squaredcandy.waypoint.util.getTransition
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
-import kotlin.random.Random
-import kotlin.random.nextLong
+import kotlinx.coroutines.withContext
 
 private val NewEmailsWaypointTag = WaypointTag("new_emails")
 private val StarredEmailsWaypointTag = WaypointTag("starred_emails")
@@ -135,12 +134,7 @@ fun BottomNavigationWaypoint() {
                     saver = EmailRepository.saver,
                 ) {
                     EmailRepository()
-                }
-                LaunchedEffect(key1 = emailRepository) {
-                    while (true) {
-                        delay(Random.nextLong(3000L, 30000L))
-                        emailRepository.addNewEmail()
-                    }
+                        .apply { addNewEmails(10) }
                 }
 
                 CompositionLocalProvider(LocalEmailRepository provides emailRepository) {

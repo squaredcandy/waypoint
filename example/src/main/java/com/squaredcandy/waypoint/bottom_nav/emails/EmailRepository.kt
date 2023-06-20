@@ -27,18 +27,23 @@ class EmailRepository(initialEmailList: ImmutableList<Email> = persistentListOf(
         }
     }
 
-    fun addNewEmail() {
+    fun addNewEmails(amount: Int) {
         mutableEmailListStateFlow.update {
-            val newEmail = Email(
-                id = UUID.randomUUID().toString(),
-                from = "example@email.com",
-                to = "waypoint@email.com",
-                title = LoremIpsum(Random.nextInt(5, 50)).values.first(),
-                message = LoremIpsum(Random.nextInt(5, 50)).values.first(),
-                starred = false,
-                date = ZonedDateTime.now(),
-            )
-            persistentListOf(*it.toTypedArray(), newEmail)
+            val newEmailList = buildList {
+                repeat(amount) {
+                    val newEmail = Email(
+                        id = UUID.randomUUID().toString(),
+                        from = "example@email.com",
+                        to = "waypoint@email.com",
+                        title = LoremIpsum(Random.nextInt(3, 10)).values.first(),
+                        message = LoremIpsum(Random.nextInt(10, 500)).values.first(),
+                        starred = false,
+                        date = ZonedDateTime.now(),
+                    )
+                    add(newEmail)
+                }
+            }
+            persistentListOf(*it.toTypedArray(), *newEmailList.toTypedArray())
         }
     }
 

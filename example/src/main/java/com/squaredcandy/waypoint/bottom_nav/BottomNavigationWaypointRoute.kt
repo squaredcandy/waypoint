@@ -27,6 +27,12 @@ class BottomNavigationWaypointRoute(
 
     override val key: Identifier<BottomNavigationWaypointRoute> = Companion.key
 
+    val canBacktrack: Boolean by derivedStateOf {
+        waypointHolder.waypointList
+            .filter { waypoint -> waypoint.tags.contains(BottomNavigationWaypointTag) }
+            .size > 1
+    }
+
     fun getWaypointTransitionSpecType(initialWaypoint: Waypoint): WaypointTransitionSpecType {
         return WaypointTransitionSpecType.of(
             isNavigate = lastNavigationType != WaypointNavigationType.Pop,

@@ -41,7 +41,7 @@ android {
 }
 
 dependencies {
-    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.collections)
 
     implementation(libs.androidx.compose.animation)

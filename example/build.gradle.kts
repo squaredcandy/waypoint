@@ -50,10 +50,10 @@ android {
 dependencies {
     implementation(projects.waypointCore)
 
-    implementation(libs.androidx.activity.compose)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.collections)
 
+    implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.appcompat)
 
     implementation(libs.androidx.compose.animation)

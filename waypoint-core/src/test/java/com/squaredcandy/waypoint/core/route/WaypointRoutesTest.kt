@@ -10,7 +10,6 @@ import com.squaredcandy.waypoint.core.Waypoint
 import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
 import com.squaredcandy.waypoint.core.action.onAction
 import com.squaredcandy.waypoint.core.action.waypointActions
-import com.squaredcandy.waypoint.core.content.waypointContent
 import com.squaredcandy.waypoint.core.holder.WaypointNavigationType
 import com.squaredcandy.waypoint.core.holder.waypointHolder
 import com.squaredcandy.waypoint.core.semantics.assertWaypointListEqualTo

@@ -31,7 +31,10 @@ fun <T, S> Flow<T>.collectAsMappedLoadingState(transform: suspend (T) -> S?): St
 }
 
 /**
- * Remembering a function allows us compose to skip recomposition unless there is a change to [key1]
+ * Remembering a function allows compose to skip recomposition unless there is a change to [key1]
  */
 @Composable
 fun rememberFunc(key1: Any? = null, method: () -> Unit): () -> Unit = remember(key1 = key1) { method }
+
+@Composable
+fun <T> rememberFunc(key1: Any? = null, method: (T) -> Unit): (T) -> Unit = remember(key1 = key1) { method }

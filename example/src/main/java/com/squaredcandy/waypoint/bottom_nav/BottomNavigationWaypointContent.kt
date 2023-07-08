@@ -35,6 +35,7 @@ import com.squaredcandy.waypoint.core.lifecycle.ModifierLocalWaypointLifecycleOw
 import com.squaredcandy.waypoint.core.lifecycle.WaypointLifecycleOwner
 import com.squaredcandy.waypoint.core.route.ModifierLocalWaypointRouteProvider
 import com.squaredcandy.waypoint.core.route.WaypointRouteProvider
+import com.squaredcandy.waypoint.util.rememberFunc
 import kotlinx.coroutines.flow.collectLatest
 
 object BottomNavigationWaypointContent : WaypointContent {
@@ -102,20 +103,19 @@ object BottomNavigationWaypointContent : WaypointContent {
         selectedIcon: ImageVector,
         unselectedIcon: ImageVector,
     ) {
+        val isSelected by remember { derivedStateOf { selectedTab.value == tab } }
+        val onSelectTab = rememberFunc { selectedTab.value = tab }
         NavigationBarItem(
-            selected = selectedTab.value == tab,
-            onClick = {
-                selectedTab.value = tab
-            },
+            selected = isSelected,
+            onClick = onSelectTab,
             icon = {
                 Icon(
-                    imageVector = if (selectedTab.value == tab) selectedIcon else unselectedIcon,
+                    imageVector = if (isSelected) selectedIcon else unselectedIcon,
                     contentDescription = null,
                 )
             },
         )
     }
-
 
     @Composable
     private fun ColumnScope.BottomNavigationItemWaypointRoute(

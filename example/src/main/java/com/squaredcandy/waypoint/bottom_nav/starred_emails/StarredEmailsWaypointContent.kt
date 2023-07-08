@@ -1,5 +1,7 @@
 package com.squaredcandy.waypoint.bottom_nav.starred_emails
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -8,12 +10,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import com.squaredcandy.waypoint.bottom_nav.emails.Email
 import com.squaredcandy.waypoint.bottom_nav.emails.EmailLazyColumn
 import com.squaredcandy.waypoint.bottom_nav.emails.LocalEmailRepository
+import com.squaredcandy.waypoint.core.Waypoint
+import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
 import com.squaredcandy.waypoint.core.content.WaypointContent
 import com.squaredcandy.waypoint.core.feature.WaypointContext
+import com.squaredcandy.waypoint.core.feature.sendAction
 import com.squaredcandy.waypoint.util.formatDate
+import com.squaredcandy.waypoint.util.rememberFunc
 
 class StarredEmailsWaypointContent : WaypointContent {
     context(WaypointContext)
@@ -29,6 +36,13 @@ class StarredEmailsWaypointContent : WaypointContent {
                     .groupBy { it.date.formatDate() }
             }
         }
+        val updateEmailStarred = rememberFunc(
+            key1 = emailRepository,
+            method = emailRepository::updateEmailStarred,
+        )
+        val navigateTo = rememberFunc { waypoint: Waypoint ->
+            sendAction(NavigateWaypointAction(waypoint))
+        }
 
         Scaffold(
             topBar = {
@@ -40,12 +54,14 @@ class StarredEmailsWaypointContent : WaypointContent {
                 )
             },
         ) {
-            EmailLazyColumn(
-                paddingValues = it,
-                nestedScrollConnection = scrollBehavior.nestedScrollConnection,
-                emailRepository = emailRepository,
-                groupedEmailListState = groupedStarredEmailListState,
-            )
+            Box(modifier = Modifier.padding(it)) {
+                EmailLazyColumn(
+                    scrollBehavior = scrollBehavior,
+                    groupedEmailListState = groupedStarredEmailListState,
+                    updateEmailStarred = updateEmailStarred,
+                    navigateTo = navigateTo,
+                )
+            }
         }
     }
 }

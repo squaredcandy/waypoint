@@ -20,6 +20,7 @@ import com.squaredcandy.waypoint.core.content.WaypointContent
 import com.squaredcandy.waypoint.core.feature.WaypointContext
 import com.squaredcandy.waypoint.core.feature.sendAction
 import com.squaredcandy.waypoint.core.feature.transition.MaterialSharedAxisXScreenTransition
+import com.squaredcandy.waypoint.util.rememberFunc
 import kotlinx.coroutines.delay
 
 class SimpleWaypointContent : WaypointContent {
@@ -29,7 +30,21 @@ class SimpleWaypointContent : WaypointContent {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
-                TopAppBar(title = { Text(text = "Test Title") })
+                TopAppBar(
+                    title = { Text(text = "Test Title") },
+//                    navigationIcon = remember {
+//                        movableContentOf {
+//                            IconButton(
+//                                onClick = { sendAction(BacktrackWaypointAction(waypointId)) },
+//                            ) {
+//                                Icon(
+//                                    imageVector = Icons.Default.ArrowBack,
+//                                    contentDescription = "Go Back",
+//                                )
+//                            }
+//                        }
+//                    },
+                )
             }
         ) {
             Column(
@@ -43,12 +58,17 @@ class SimpleWaypointContent : WaypointContent {
                         delay(1000L)
                     }
                 }
+                val onClick = rememberFunc {
+                    sendAction(
+                        NavigateWaypointAction(
+                            Waypoint(feature = SimpleWaypointFeature(MaterialSharedAxisXScreenTransition))
+                        )
+                    )
+                }
                 Button(
-                    onClick = {
-                        sendAction(NavigateWaypointAction(Waypoint(feature = SimpleWaypointFeature(MaterialSharedAxisXScreenTransition))))
-                    },
+                    onClick = onClick,
                 ) {
-                    Text(text = "Next ${waypointId.id}")
+                    Text(text = "Next screen")
                 }
             }
         }

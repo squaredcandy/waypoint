@@ -17,7 +17,7 @@ internal class WaypointActionSetSource(
         if (setList.isEmpty()) {
             WaypointActionSet(persistentMapOf(), persistentListOf())
         } else {
-            setList.reduce { acc, waypointActionSet -> acc.plus(waypointActionSet) }
+            setList.reduce { acc, waypointActionSet -> waypointActionSet.plus(acc) }
         }
     }
 }

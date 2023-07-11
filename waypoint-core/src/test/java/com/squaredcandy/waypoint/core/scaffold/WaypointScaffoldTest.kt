@@ -1,4 +1,4 @@
-package com.squaredcandy.waypoint.core.contentV2
+package com.squaredcandy.waypoint.core.scaffold
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.MutableState
@@ -30,7 +30,7 @@ class WaypointContentTest {
             Box(
                 modifier = Modifier
                     .waypointHolder(list)
-                    .waypointContent {
+                    .waypointScaffold {
                         waypointHolder.value = ModifierLocalMutableWaypointHolder.current
                     }
             )
@@ -45,7 +45,7 @@ class WaypointContentTest {
         composeTestRule.setContent {
             Box(
                 modifier = Modifier
-                    .waypointContent {
+                    .waypointScaffold {
                         waypointHolder.value = ModifierLocalMutableWaypointHolder.current
                     }
             )

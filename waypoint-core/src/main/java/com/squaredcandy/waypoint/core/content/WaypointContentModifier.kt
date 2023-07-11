@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.modifier.modifierLocalConsumer
 
+@Deprecated("Use com.squaredcandy.waypoint.core.contentV2.waypointContent instead")
 fun Modifier.waypointContent(
     content: @Composable WaypointContentScope.() -> Unit,
 ): Modifier = composed {

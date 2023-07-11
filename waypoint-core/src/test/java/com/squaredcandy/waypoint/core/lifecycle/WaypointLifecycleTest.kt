@@ -11,7 +11,7 @@ import com.squaredcandy.waypoint.core.action.actions.BacktrackWaypointAction
 import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
 import com.squaredcandy.waypoint.core.action.onAction
 import com.squaredcandy.waypoint.core.action.waypointActions
-import com.squaredcandy.waypoint.core.content.waypointContent
+import com.squaredcandy.waypoint.core.scaffold.waypointScaffold
 import com.squaredcandy.waypoint.core.feature.WaypointContext
 import com.squaredcandy.waypoint.core.holder.WaypointNavigationType
 import com.squaredcandy.waypoint.core.holder.waypointHolder
@@ -89,12 +89,12 @@ class WaypointLifecycleTest {
                         addRoute(::MainWaypointRoute)
                     }
                     .waypointLifecycle()
-                    .waypointContent {
-                        val lifecycleOwner = ModifierLocalWaypointLifecycleOwner.currentOrNull
-                        val routeProvider = ModifierLocalWaypointRouteProvider.currentOrNull
-                        val mainRoute = routeProvider?.getRoute(MainWaypointRoute.key) ?: return@waypointContent
+                    .waypointScaffold {
+                        val lifecycleOwner = ModifierLocalWaypointLifecycleOwner.current
+                        val routeProvider = ModifierLocalWaypointRouteProvider.current
+                        val mainRoute = routeProvider?.getRoute(MainWaypointRoute.key) ?: return@waypointScaffold
                         val currentWaypoint = mainRoute.waypointList.last()
-                        lifecycleOwner?.WithLifecycle(currentWaypoint) {
+                        lifecycleOwner.WithLifecycle(currentWaypoint) {
                             waypointContext = this
                         }
                     }
@@ -124,12 +124,12 @@ class WaypointLifecycleTest {
                     .waypointRoutes {
                         addRoute(::MainWaypointRoute)
                     }
-                    .waypointContent {
-                        val lifecycleOwner = ModifierLocalWaypointLifecycleOwner.currentOrNull
-                        val routeProvider = ModifierLocalWaypointRouteProvider.currentOrNull
-                        val mainRoute = routeProvider?.getRoute(MainWaypointRoute.key) ?: return@waypointContent
+                    .waypointScaffold {
+                        val lifecycleOwner = ModifierLocalWaypointLifecycleOwner.current
+                        val routeProvider = ModifierLocalWaypointRouteProvider.current
+                        val mainRoute = routeProvider?.getRoute(MainWaypointRoute.key) ?: return@waypointScaffold
                         val currentWaypoint = mainRoute.waypointList.last()
-                        lifecycleOwner?.WithLifecycle(currentWaypoint) {
+                        lifecycleOwner.WithLifecycle(currentWaypoint) {
                             waypointContext = this
                         }
                     }
@@ -159,12 +159,12 @@ class WaypointLifecycleTest {
                     .waypointRoutes {
                         addRoute(::MainWaypointRoute)
                     }
-                    .waypointContent {
-                        val lifecycleOwner = ModifierLocalWaypointLifecycleOwner.currentOrNull
-                        val routeProvider = ModifierLocalWaypointRouteProvider.currentOrNull
-                        val mainRoute = routeProvider?.getRoute(MainWaypointRoute.key) ?: return@waypointContent
+                    .waypointScaffold {
+                        val lifecycleOwner = ModifierLocalWaypointLifecycleOwner.current
+                        val routeProvider = ModifierLocalWaypointRouteProvider.current
+                        val mainRoute = routeProvider?.getRoute(MainWaypointRoute.key) ?: return@waypointScaffold
                         val currentWaypoint = mainRoute.waypointList.last()
-                        lifecycleOwner?.WithLifecycle(currentWaypoint) {
+                        lifecycleOwner.WithLifecycle(currentWaypoint) {
                             waypointContext = this
                         }
                     }
@@ -194,12 +194,12 @@ class WaypointLifecycleTest {
                         addRoute(::MainWaypointRoute)
                     }
                     .waypointLifecycle()
-                    .waypointContent {
-                        val lifecycleOwner = ModifierLocalWaypointLifecycleOwner.currentOrNull
-                        val routeProvider = ModifierLocalWaypointRouteProvider.currentOrNull
-                        val mainRoute = routeProvider?.getRoute(MainWaypointRoute.key) ?: return@waypointContent
+                    .waypointScaffold {
+                        val lifecycleOwner = ModifierLocalWaypointLifecycleOwner.current
+                        val routeProvider = ModifierLocalWaypointRouteProvider.current
+                        val mainRoute = routeProvider?.getRoute(MainWaypointRoute.key) ?: return@waypointScaffold
                         val currentWaypoint = mainRoute.waypointList.last()
-                        lifecycleOwner?.WithLifecycle(currentWaypoint) {
+                        lifecycleOwner.WithLifecycle(currentWaypoint) {
                             waypointContext = this
                         }
                     }

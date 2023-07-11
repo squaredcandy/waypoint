@@ -28,8 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.squaredcandy.waypoint.core.WaypointTag
 import com.squaredcandy.waypoint.core.content.WaypointContent
-import com.squaredcandy.waypoint.core.content.rememberModifierLocalState
-import com.squaredcandy.waypoint.core.content.waypointContent
+import com.squaredcandy.waypoint.core.scaffold.waypointScaffold
 import com.squaredcandy.waypoint.core.feature.WaypointContext
 import com.squaredcandy.waypoint.core.lifecycle.ModifierLocalWaypointLifecycleOwner
 import com.squaredcandy.waypoint.core.lifecycle.WaypointLifecycleOwner
@@ -63,18 +62,15 @@ object BottomNavigationWaypointContent : WaypointContent {
         }
         Box(
             modifier = Modifier
-                .waypointContent {
-                    val waypointRouteProviderState =
-                        rememberModifierLocalState(ModifierLocalWaypointRouteProvider)
-                    val waypointLifecycleOwnerState =
-                        rememberModifierLocalState(ModifierLocalWaypointLifecycleOwner)
+                .waypointScaffold {
+                    val waypointRouteProviderState = ModifierLocalWaypointRouteProvider.current
+                    val waypointLifecycleOwnerState = ModifierLocalWaypointLifecycleOwner.current
                     Column {
                         BottomNavigationItemWaypointRoute(
                             selectedTab = selectedTab,
-                            waypointRouteProvider = waypointRouteProviderState.value
-                                ?: return@waypointContent,
-                            waypointLifecycleOwner = waypointLifecycleOwnerState.value
-                                ?: return@waypointContent,
+                            waypointRouteProvider = waypointRouteProviderState
+                                ?: return@waypointScaffold,
+                            waypointLifecycleOwner = waypointLifecycleOwnerState,
                         )
 
                         NavigationBar {

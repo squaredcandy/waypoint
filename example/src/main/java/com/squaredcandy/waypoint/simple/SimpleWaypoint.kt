@@ -18,8 +18,7 @@ import com.squaredcandy.waypoint.core.action.actions.BacktrackWaypointAction
 import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
 import com.squaredcandy.waypoint.core.action.onAction
 import com.squaredcandy.waypoint.core.action.waypointActions
-import com.squaredcandy.waypoint.core.content.rememberModifierLocalState
-import com.squaredcandy.waypoint.core.content.waypointContent
+import com.squaredcandy.waypoint.core.scaffold.waypointScaffold
 import com.squaredcandy.waypoint.core.feature.sendAction
 import com.squaredcandy.waypoint.core.feature.transition.DefaultScreenTransition
 import com.squaredcandy.waypoint.core.feature.transition.WaypointTransition
@@ -151,13 +150,13 @@ fun SimpleWaypoint() {
                 addRoute(::SideWaypointRoute)
             }
             .waypointLifecycle()
-            .waypointContent {
-                val waypointRouteProvider by rememberModifierLocalState(ModifierLocalWaypointRouteProvider)
-                val waypointLifecycleOwner by rememberModifierLocalState(ModifierLocalWaypointLifecycleOwner)
+            .waypointScaffold {
+                val waypointRouteProvider = ModifierLocalWaypointRouteProvider.current
+                val waypointLifecycleOwner = ModifierLocalWaypointLifecycleOwner.current
 
                 Navigation(
-                    waypointRouteProvider = waypointRouteProvider ?: return@waypointContent,
-                    waypointLifecycleOwner = waypointLifecycleOwner ?: return@waypointContent,
+                    waypointRouteProvider = waypointRouteProvider ?: return@waypointScaffold,
+                    waypointLifecycleOwner = waypointLifecycleOwner,
                 )
             },
         content = {},

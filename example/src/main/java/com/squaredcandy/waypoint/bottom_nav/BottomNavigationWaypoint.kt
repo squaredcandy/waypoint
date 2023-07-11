@@ -23,8 +23,7 @@ import com.squaredcandy.waypoint.core.action.actions.BacktrackWaypointAction
 import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
 import com.squaredcandy.waypoint.core.action.onAction
 import com.squaredcandy.waypoint.core.action.waypointActions
-import com.squaredcandy.waypoint.core.content.rememberModifierLocalState
-import com.squaredcandy.waypoint.core.content.waypointContent
+import com.squaredcandy.waypoint.core.scaffold.waypointScaffold
 import com.squaredcandy.waypoint.core.feature.sendAction
 import com.squaredcandy.waypoint.core.feature.transition.MaterialSharedAxisZScreenTransition
 import com.squaredcandy.waypoint.core.holder.WaypointNavigationType
@@ -79,13 +78,9 @@ fun BottomNavigationWaypoint() {
                 addRoute(::BottomNavigationItemWaypointRoute)
             }
             .waypointLifecycle()
-            .waypointContent {
-                val waypointRouteProvider by rememberModifierLocalState(
-                    ModifierLocalWaypointRouteProvider
-                )
-                val waypointLifecycleOwner by rememberModifierLocalState(
-                    ModifierLocalWaypointLifecycleOwner
-                )
+            .waypointScaffold {
+                val waypointRouteProvider = ModifierLocalWaypointRouteProvider.current
+                val waypointLifecycleOwner = ModifierLocalWaypointLifecycleOwner.current
 
                 val emailRepository = rememberSaveable(
                     saver = EmailRepository.saver,
@@ -98,8 +93,7 @@ fun BottomNavigationWaypoint() {
                     Navigation(
                         waypointRouteProvider = waypointRouteProvider
                             ?: return@CompositionLocalProvider,
-                        waypointLifecycleOwner = waypointLifecycleOwner
-                            ?: return@CompositionLocalProvider,
+                        waypointLifecycleOwner = waypointLifecycleOwner,
                     )
                 }
             },

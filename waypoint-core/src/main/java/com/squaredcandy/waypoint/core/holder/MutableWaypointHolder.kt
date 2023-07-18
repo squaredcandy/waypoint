@@ -4,7 +4,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.ui.modifier.modifierLocalOf
 import com.squaredcandy.waypoint.core.Waypoint
 
-val ModifierLocalMutableWaypointHolder = modifierLocalOf<MutableWaypointHolder?> { null }
+val ModifierLocalMutableWaypointHolder = modifierLocalOf<MutableWaypointHolder> { EmptyWaypointHolder }
 
 @Stable
 interface MutableWaypointHolder: WaypointHolder {

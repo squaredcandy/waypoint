@@ -94,22 +94,4 @@ class WaypointRoutesTest {
         Truth.assertThat(waypointRouteProvider).isNotNull()
         Truth.assertThat(waypointRouteProvider?.getRoute(MainWaypointRoute.key)).isNotNull()
     }
-
-    @Test
-    fun `GIVEN waypoint route with main waypoint route WHEN getting the waypoint route provider THEN provider is null`() {
-        var waypointRouteProvider: WaypointRouteProvider? = null
-        composeTestRule.setContent {
-            Box(
-                modifier = Modifier
-                    .waypointRoutes {
-                        addRoute(::MainWaypointRoute)
-                    }
-                    .modifierLocalConsumer {
-                        waypointRouteProvider = ModifierLocalWaypointRouteProvider.current
-                    }
-            )
-        }
-
-        Truth.assertThat(waypointRouteProvider).isNull()
-    }
 }

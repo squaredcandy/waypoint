@@ -22,7 +22,7 @@ class WaypointContentTest {
     val composeTestRule = createComposeRule()
 
     @Test
-    fun `GIVEN we have a waypoint holder WHEN we retrieve it in waypoint content THEN waypoint holder is not null`() {
+    fun `GIVEN we have a waypoint holder WHEN we retrieve it in waypoint content THEN waypoint holder is not empty`() {
         val list = listOf(Waypoint())
 
         val waypointHolder: MutableState<MutableWaypointHolder?> = mutableStateOf(null)
@@ -36,11 +36,11 @@ class WaypointContentTest {
             )
         }
 
-        Truth.assertThat(waypointHolder.value).isNotNull()
+        Truth.assertThat(waypointHolder.value?.waypointList).isNotEmpty()
     }
 
     @Test
-    fun `GIVEN we have don't have a waypoint holder WHEN we retrieve it in waypoint content THEN waypoint holder is null`() {
+    fun `GIVEN we have don't have a waypoint holder WHEN we retrieve it in waypoint content THEN waypoint holder is empty`() {
         val waypointHolder: MutableState<MutableWaypointHolder?> = mutableStateOf(null)
         composeTestRule.setContent {
             Box(
@@ -51,6 +51,6 @@ class WaypointContentTest {
             )
         }
 
-        Truth.assertThat(waypointHolder.value).isNull()
+        Truth.assertThat(waypointHolder.value?.waypointList).isEmpty()
     }
 }

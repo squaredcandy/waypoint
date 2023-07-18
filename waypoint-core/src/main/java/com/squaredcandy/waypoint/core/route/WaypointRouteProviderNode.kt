@@ -16,7 +16,7 @@ internal class WaypointRouteProviderNode(
         get() {
             if (!isAttached) return null
             return RealWaypointRouteProvider(
-                waypointHolder = ModifierLocalWaypointHolder.current ?: return null,
+                waypointHolder = ModifierLocalWaypointHolder.current,
                 waypointRouteGenerator = waypointRouteGenerator,
             )
         }

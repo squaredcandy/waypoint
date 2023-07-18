@@ -12,6 +12,8 @@ internal class DefaultWaypointHolder(
 ) : MutableWaypointHolder {
     override val waypointList: ImmutableList<Waypoint> by derivedStateOf { mutableWaypointList.toImmutableList() }
 
+    override val isDefined: Boolean = true
+
     override var lastNavigationType: WaypointNavigationType? = null
 
     override fun <T> updateWaypointList(

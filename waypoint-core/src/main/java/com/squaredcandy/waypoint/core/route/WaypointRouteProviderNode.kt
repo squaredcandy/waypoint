@@ -15,8 +15,10 @@ internal class WaypointRouteProviderNode(
     private val waypointRouteProvider: WaypointRouteProvider?
         get() {
             if (!isAttached) return null
+            val waypointHolder = ModifierLocalWaypointHolder.current
+            if (!waypointHolder.isDefined) return null
             return RealWaypointRouteProvider(
-                waypointHolder = ModifierLocalWaypointHolder.current,
+                waypointHolder = waypointHolder,
                 waypointRouteGenerator = waypointRouteGenerator,
             )
         }

@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
 
 class RealWaypointContext(
     waypoint: Waypoint,
-    private val mutableWaypointHolder: MutableWaypointHolder?,
+    private val mutableWaypointHolder: MutableWaypointHolder,
     private val waypointActionProvider: WaypointActionProvider,
 ) : WaypointContext {
     override val waypointId: Identifier<Waypoint> = waypoint.id
@@ -21,7 +21,7 @@ class RealWaypointContext(
         return runCatching {
             val actionProvider = waypointActionProvider
             val action = actionProvider.getAction(waypointActionClass)!!
-            action.invoke(mutableWaypointHolder!!, waypointAction)
+            action.invoke(mutableWaypointHolder, waypointAction)
         }
     }
 }

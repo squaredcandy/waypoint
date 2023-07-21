@@ -1,6 +1,8 @@
 package com.squaredcandy.waypoint.core.holder.listener
 
+import com.squaredcandy.waypoint.core.WaypointChangeList
+
 @ExperimentalWaypointHolderListenerModifier
 fun interface WaypointHolderListener {
-    fun onWaypointHolderChanged(changeList: WaypointHolderChangeData)
+    fun onWaypointHolderChanged(changeList: WaypointChangeList)
 }

@@ -18,8 +18,10 @@ import com.squaredcandy.waypoint.core.Waypoint
 import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
 import com.squaredcandy.waypoint.core.content.WaypointContent
 import com.squaredcandy.waypoint.core.feature.WaypointContext
-import com.squaredcandy.waypoint.core.feature.sendAction
 import com.squaredcandy.waypoint.core.feature.transition.MaterialSharedAxisXScreenTransition
+import com.squaredcandy.waypoint.core.handle.DefaultWaypointHandle
+import com.squaredcandy.waypoint.core.handle.rememberWaypointHandle
+import com.squaredcandy.waypoint.core.handle.sendAction
 import com.squaredcandy.waypoint.util.rememberFunc
 import kotlinx.coroutines.delay
 
@@ -27,6 +29,7 @@ class SimpleWaypointContent : WaypointContent {
     context(WaypointContext)
     @Composable
     override fun Content() {
+        val handle = rememberWaypointHandle(::DefaultWaypointHandle)
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
@@ -35,7 +38,7 @@ class SimpleWaypointContent : WaypointContent {
 //                    navigationIcon = remember {
 //                        movableContentOf {
 //                            IconButton(
-//                                onClick = { sendAction(BacktrackWaypointAction(waypointId)) },
+//                                onClick = { handle.sendAction(BacktrackWaypointAction(waypointId)) },
 //                            ) {
 //                                Icon(
 //                                    imageVector = Icons.Default.ArrowBack,
@@ -59,7 +62,7 @@ class SimpleWaypointContent : WaypointContent {
                     }
                 }
                 val onClick = rememberFunc {
-                    sendAction(
+                    handle.sendAction(
                         NavigateWaypointAction(
                             Waypoint(feature = SimpleWaypointFeature(MaterialSharedAxisXScreenTransition))
                         )

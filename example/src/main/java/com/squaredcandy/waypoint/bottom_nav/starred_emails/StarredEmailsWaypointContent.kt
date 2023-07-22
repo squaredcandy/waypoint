@@ -18,7 +18,9 @@ import com.squaredcandy.waypoint.core.Waypoint
 import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
 import com.squaredcandy.waypoint.core.content.WaypointContent
 import com.squaredcandy.waypoint.core.feature.WaypointContext
-import com.squaredcandy.waypoint.core.feature.sendAction
+import com.squaredcandy.waypoint.core.handle.DefaultWaypointHandle
+import com.squaredcandy.waypoint.core.handle.rememberWaypointHandle
+import com.squaredcandy.waypoint.core.handle.sendAction
 import com.squaredcandy.waypoint.util.formatDate
 import com.squaredcandy.waypoint.util.rememberFunc
 
@@ -26,6 +28,7 @@ class StarredEmailsWaypointContent : WaypointContent {
     context(WaypointContext)
     @Composable
     override fun Content() {
+        val handle = rememberWaypointHandle(::DefaultWaypointHandle)
         val emailRepository = LocalEmailRepository.current
         val emailListState = emailRepository.emailListStateFlow.collectAsState()
         val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -41,7 +44,7 @@ class StarredEmailsWaypointContent : WaypointContent {
             method = emailRepository::updateEmailStarred,
         )
         val navigateTo = rememberFunc { waypoint: Waypoint ->
-            sendAction(NavigateWaypointAction(waypoint))
+            handle.sendAction(NavigateWaypointAction(waypoint))
         }
 
         Scaffold(

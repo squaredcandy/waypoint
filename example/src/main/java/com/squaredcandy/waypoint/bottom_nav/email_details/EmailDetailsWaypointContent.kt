@@ -32,7 +32,9 @@ import com.squaredcandy.waypoint.bottom_nav.emails.LocalEmailRepository
 import com.squaredcandy.waypoint.core.action.actions.BacktrackWaypointAction
 import com.squaredcandy.waypoint.core.content.WaypointContent
 import com.squaredcandy.waypoint.core.feature.WaypointContext
-import com.squaredcandy.waypoint.core.feature.sendAction
+import com.squaredcandy.waypoint.core.handle.DefaultWaypointHandle
+import com.squaredcandy.waypoint.core.handle.rememberWaypointHandle
+import com.squaredcandy.waypoint.core.handle.sendAction
 import com.squaredcandy.waypoint.util.LoadingState
 import com.squaredcandy.waypoint.util.collectAsMappedLoadingState
 import com.squaredcandy.waypoint.util.getLoadedOrNull
@@ -53,6 +55,7 @@ class EmailDetailsWaypointContent(private val emailId: String) : WaypointContent
     context(WaypointContext)
     @Composable
     override fun Content() {
+        val handle = rememberWaypointHandle(::DefaultWaypointHandle)
         val emailRepository = LocalEmailRepository.current
         val emailLoadingState = emailRepository.emailListStateFlow
             .collectAsMappedLoadingState { emailList -> emailList.find { it.id == emailId } }
@@ -74,7 +77,7 @@ class EmailDetailsWaypointContent(private val emailId: String) : WaypointContent
                     },
                     navigationIcon = {
                         val backButton: () -> Unit = rememberFunc(waypointId) {
-                            sendAction(BacktrackWaypointAction(waypointId))
+                            handle.sendAction(BacktrackWaypointAction(waypointId))
                         }
                         IconButton(onClick = backButton) {
                             Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")

@@ -24,8 +24,14 @@ import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
 import com.squaredcandy.waypoint.core.action.onAction
 import com.squaredcandy.waypoint.core.action.waypointActions
 import com.squaredcandy.waypoint.core.scaffold.waypointScaffold
-import com.squaredcandy.waypoint.core.feature.sendAction
 import com.squaredcandy.waypoint.core.feature.transition.MaterialSharedAxisZScreenTransition
+import com.squaredcandy.waypoint.core.handle.DefaultWaypointHandle
+import com.squaredcandy.waypoint.core.handle.LocalWaypoint
+import com.squaredcandy.waypoint.core.handle.LocalWaypointHandleProvider
+import com.squaredcandy.waypoint.core.handle.ModifierLocalWaypointHandleProvider
+import com.squaredcandy.waypoint.core.handle.rememberWaypointHandle
+import com.squaredcandy.waypoint.core.handle.sendAction
+import com.squaredcandy.waypoint.core.handle.waypointHandleProvider
 import com.squaredcandy.waypoint.core.holder.WaypointNavigationType
 import com.squaredcandy.waypoint.core.holder.waypointHolder
 import com.squaredcandy.waypoint.core.lifecycle.ModifierLocalWaypointLifecycleOwner
@@ -77,10 +83,12 @@ fun BottomNavigationWaypoint() {
                 addRoute(::BottomNavigationWaypointRoute)
                 addRoute(::BottomNavigationItemWaypointRoute)
             }
+            .waypointHandleProvider()
             .waypointLifecycle()
             .waypointScaffold {
                 val waypointRouteProvider = ModifierLocalWaypointRouteProvider.current
                 val waypointLifecycleOwner = ModifierLocalWaypointLifecycleOwner.current
+                val waypointHandleProvider = ModifierLocalWaypointHandleProvider.current
 
                 val emailRepository = rememberSaveable(
                     saver = EmailRepository.saver,
@@ -89,7 +97,10 @@ fun BottomNavigationWaypoint() {
                         .apply { addNewEmails(10) }
                 }
 
-                CompositionLocalProvider(LocalEmailRepository provides emailRepository) {
+                CompositionLocalProvider(
+                    LocalEmailRepository provides emailRepository,
+                    LocalWaypointHandleProvider provides waypointHandleProvider,
+                ) {
                     Navigation(
                         waypointRouteProvider = waypointRouteProvider
                             ?: return@CompositionLocalProvider,
@@ -134,12 +145,15 @@ private fun Navigation(
             contentKey = (Waypoint::id),
         ) { waypoint ->
             waypointLifecycleOwner.WithLifecycle(waypoint) {
-                BackHandler(bottomNavigationWaypointRoute.canBacktrack) {
-                    sendAction(BacktrackWaypointAction(waypointId))
+                CompositionLocalProvider(LocalWaypoint provides waypoint) {
+                    val handle = rememberWaypointHandle(::DefaultWaypointHandle)
+                    BackHandler(bottomNavigationWaypointRoute.canBacktrack) {
+                        handle.sendAction(BacktrackWaypointAction(waypointId))
+                    }
+                    waypoint.feature
+                        .getContent()
+                        .Content()
                 }
-                waypoint.feature
-                    .getContent()
-                    .Content()
             }
         }
     }

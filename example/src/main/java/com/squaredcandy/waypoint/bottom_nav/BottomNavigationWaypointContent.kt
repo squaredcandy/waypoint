@@ -29,7 +29,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.squaredcandy.waypoint.core.WaypointTag
 import com.squaredcandy.waypoint.core.content.WaypointContent
 import com.squaredcandy.waypoint.core.scaffold.waypointScaffold
-import com.squaredcandy.waypoint.core.feature.WaypointContext
 import com.squaredcandy.waypoint.core.lifecycle.ModifierLocalWaypointLifecycleOwner
 import com.squaredcandy.waypoint.core.lifecycle.WaypointLifecycleOwner
 import com.squaredcandy.waypoint.core.route.ModifierLocalWaypointRouteProvider
@@ -54,7 +53,6 @@ object BottomNavigationWaypointContent : WaypointContent {
         else -> error("Invalid tag")
     }
 
-    context(WaypointContext)
     @Composable
     override fun Content() {
         val selectedTab = rememberSaveable {

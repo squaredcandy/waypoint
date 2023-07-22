@@ -106,7 +106,7 @@ private fun MainWaypointRoute(
                 ) {
                     val handle = rememberWaypointHandle(::DefaultWaypointHandle)
                     BackHandler(enabled = mainWaypointRoute.canBacktrack) {
-                        handle.sendAction(BacktrackWaypointAction(waypointId))
+                        handle.sendAction(BacktrackWaypointAction(waypoint.id))
                     }
                     waypoint.feature
                         .getContent()
@@ -135,7 +135,7 @@ private fun SideWaypointRoute(
             ) {
                 val handle = rememberWaypointHandle(::DefaultWaypointHandle)
                 BackHandler {
-                    handle.sendAction(BacktrackWaypointAction(waypointId))
+                    handle.sendAction(BacktrackWaypointAction(waypoint.id))
                 }
                 waypoint.feature
                     .getContent()

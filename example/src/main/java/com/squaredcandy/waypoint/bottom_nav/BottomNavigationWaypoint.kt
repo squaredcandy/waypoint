@@ -148,7 +148,7 @@ private fun Navigation(
                 CompositionLocalProvider(LocalWaypoint provides waypoint) {
                     val handle = rememberWaypointHandle(::DefaultWaypointHandle)
                     BackHandler(bottomNavigationWaypointRoute.canBacktrack) {
-                        handle.sendAction(BacktrackWaypointAction(waypointId))
+                        handle.sendAction(BacktrackWaypointAction(waypoint.id))
                     }
                     waypoint.feature
                         .getContent()

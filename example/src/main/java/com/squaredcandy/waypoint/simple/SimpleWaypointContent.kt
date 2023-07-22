@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import com.squaredcandy.waypoint.core.Waypoint
 import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
 import com.squaredcandy.waypoint.core.content.WaypointContent
-import com.squaredcandy.waypoint.core.feature.WaypointContext
 import com.squaredcandy.waypoint.core.feature.transition.MaterialSharedAxisXScreenTransition
 import com.squaredcandy.waypoint.core.handle.DefaultWaypointHandle
 import com.squaredcandy.waypoint.core.handle.rememberWaypointHandle
@@ -26,7 +25,6 @@ import com.squaredcandy.waypoint.util.rememberFunc
 import kotlinx.coroutines.delay
 
 class SimpleWaypointContent : WaypointContent {
-    context(WaypointContext)
     @Composable
     override fun Content() {
         val handle = rememberWaypointHandle(::DefaultWaypointHandle)

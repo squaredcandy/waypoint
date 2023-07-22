@@ -9,7 +9,7 @@ import com.squaredcandy.waypoint.core.Identifier
 import com.squaredcandy.waypoint.core.Waypoint
 
 abstract class WaypointHandle(
-    protected val waypointId: Identifier<Waypoint>,
+    val waypointId: Identifier<Waypoint>,
     modifierLocalReadScope: ModifierLocalReadScope,
 ): ModifierLocalReadScope by modifierLocalReadScope
 

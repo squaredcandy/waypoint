@@ -10,29 +10,29 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.modifier.modifierLocalConsumer
 
 fun Modifier.waypointScaffold(
-    waypointScaffoldDefinition: WaypointScaffoldDefinition,
+    waypointScaffoldContent: WaypointScaffoldContent,
 ) = this
-    .then(WaypointScaffoldNodeElement(waypointScaffoldDefinition))
+    .then(WaypointScaffoldNodeElement(waypointScaffoldContent))
     .composed {
-        var currentWaypointScaffoldDefinition by remember {
-            mutableStateOf<WaypointScaffoldDefinition?>(null)
+        var currentWaypointScaffoldContent by remember {
+            mutableStateOf<WaypointScaffoldContent?>(null)
         }
-        currentWaypointScaffoldDefinition?.Content()
+        currentWaypointScaffoldContent?.apply { Content() }
         modifierLocalConsumer {
-            currentWaypointScaffoldDefinition = ModifierLocalWaypointScaffoldDefinition.current
+            currentWaypointScaffoldContent = ModifierLocalWaypointScaffoldContent.current
         }
     }
 
 fun Modifier.waypointScaffold(
-    content: @Composable WaypointScaffoldDefinition.() -> Unit,
-) = composed { waypointScaffold(waypointScaffoldDefinition = waypointScaffoldDefinition(content)) }
+    content: @Composable WaypointScaffoldScope.() -> Unit,
+) = composed { waypointScaffold(waypointScaffoldContent = waypointScaffoldContent(content)) }
 
 @Composable
-private fun waypointScaffoldDefinition(
-    content: @Composable WaypointScaffoldDefinition.() -> Unit,
-): WaypointScaffoldDefinition = remember {
-    object : WaypointScaffoldDefinition() {
+private fun waypointScaffoldContent(
+    content: @Composable WaypointScaffoldScope.() -> Unit,
+): WaypointScaffoldContent = remember {
+    object : WaypointScaffoldContent() {
         @Composable
-        override fun Content() = content()
+        override fun WaypointScaffoldScope.Content() = content()
     }
 }

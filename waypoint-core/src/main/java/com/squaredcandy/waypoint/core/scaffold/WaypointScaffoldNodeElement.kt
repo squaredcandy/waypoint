@@ -4,12 +4,12 @@ import androidx.compose.ui.node.ModifierNodeElement
 import androidx.compose.ui.platform.InspectorInfo
 
 internal data class WaypointScaffoldNodeElement(
-    val waypointScaffoldDefinition: WaypointScaffoldDefinition,
+    val waypointScaffoldContent: WaypointScaffoldContent,
 ) : ModifierNodeElement<WaypointScaffoldNode>() {
-    override fun create(): WaypointScaffoldNode = WaypointScaffoldNode(waypointScaffoldDefinition)
+    override fun create(): WaypointScaffoldNode = WaypointScaffoldNode(waypointScaffoldContent)
 
     override fun update(node: WaypointScaffoldNode) {
-        node.updateWaypointContentDefinition(waypointScaffoldDefinition)
+        node.updateWaypointScaffoldContent(waypointScaffoldContent)
     }
 
     override fun InspectorInfo.inspectableProperties() {}

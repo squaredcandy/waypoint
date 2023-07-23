@@ -9,21 +9,21 @@ import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import com.squaredcandy.waypoint.core.semantics.SemanticsProperties
 
 internal class WaypointScaffoldNode(
-    waypointScaffoldDefinition: WaypointScaffoldDefinition,
+    waypointScaffoldContent: WaypointScaffoldContent,
 ) : ModifierLocalModifierNode, SemanticsModifierNode, DelegatingNode() {
-    private var waypointContentDefinitionDelegate = delegate(waypointScaffoldDefinition)
+    private var waypointScaffoldContentDelegate = delegate(waypointScaffoldContent)
 
     override val providedValues: ModifierLocalMap
         get() = modifierLocalMapOf(
-            ModifierLocalWaypointScaffoldDefinition to waypointContentDefinitionDelegate
+            ModifierLocalWaypointScaffoldContent to waypointScaffoldContentDelegate
         )
 
     override fun SemanticsPropertyReceiver.applySemantics() {
-        this[SemanticsProperties.WaypointScaffoldDefinitionSemanticKey] = waypointContentDefinitionDelegate
+        this[SemanticsProperties.WaypointScaffoldContentSemanticKey] = waypointScaffoldContentDelegate
     }
 
-    fun updateWaypointContentDefinition(newWaypointScaffoldDefinition: WaypointScaffoldDefinition) {
-        undelegate(waypointContentDefinitionDelegate)
-        waypointContentDefinitionDelegate = delegate(newWaypointScaffoldDefinition)
+    fun updateWaypointScaffoldContent(newWaypointScaffoldContent: WaypointScaffoldContent) {
+        undelegate(waypointScaffoldContentDelegate)
+        waypointScaffoldContentDelegate = delegate(newWaypointScaffoldContent)
     }
 }

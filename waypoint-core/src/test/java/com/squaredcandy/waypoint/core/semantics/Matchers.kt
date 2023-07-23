@@ -1,5 +1,6 @@
 package com.squaredcandy.waypoint.core.semantics
 
+import androidx.compose.ui.modifier.ModifierLocalReadScope
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionCollection
 import androidx.compose.ui.test.assert
@@ -7,6 +8,7 @@ import androidx.compose.ui.test.assertAll
 import com.squaredcandy.waypoint.core.Identifier
 import com.squaredcandy.waypoint.core.Waypoint
 import com.squaredcandy.waypoint.core.action.WaypointAction
+import com.squaredcandy.waypoint.core.handle.WaypointHandle
 import com.squaredcandy.waypoint.core.route.WaypointRoute
 import com.squaredcandy.waypoint.core.semantics.SemanticsProperties.WaypointHolderSemanticsKey
 
@@ -78,4 +80,16 @@ fun <T: WaypointRoute<T>> SemanticsNodeInteraction.assertWaypointRouteEqualTo(
     routeWaypointList: T.() -> List<Waypoint>,
     waypointList: List<Waypoint>?,
 ): SemanticsNodeInteraction = assert(hasWaypointRouteExactly(routeKey, routeWaypointList, waypointList))
+//endregion
+
+//region Waypoint Handle
+inline fun <reified T: WaypointHandle> SemanticsNodeInteraction.assertWaypointHandleExists(
+    waypoint: Waypoint,
+    noinline constructor: (Identifier<Waypoint>, ModifierLocalReadScope) -> T,
+): SemanticsNodeInteraction = assert(hasWaypointHandleExactly(T::class, waypoint, constructor))
+
+inline fun <reified T: WaypointHandle> SemanticsNodeInteraction.assertWaypointHandleDoesNotExist(
+    waypoint: Waypoint,
+    noinline constructor: (Identifier<Waypoint>, ModifierLocalReadScope) -> T,
+): SemanticsNodeInteraction = assert(hasWaypointHandleExactly(T::class, waypoint, constructor))
 //endregion

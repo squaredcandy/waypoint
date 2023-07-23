@@ -1,10 +1,14 @@
 package com.squaredcandy.waypoint.core.semantics
 
+import androidx.compose.ui.modifier.ModifierLocalReadScope
 import androidx.compose.ui.test.SemanticsNodeInteraction
+import com.squaredcandy.waypoint.core.Identifier
 import com.squaredcandy.waypoint.core.Waypoint
 import com.squaredcandy.waypoint.core.action.WaypointAction
+import com.squaredcandy.waypoint.core.handle.WaypointHandle
 import com.squaredcandy.waypoint.core.holder.WaypointNavigationType
 import com.squaredcandy.waypoint.core.semantics.SemanticsProperties.WaypointActionProviderSemanticsKey
+import com.squaredcandy.waypoint.core.semantics.SemanticsProperties.WaypointHandleProviderSemanticKey
 import com.squaredcandy.waypoint.core.semantics.SemanticsProperties.WaypointHolderSemanticsKey
 import kotlin.reflect.KClass
 
@@ -51,6 +55,19 @@ fun <T: WaypointAction> SemanticsNodeInteraction.invokeWaypointActionOnNode(
         ?.getAction(clazz)
         ?.invoke(waypointHolder!!, action)
 
+    return this
+}
+//endregion
+
+//region Waypoint Handle
+fun <T: WaypointHandle> SemanticsNodeInteraction.invokeWithWaypointHandle(
+    waypoint: Waypoint,
+    constructor: (Identifier<Waypoint>, ModifierLocalReadScope) -> T,
+    withWaypointHandle: (T) -> Unit,
+): SemanticsNodeInteraction {
+    val waypointHandleProvider = getSemanticsProperty(WaypointHandleProviderSemanticKey)
+    waypointHandleProvider!!.buildWaypointHandle(constructor, waypoint)
+        .apply(withWaypointHandle)
     return this
 }
 //endregion

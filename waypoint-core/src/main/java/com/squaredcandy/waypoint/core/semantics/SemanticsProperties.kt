@@ -2,6 +2,7 @@ package com.squaredcandy.waypoint.core.semantics
 
 import androidx.compose.ui.semantics.SemanticsPropertyKey
 import com.squaredcandy.waypoint.core.action.WaypointActionProvider
+import com.squaredcandy.waypoint.core.handle.WaypointHandleProvider
 import com.squaredcandy.waypoint.core.scaffold.WaypointScaffoldDefinition
 import com.squaredcandy.waypoint.core.holder.MutableWaypointHolder
 import com.squaredcandy.waypoint.core.lifecycle.WaypointLifecycleOwner
@@ -13,4 +14,5 @@ internal object SemanticsProperties {
     val WaypointRouteProviderSemanticsKey = SemanticsPropertyKey<WaypointRouteProvider?>("Waypoint Route Provider")
     val WaypointLifecycleOwnerSemanticKey = SemanticsPropertyKey<WaypointLifecycleOwner?>("Waypoint Lifecycle Owner")
     val WaypointScaffoldDefinitionSemanticKey = SemanticsPropertyKey<WaypointScaffoldDefinition?>("Waypoint Content Definition")
+    val WaypointHandleProviderSemanticKey = SemanticsPropertyKey<WaypointHandleProvider>("Waypoint Handle Provider")
 }

@@ -23,10 +23,8 @@ import com.squaredcandy.waypoint.core.action.actions.BacktrackWaypointAction
 import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
 import com.squaredcandy.waypoint.core.action.onAction
 import com.squaredcandy.waypoint.core.action.waypointActions
-import com.squaredcandy.waypoint.core.scaffold.waypointScaffold
 import com.squaredcandy.waypoint.core.feature.transition.MaterialSharedAxisZScreenTransition
 import com.squaredcandy.waypoint.core.handle.DefaultWaypointHandle
-import com.squaredcandy.waypoint.core.handle.LocalWaypoint
 import com.squaredcandy.waypoint.core.handle.LocalWaypointHandleProvider
 import com.squaredcandy.waypoint.core.handle.ModifierLocalWaypointHandleProvider
 import com.squaredcandy.waypoint.core.handle.rememberWaypointHandle
@@ -34,12 +32,12 @@ import com.squaredcandy.waypoint.core.handle.sendAction
 import com.squaredcandy.waypoint.core.handle.waypointHandleProvider
 import com.squaredcandy.waypoint.core.holder.WaypointNavigationType
 import com.squaredcandy.waypoint.core.holder.waypointHolder
-import com.squaredcandy.waypoint.core.lifecycle.ModifierLocalWaypointLifecycleOwner
-import com.squaredcandy.waypoint.core.lifecycle.WaypointLifecycleOwner
-import com.squaredcandy.waypoint.core.lifecycle.waypointLifecycle
 import com.squaredcandy.waypoint.core.route.ModifierLocalWaypointRouteProvider
 import com.squaredcandy.waypoint.core.route.WaypointRouteProvider
+import com.squaredcandy.waypoint.core.route.lifecycle.rememberWaypointRouteLifecycle
 import com.squaredcandy.waypoint.core.route.waypointRoutes
+import com.squaredcandy.waypoint.core.scaffold.WaypointScaffoldScope
+import com.squaredcandy.waypoint.core.scaffold.waypointScaffold
 import com.squaredcandy.waypoint.util.getTransition
 
 @Composable
@@ -84,10 +82,8 @@ fun BottomNavigationWaypoint() {
                 addRoute(::BottomNavigationItemWaypointRoute)
             }
             .waypointHandleProvider()
-            .waypointLifecycle()
             .waypointScaffold {
                 val waypointRouteProvider = ModifierLocalWaypointRouteProvider.current
-                val waypointLifecycleOwner = ModifierLocalWaypointLifecycleOwner.current
                 val waypointHandleProvider = ModifierLocalWaypointHandleProvider.current
 
                 val emailRepository = rememberSaveable(
@@ -104,7 +100,6 @@ fun BottomNavigationWaypoint() {
                     Navigation(
                         waypointRouteProvider = waypointRouteProvider
                             ?: return@CompositionLocalProvider,
-                        waypointLifecycleOwner = waypointLifecycleOwner,
                     )
                 }
             },
@@ -113,10 +108,7 @@ fun BottomNavigationWaypoint() {
 }
 
 @Composable
-private fun Navigation(
-    waypointRouteProvider: WaypointRouteProvider,
-    waypointLifecycleOwner: WaypointLifecycleOwner,
-) {
+private fun WaypointScaffoldScope.Navigation(waypointRouteProvider: WaypointRouteProvider) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -132,6 +124,8 @@ private fun Navigation(
             derivedStateOf { bottomNavigationWaypointList.last() }
         }
 
+        val routeLifecycle = rememberWaypointRouteLifecycle(bottomNavigationWaypointRoute)
+
         AnimatedContent(
             modifier = Modifier.fillMaxSize(),
             targetState = bottomNavigationWaypoint,
@@ -144,16 +138,14 @@ private fun Navigation(
             },
             contentKey = (Waypoint::id),
         ) { waypoint ->
-            waypointLifecycleOwner.WithLifecycle(waypoint) {
-                CompositionLocalProvider(LocalWaypoint provides waypoint) {
-                    val handle = rememberWaypointHandle(::DefaultWaypointHandle)
-                    BackHandler(bottomNavigationWaypointRoute.canBacktrack) {
-                        handle.sendAction(BacktrackWaypointAction(waypoint.id))
-                    }
-                    waypoint.feature
-                        .getContent()
-                        .Content()
+            routeLifecycle.WithLifecycle(waypoint = waypoint) {
+                val handle = rememberWaypointHandle(::DefaultWaypointHandle)
+                BackHandler(bottomNavigationWaypointRoute.canBacktrack) {
+                    handle.sendAction(BacktrackWaypointAction(waypoint.id))
                 }
+                waypoint.feature
+                    .getContent()
+                    .Content()
             }
         }
     }

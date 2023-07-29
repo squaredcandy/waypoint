@@ -25,14 +25,12 @@ fun Modifier.waypointScaffold(
 
 fun Modifier.waypointScaffold(
     content: @Composable WaypointScaffoldScope.() -> Unit,
-) = composed { waypointScaffold(waypointScaffoldContent = waypointScaffoldContent(content)) }
-
-@Composable
-private fun waypointScaffoldContent(
-    content: @Composable WaypointScaffoldScope.() -> Unit,
-): WaypointScaffoldContent = remember {
-    object : WaypointScaffoldContent() {
-        @Composable
-        override fun WaypointScaffoldScope.Content() = content()
+) = composed {
+    val waypointScaffoldContent = remember {
+        object : WaypointScaffoldContent() {
+            @Composable
+            override fun WaypointScaffoldScope.Content() = content()
+        }
     }
+    waypointScaffold(waypointScaffoldContent)
 }

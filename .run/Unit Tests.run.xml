@@ -27,11 +27,6 @@
           <option name="INCLUDE" value="false" />
         </pattern>
         <pattern>
-          <option name="PATTERN" value="com.squaredcandy.waypoint.core.content.EmptyWaypointContentScope" />
-          <option name="ENABLED" value="true" />
-          <option name="INCLUDE" value="false" />
-        </pattern>
-        <pattern>
           <option name="PATTERN" value="com.squaredcandy.waypoint.core.feature.EmptyWaypointFeature" />
           <option name="ENABLED" value="true" />
           <option name="INCLUDE" value="false" />
@@ -52,11 +47,86 @@
           <option name="INCLUDE" value="false" />
         </pattern>
         <pattern>
-          <option name="PATTERN" value="com.*" />
+          <option name="PATTERN" value="com.squaredcandy.waypoint.bottom_nav.*" />
           <option name="ENABLED" value="true" />
+          <option name="INCLUDE" value="false" />
+        </pattern>
+        <pattern>
+          <option name="PATTERN" value="com.squaredcandy.waypoint.home.*" />
+          <option name="ENABLED" value="true" />
+          <option name="INCLUDE" value="false" />
+        </pattern>
+        <pattern>
+          <option name="PATTERN" value="com.squaredcandy.waypoint.simple.*" />
+          <option name="ENABLED" value="true" />
+          <option name="INCLUDE" value="false" />
+        </pattern>
+        <pattern>
+          <option name="PATTERN" value="com.squaredcandy.waypoint.util.*" />
+          <option name="ENABLED" value="true" />
+          <option name="INCLUDE" value="false" />
+        </pattern>
+        <pattern>
+          <option name="PATTERN" value="com.squaredcandy.waypoint.core.content.EmptyWaypointContent" />
+          <option name="ENABLED" value="true" />
+          <option name="INCLUDE" value="false" />
+        </pattern>
+        <pattern>
+          <option name="PATTERN" value="com.squaredcandy.waypoint.core.holder.EmptyWaypointHolder" />
+          <option name="ENABLED" value="true" />
+          <option name="INCLUDE" value="false" />
+        </pattern>
+        <pattern>
+          <option name="PATTERN" value="com.squaredcandy.waypoint.core.scaffold.EmptyWaypointScaffoldContent" />
+          <option name="ENABLED" value="true" />
+          <option name="INCLUDE" value="false" />
+        </pattern>
+        <pattern>
+          <option name="PATTERN" value="com.squaredcandy.waypoint.core.action.WaypointActionNodeElement" />
+          <option name="ENABLED" value="true" />
+          <option name="INCLUDE" value="false" />
+        </pattern>
+        <pattern>
+          <option name="PATTERN" value="com.squaredcandy.waypoint.core.handle.WaypointHandleProviderNodeElement" />
+          <option name="ENABLED" value="true" />
+          <option name="INCLUDE" value="false" />
+        </pattern>
+        <pattern>
+          <option name="PATTERN" value="com.squaredcandy.waypoint.core.holder.listener.WaypointHolderListenerNodeElement" />
+          <option name="ENABLED" value="true" />
+          <option name="INCLUDE" value="false" />
+        </pattern>
+        <pattern>
+          <option name="PATTERN" value="com.squaredcandy.waypoint.core.holder.WaypointHolderNodeElement" />
+          <option name="ENABLED" value="true" />
+          <option name="INCLUDE" value="false" />
+        </pattern>
+        <pattern>
+          <option name="PATTERN" value="com.squaredcandy.waypoint.core.lifecycle.WaypointLifecycleNodeElement" />
+          <option name="ENABLED" value="true" />
+          <option name="INCLUDE" value="false" />
+        </pattern>
+        <pattern>
+          <option name="PATTERN" value="com.squaredcandy.waypoint.core.route.WaypointRouteProviderNodeElement" />
+          <option name="ENABLED" value="true" />
+          <option name="INCLUDE" value="false" />
+        </pattern>
+        <pattern>
+          <option name="PATTERN" value="com.squaredcandy.waypoint.core.scaffold.WaypointScaffoldNodeElement" />
+          <option name="ENABLED" value="true" />
+          <option name="INCLUDE" value="false" />
+        </pattern>
+        <pattern>
+          <option name="PATTERN" value="com.squaredcandy.waypoint.core.holder.listener.*" />
+          <option name="ENABLED" value="true" />
+          <option name="INCLUDE" value="false" />
         </pattern>
         <pattern>
           <option name="PATTERN" value="com.squaredcandy.waypoint.simple.MainActivity" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+        <pattern>
+          <option name="PATTERN" value="com.squaredcandy.waypoint.core.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>

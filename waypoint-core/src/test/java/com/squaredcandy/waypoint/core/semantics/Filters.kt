@@ -11,7 +11,6 @@ import com.squaredcandy.waypoint.core.route.WaypointRoute
 import com.squaredcandy.waypoint.core.semantics.SemanticsProperties.WaypointActionProviderSemanticsKey
 import com.squaredcandy.waypoint.core.semantics.SemanticsProperties.WaypointHandleProviderSemanticKey
 import com.squaredcandy.waypoint.core.semantics.SemanticsProperties.WaypointHolderSemanticsKey
-import com.squaredcandy.waypoint.core.semantics.SemanticsProperties.WaypointLifecycleOwnerSemanticKey
 import com.squaredcandy.waypoint.core.semantics.SemanticsProperties.WaypointRouteProviderSemanticsKey
 import kotlinx.collections.immutable.ImmutableList
 import kotlin.reflect.KClass
@@ -103,10 +102,6 @@ fun <T: WaypointRoute<T>> hasWaypointRouteExactly(
         .getSemanticsProperty(WaypointRouteProviderSemanticsKey)
     waypointRouteProvider?.getRoute(routeKey)?.routeWaypointList() == waypointList
 }
-//endregion
-
-//region Waypoint Lifecycle
-fun hasWaypointLifecycleOwner() = SemanticsMatcher.keyIsDefined(WaypointLifecycleOwnerSemanticKey)
 //endregion
 
 //region Waypoint Handle

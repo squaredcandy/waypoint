@@ -55,17 +55,6 @@ fun SemanticsNodeInteractionsProvider.onWaypointRouteNode(
 }
 //endregion
 
-//region Waypoint Lifecycle
-fun SemanticsNodeInteractionsProvider.onWaypointLifecycleOwnerNode(
-    useUnmergedTree: Boolean = false,
-): SemanticsNodeInteraction {
-    return onNode(
-        matcher = hasWaypointLifecycleOwner(),
-        useUnmergedTree = useUnmergedTree,
-    )
-}
-//endregion
-
 //region Waypoint Handle
 fun SemanticsNodeInteractionsProvider.onWaypointHandleNode(
     useUnmergedTree: Boolean = false,

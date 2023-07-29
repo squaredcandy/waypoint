@@ -29,10 +29,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.squaredcandy.waypoint.core.WaypointTag
 import com.squaredcandy.waypoint.core.content.WaypointContent
 import com.squaredcandy.waypoint.core.scaffold.waypointScaffold
-import com.squaredcandy.waypoint.core.lifecycle.ModifierLocalWaypointLifecycleOwner
-import com.squaredcandy.waypoint.core.lifecycle.WaypointLifecycleOwner
 import com.squaredcandy.waypoint.core.route.ModifierLocalWaypointRouteProvider
 import com.squaredcandy.waypoint.core.route.WaypointRouteProvider
+import com.squaredcandy.waypoint.core.route.lifecycle.rememberWaypointRouteLifecycle
+import com.squaredcandy.waypoint.core.scaffold.WaypointScaffoldScope
 import com.squaredcandy.waypoint.util.rememberFunc
 import kotlinx.coroutines.flow.collectLatest
 
@@ -62,13 +62,11 @@ object BottomNavigationWaypointContent : WaypointContent {
             modifier = Modifier
                 .waypointScaffold {
                     val waypointRouteProviderState = ModifierLocalWaypointRouteProvider.current
-                    val waypointLifecycleOwnerState = ModifierLocalWaypointLifecycleOwner.current
                     Column {
                         BottomNavigationItemWaypointRoute(
                             selectedTab = selectedTab,
                             waypointRouteProvider = waypointRouteProviderState
                                 ?: return@waypointScaffold,
-                            waypointLifecycleOwner = waypointLifecycleOwnerState,
                         )
 
                         NavigationBar {
@@ -111,12 +109,12 @@ object BottomNavigationWaypointContent : WaypointContent {
         )
     }
 
+    context(WaypointScaffoldScope, ColumnScope)
     @Composable
-    private fun ColumnScope.BottomNavigationItemWaypointRoute(
+    private fun BottomNavigationItemWaypointRoute(
         modifier: Modifier = Modifier,
         selectedTab: MutableState<WaypointTag>,
         waypointRouteProvider: WaypointRouteProvider,
-        waypointLifecycleOwner: WaypointLifecycleOwner,
     ) {
         val bottomNavigationItemWaypointRoute by remember {
             derivedStateOf { waypointRouteProvider.getRoute(BottomNavigationItemWaypointRoute.key) }
@@ -132,6 +130,7 @@ object BottomNavigationWaypointContent : WaypointContent {
         LaunchedEffect(key1 = selectedTab.value, key2 = pagerState) {
             pagerState.animateScrollToPage(tagToIndex(selectedTab.value))
         }
+        val routeLifecycle = rememberWaypointRouteLifecycle(bottomNavigationItemWaypointRoute)
         HorizontalPager(
             modifier = modifier.weight(1f),
             state = pagerState,
@@ -139,7 +138,7 @@ object BottomNavigationWaypointContent : WaypointContent {
             val waypoint by remember {
                 derivedStateOf { bottomNavigationWaypointList[index] }
             }
-            waypointLifecycleOwner.WithLifecycle(waypoint) {
+            routeLifecycle.WithLifecycle(waypoint = waypoint) {
                 BackHandler(enabled = index != 0) {
                     selectedTab.value = NewEmailsWaypointTag
                 }

@@ -5,14 +5,12 @@ import com.squaredcandy.waypoint.core.action.WaypointActionProvider
 import com.squaredcandy.waypoint.core.handle.WaypointHandleProvider
 import com.squaredcandy.waypoint.core.scaffold.WaypointScaffoldContent
 import com.squaredcandy.waypoint.core.holder.MutableWaypointHolder
-import com.squaredcandy.waypoint.core.lifecycle.WaypointLifecycleOwner
 import com.squaredcandy.waypoint.core.route.WaypointRouteProvider
 
 internal object SemanticsProperties {
     val WaypointHolderSemanticsKey = SemanticsPropertyKey<MutableWaypointHolder>("Mutable Waypoint Holder")
     val WaypointActionProviderSemanticsKey = SemanticsPropertyKey<WaypointActionProvider>("Waypoint Action Provider")
     val WaypointRouteProviderSemanticsKey = SemanticsPropertyKey<WaypointRouteProvider?>("Waypoint Route Provider")
-    val WaypointLifecycleOwnerSemanticKey = SemanticsPropertyKey<WaypointLifecycleOwner?>("Waypoint Lifecycle Owner")
     val WaypointScaffoldContentSemanticKey = SemanticsPropertyKey<WaypointScaffoldContent?>("Waypoint Content Content")
     val WaypointHandleProviderSemanticKey = SemanticsPropertyKey<WaypointHandleProvider>("Waypoint Handle Provider")
 }

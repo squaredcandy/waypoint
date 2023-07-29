@@ -1,15 +1,15 @@
 [versions]
 # Gradle
-gradle-agp = "8.2.0-alpha13"
+gradle-agp = "8.2.0-alpha14"
 gradle-compile-min = "27"
-gradle-compile-target = "33"
+gradle-compile-target = "34"
 gradle-jvm-target = "17"
 
 # Kotlin
 # https://github.com/JetBrains/kotlin/releases
-kotlin = "1.8.22"
+kotlin = "1.9.0"
 # https://github.com/Kotlin/kotlinx.coroutines/releases
-kotlinx-coroutines = "1.7.2"
+kotlinx-coroutines = "1.7.3"
 # https://github.com/Kotlin/kotlinx.collections.immutable/releases
 kotlinx-collections = "0.3.5"
 
@@ -19,11 +19,11 @@ androidx-activity-compose = "1.7.2"
 # https://developer.android.com/jetpack/androidx/releases/appcompat
 androidx-appcompat = "1.6.1"
 # https://developer.android.com/jetpack/androidx/releases/compose
-androidx-compose-base = "1.5.0-beta03"
+androidx-compose-base = "1.6.0-alpha02"
 # https://developer.android.com/jetpack/androidx/releases/compose-compiler
-androidx-compose-compiler = "1.4.8"
+androidx-compose-compiler = "1.5.0"
 # https://developer.android.com/jetpack/androidx/releases/compose-material3
-androidx-compose-material3 = "1.2.0-alpha02"
+androidx-compose-material3 = "1.2.0-alpha03"
 # https://developer.android.com/jetpack/androidx/releases/test
 androidx-test-base = "1.5.0"
 # https://developer.android.com/jetpack/androidx/releases/test

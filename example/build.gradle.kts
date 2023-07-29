@@ -36,7 +36,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = libs.versions.gradle.jvm.target.orNull
+        jvmTarget = libs.versions.gradle.jvm.target.get()
         freeCompilerArgs += "-Xcontext-receivers"
     }
     buildFeatures {

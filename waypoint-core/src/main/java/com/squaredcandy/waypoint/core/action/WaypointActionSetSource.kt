@@ -15,7 +15,7 @@ internal class WaypointActionSetSource(
     val waypointActionSet by derivedStateOf {
         val setList = waypointActionSetList
         if (setList.isEmpty()) {
-            WaypointActionSet(persistentMapOf(), persistentListOf())
+            WaypointActionSet(persistentMapOf())
         } else {
             setList.reduce { acc, waypointActionSet -> waypointActionSet.plus(acc) }
         }
@@ -25,6 +25,5 @@ internal class WaypointActionSetSource(
 private operator fun WaypointActionSet.plus(otherWaypointActionSet: WaypointActionSet): WaypointActionSet {
     return WaypointActionSet(
         resolvers = this.resolvers.toPersistentMap().putAll(otherWaypointActionSet.resolvers),
-        hooks = this.hooks.toPersistentList().addAll(otherWaypointActionSet.hooks),
     )
 }

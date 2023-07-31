@@ -36,13 +36,10 @@ internal class WaypointActionNode(
         object : WaypointActionProvider {
             @Suppress("UNCHECKED_CAST")
             override fun <T : WaypointAction> getAction(waypointActionClass: KClass<T>): WaypointActionResolver<T>? {
-                val hooks = mergedWaypointActionSet.hooks
                 val waypointActionResolver = mergedWaypointActionSet.resolvers[waypointActionClass] as? WaypointActionResolver<T>
                 return if (waypointActionResolver != null) {
                     WaypointActionResolver { waypointHolder, waypointAction ->
-                        hooks.forEach { hook -> hook.preResolveHook(waypointHolder, waypointAction) }
                         waypointActionResolver(waypointHolder, waypointAction)
-                        hooks.forEach { hook -> hook.postResolveHook(waypointHolder, waypointAction) }
                     }
                 } else {
                     null

@@ -7,7 +7,7 @@ import androidx.compose.ui.modifier.ModifierLocalReadScope
 import com.squaredcandy.waypoint.core.holder.ModifierLocalMutableWaypointHolder
 import kotlin.reflect.KClass
 
-val LocalWaypointActionSender = compositionLocalOf<WaypointActionSender> { noOpWaypointActionSender }
+val LocalWaypointActionSender = compositionLocalOf<WaypointActionSender> { NoOpWaypointActionSender() }
 
 interface WaypointActionSender {
     fun <T: WaypointAction> sendAction(waypointActionClass: KClass<T>, waypointAction: T): Result<Unit>
@@ -15,27 +15,29 @@ interface WaypointActionSender {
 
 @Composable
 fun ModifierLocalReadScope.createWaypointActionSender(): WaypointActionSender {
-    val mutableWaypointHolder = ModifierLocalMutableWaypointHolder.current
-    val waypointActionProvider = ModifierLocalWaypointActionProvider.current
-    return remember(mutableWaypointHolder, waypointActionProvider) {
-        object : WaypointActionSender {
-            override fun <T : WaypointAction> sendAction(
-                waypointActionClass: KClass<T>,
-                waypointAction: T,
-            ): Result<Unit> {
-                return runCatching {
-                    waypointActionProvider.getAction(waypointActionClass)!!
-                        .invoke(mutableWaypointHolder, waypointAction)
-                }
-            }
+    return remember(this) { RealWaypointActionSender(this) }
+}
+
+private class RealWaypointActionSender(
+    val readScope: ModifierLocalReadScope,
+) : WaypointActionSender, ModifierLocalReadScope by readScope {
+    private val mutableWaypointHolder = ModifierLocalMutableWaypointHolder.current
+    private val waypointActionProvider = ModifierLocalWaypointActionProvider.current
+    override fun <T : WaypointAction> sendAction(
+        waypointActionClass: KClass<T>,
+        waypointAction: T,
+    ): Result<Unit> {
+        return runCatching {
+            waypointActionProvider.getAction(waypointActionClass)!!
+                .invoke(mutableWaypointHolder, waypointAction)
         }
     }
 }
 
-private val noOpWaypointActionSender = object : WaypointActionSender {
+private class NoOpWaypointActionSender : WaypointActionSender {
     override fun <T : WaypointAction> sendAction(
         waypointActionClass: KClass<T>,
-        waypointAction: T
+        waypointAction: T,
     ): Result<Unit> = Result.failure(NotImplementedError("sendAction not implemented"))
 }
 

@@ -8,7 +8,7 @@ import com.squaredcandy.waypoint.core.feature.transition.WaypointTransition
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
-class MainWaypointFeatureTest {
+class WaypointFeatureTest {
     @Test
     fun `GIVEN empty waypoint feature THEN override transition is null`() = runTest {
         val waypointFeature = object : MainWaypointFeature {

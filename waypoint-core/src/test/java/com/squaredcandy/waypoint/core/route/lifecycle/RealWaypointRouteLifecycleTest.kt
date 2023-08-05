@@ -1,6 +1,5 @@
 package com.squaredcandy.waypoint.core.route.lifecycle
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -18,7 +17,7 @@ import com.squaredcandy.waypoint.core.route.LocalWaypoint
 import com.squaredcandy.waypoint.core.route.MainWaypointRoute
 import com.squaredcandy.waypoint.core.route.ModifierLocalWaypointRouteProvider
 import com.squaredcandy.waypoint.core.route.waypointRoutes
-import com.squaredcandy.waypoint.core.scaffold.waypointScaffold
+import com.squaredcandy.waypoint.core.scaffold.WaypointScaffold
 import com.squaredcandy.waypoint.core.semantics.invokeWaypointAction
 import com.squaredcandy.waypoint.core.semantics.onWaypointActionProviderNode
 import kotlinx.coroutines.test.runTest
@@ -35,31 +34,30 @@ class WaypointRouteLifecycleTest {
     fun `GIVEN waypoint route and holder THEN waypoint route lifecycle is valid`() = runTest {
         val list = listOf(Waypoint())
         composeTestRule.setContent {
-            Box(
+            WaypointScaffold(
                 modifier = Modifier
                     .waypointHolder(list)
                     .waypointRoutes {
                         addRoute(::MainWaypointRoute)
                     }
-                    .waypointScaffold {
-                        val waypointRouteProvider = ModifierLocalWaypointRouteProvider.current
-                        val mainWaypointRoute =
-                            waypointRouteProvider?.getRoute(MainWaypointRoute.key)!!
+            ) {
+                val waypointRouteProvider = ModifierLocalWaypointRouteProvider.current
+                val mainWaypointRoute =
+                    waypointRouteProvider?.getRoute(MainWaypointRoute.key)!!
 
-                        val waypointList by remember {
-                            derivedStateOf { mainWaypointRoute.waypointList }
-                        }
-                        val waypoint by remember {
-                            derivedStateOf { waypointList.last() }
-                        }
+                val waypointList by remember {
+                    derivedStateOf { mainWaypointRoute.waypointList }
+                }
+                val waypoint by remember {
+                    derivedStateOf { waypointList.last() }
+                }
 
-                        val routeLifecycle = rememberWaypointRouteLifecycle(mainWaypointRoute)
-                        routeLifecycle.WithLifecycle(waypoint = waypoint) {
-                            val currentWaypoint = LocalWaypoint.current
-                            Truth.assertThat(currentWaypoint).isEqualTo(waypoint)
-                        }
-                    }
-            )
+                val routeLifecycle = rememberWaypointRouteLifecycle(mainWaypointRoute)
+                routeLifecycle.WithLifecycle(waypoint = waypoint) {
+                    val currentWaypoint = LocalWaypoint.current
+                    Truth.assertThat(currentWaypoint).isEqualTo(waypoint)
+                }
+            }
         }
     }
 
@@ -70,7 +68,7 @@ class WaypointRouteLifecycleTest {
         val list = listOf(waypoint1)
         var recompositionCount = 0
         composeTestRule.setContent {
-            Box(
+            WaypointScaffold(
                 modifier = Modifier
                     .waypointHolder(list)
                     .waypointActions {
@@ -83,31 +81,30 @@ class WaypointRouteLifecycleTest {
                     .waypointRoutes {
                         addRoute(::MainWaypointRoute)
                     }
-                    .waypointScaffold {
-                        val waypointRouteProvider = ModifierLocalWaypointRouteProvider.current
-                        val mainWaypointRoute =
-                            waypointRouteProvider?.getRoute(MainWaypointRoute.key)!!
+            ) {
+                val waypointRouteProvider = ModifierLocalWaypointRouteProvider.current
+                val mainWaypointRoute =
+                    waypointRouteProvider?.getRoute(MainWaypointRoute.key)!!
 
-                        val waypointList by remember {
-                            derivedStateOf { mainWaypointRoute.waypointList }
-                        }
-                        val waypoint by remember {
-                            derivedStateOf { waypointList.last() }
-                        }
+                val waypointList by remember {
+                    derivedStateOf { mainWaypointRoute.waypointList }
+                }
+                val waypoint by remember {
+                    derivedStateOf { waypointList.last() }
+                }
 
-                        val routeLifecycle = rememberWaypointRouteLifecycle(mainWaypointRoute)
-                        routeLifecycle.WithLifecycle(waypoint = waypoint) {
-                            val currentWaypoint = LocalWaypoint.current
-                            val assertingWaypoint = if (recompositionCount == 0) {
-                                waypoint1
-                            } else {
-                                waypoint2
-                            }
-                            Truth.assertThat(currentWaypoint).isEqualTo(assertingWaypoint)
-                            recompositionCount++
-                        }
+                val routeLifecycle = rememberWaypointRouteLifecycle(mainWaypointRoute)
+                routeLifecycle.WithLifecycle(waypoint = waypoint) {
+                    val currentWaypoint = LocalWaypoint.current
+                    val assertingWaypoint = if (recompositionCount == 0) {
+                        waypoint1
+                    } else {
+                        waypoint2
                     }
-            )
+                    Truth.assertThat(currentWaypoint).isEqualTo(assertingWaypoint)
+                    recompositionCount++
+                }
+            }
         }
 
         composeTestRule.onWaypointActionProviderNode()

@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.modifier.modifierLocalConsumer
 
-fun Modifier.waypointScaffold(
+internal fun Modifier.waypointScaffold(
     waypointScaffoldContent: WaypointScaffoldContent,
 ) = this
     .then(WaypointScaffoldNodeElement(waypointScaffoldContent))
@@ -23,7 +23,7 @@ fun Modifier.waypointScaffold(
         }
     }
 
-fun Modifier.waypointScaffold(
+internal fun Modifier.waypointScaffold(
     content: @Composable WaypointScaffoldScope.() -> Unit,
 ) = composed {
     val waypointScaffoldContent = remember {

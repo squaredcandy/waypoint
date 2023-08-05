@@ -1,6 +1,5 @@
 package com.squaredcandy.waypoint.core.action
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -9,7 +8,7 @@ import com.squaredcandy.waypoint.core.Waypoint
 import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
 import com.squaredcandy.waypoint.core.holder.WaypointNavigationType
 import com.squaredcandy.waypoint.core.holder.waypointHolder
-import com.squaredcandy.waypoint.core.scaffold.waypointScaffold
+import com.squaredcandy.waypoint.core.scaffold.WaypointScaffold
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -24,12 +23,9 @@ class WaypointActionSenderTest {
     fun `GIVEN no waypoint action sender THEN waypoint actions will fail`() = runTest {
         var actionSender: WaypointActionSender? = null
         composeTestRule.setContent {
-            Box(
-                modifier = Modifier
-                    .waypointScaffold {
-                        actionSender = LocalWaypointActionSender.current
-                    }
-            )
+            WaypointScaffold(modifier = Modifier) {
+                actionSender = LocalWaypointActionSender.current
+            }
         }
 
         Truth.assertThat(actionSender).isNotNull()
@@ -41,7 +37,7 @@ class WaypointActionSenderTest {
     fun `GIVEN waypoint action sender THEN waypoint actions will succeed`() = runTest {
         var actionSender: WaypointActionSender? = null
         composeTestRule.setContent {
-            Box(
+            WaypointScaffold(
                 modifier = Modifier
                     .waypointHolder(listOf())
                     .waypointActions {
@@ -51,10 +47,9 @@ class WaypointActionSenderTest {
                             }
                         }
                     }
-                    .waypointScaffold {
-                        actionSender = createWaypointActionSender()
-                    }
-            )
+            ) {
+                actionSender = createWaypointActionSender()
+            }
         }
 
         Truth.assertThat(actionSender).isNotNull()

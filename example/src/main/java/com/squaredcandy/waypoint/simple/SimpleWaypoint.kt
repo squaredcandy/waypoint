@@ -31,8 +31,8 @@ import com.squaredcandy.waypoint.core.route.SideWaypointRoute
 import com.squaredcandy.waypoint.core.route.WaypointRouteProvider
 import com.squaredcandy.waypoint.core.route.lifecycle.rememberWaypointRouteLifecycle
 import com.squaredcandy.waypoint.core.route.waypointRoutes
+import com.squaredcandy.waypoint.core.scaffold.WaypointScaffold
 import com.squaredcandy.waypoint.core.scaffold.WaypointScaffoldScope
-import com.squaredcandy.waypoint.core.scaffold.waypointScaffold
 import com.squaredcandy.waypoint.util.getTransition
 
 @Composable
@@ -134,7 +134,7 @@ private fun WaypointScaffoldScope.SideWaypointRoute(
 
 @Composable
 fun SimpleWaypoint() {
-    Box(
+    WaypointScaffold(
         modifier = Modifier
             .waypointHolder(listOf(Waypoint(feature = SimpleWaypointFeature())))
             .waypointActions {
@@ -153,11 +153,9 @@ fun SimpleWaypoint() {
                 addRoute(::MainWaypointRoute)
                 addRoute(::SideWaypointRoute)
             }
-            .waypointScaffold {
-                val waypointRouteProvider = ModifierLocalWaypointRouteProvider.current
+    ) {
+        val waypointRouteProvider = ModifierLocalWaypointRouteProvider.current
 
-                Navigation(waypointRouteProvider = waypointRouteProvider ?: return@waypointScaffold)
-            },
-        content = {},
-    )
+        Navigation(waypointRouteProvider = waypointRouteProvider ?: return@WaypointScaffold)
+    }
 }

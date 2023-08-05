@@ -3,7 +3,6 @@ package com.squaredcandy.waypoint.bottom_nav
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -33,13 +32,13 @@ import com.squaredcandy.waypoint.core.route.ModifierLocalWaypointRouteProvider
 import com.squaredcandy.waypoint.core.route.WaypointRouteProvider
 import com.squaredcandy.waypoint.core.route.lifecycle.rememberWaypointRouteLifecycle
 import com.squaredcandy.waypoint.core.route.waypointRoutes
+import com.squaredcandy.waypoint.core.scaffold.WaypointScaffold
 import com.squaredcandy.waypoint.core.scaffold.WaypointScaffoldScope
-import com.squaredcandy.waypoint.core.scaffold.waypointScaffold
 import com.squaredcandy.waypoint.util.getTransition
 
 @Composable
 fun BottomNavigationWaypoint() {
-    Box(
+    WaypointScaffold(
         modifier = Modifier
             .waypointHolder(
                 listOf(
@@ -78,27 +77,25 @@ fun BottomNavigationWaypoint() {
                 addRoute(::BottomNavigationWaypointRoute)
                 addRoute(::BottomNavigationItemWaypointRoute)
             }
-            .waypointScaffold {
-                val waypointRouteProvider = ModifierLocalWaypointRouteProvider.current
+    ) {
+        val waypointRouteProvider = ModifierLocalWaypointRouteProvider.current
 
-                val emailRepository = rememberSaveable(
-                    saver = EmailRepository.saver,
-                ) {
-                    EmailRepository()
-                        .apply { addNewEmails(10) }
-                }
+        val emailRepository = rememberSaveable(
+            saver = EmailRepository.saver,
+        ) {
+            EmailRepository()
+                .apply { addNewEmails(10) }
+        }
 
-                CompositionLocalProvider(
-                    LocalEmailRepository provides emailRepository,
-                ) {
-                    Navigation(
-                        waypointRouteProvider = waypointRouteProvider
-                            ?: return@CompositionLocalProvider,
-                    )
-                }
-            },
-        content = {},
-    )
+        CompositionLocalProvider(
+            LocalEmailRepository provides emailRepository,
+        ) {
+            Navigation(
+                waypointRouteProvider = waypointRouteProvider
+                    ?: return@CompositionLocalProvider,
+            )
+        }
+    }
 }
 
 @Composable

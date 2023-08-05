@@ -1,7 +1,6 @@
 package com.squaredcandy.waypoint.bottom_nav
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.RowScope
@@ -28,10 +27,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.squaredcandy.waypoint.core.WaypointTag
 import com.squaredcandy.waypoint.core.content.WaypointContent
-import com.squaredcandy.waypoint.core.scaffold.waypointScaffold
 import com.squaredcandy.waypoint.core.route.ModifierLocalWaypointRouteProvider
 import com.squaredcandy.waypoint.core.route.WaypointRouteProvider
 import com.squaredcandy.waypoint.core.route.lifecycle.rememberWaypointRouteLifecycle
+import com.squaredcandy.waypoint.core.scaffold.WaypointScaffold
 import com.squaredcandy.waypoint.core.scaffold.WaypointScaffoldScope
 import com.squaredcandy.waypoint.util.rememberFunc
 import kotlinx.coroutines.flow.collectLatest
@@ -58,34 +57,31 @@ object BottomNavigationWaypointContent : WaypointContent {
         val selectedTab = rememberSaveable {
             mutableStateOf(NewEmailsWaypointTag)
         }
-        Box(
-            modifier = Modifier
-                .waypointScaffold {
-                    val waypointRouteProviderState = ModifierLocalWaypointRouteProvider.current
-                    Column {
-                        BottomNavigationItemWaypointRoute(
-                            selectedTab = selectedTab,
-                            waypointRouteProvider = waypointRouteProviderState
-                                ?: return@waypointScaffold,
-                        )
+        WaypointScaffold(modifier = Modifier) {
+            val waypointRouteProviderState = ModifierLocalWaypointRouteProvider.current
+            Column {
+                BottomNavigationItemWaypointRoute(
+                    selectedTab = selectedTab,
+                    waypointRouteProvider = waypointRouteProviderState
+                        ?: return@WaypointScaffold,
+                )
 
-                        NavigationBar {
-                            NavigationItem(
-                                selectedTab = selectedTab,
-                                tab = NewEmailsWaypointTag,
-                                selectedIcon = Icons.Filled.Email,
-                                unselectedIcon = Icons.Outlined.Email,
-                            )
-                            NavigationItem(
-                                selectedTab = selectedTab,
-                                tab = StarredEmailsWaypointTag,
-                                selectedIcon = Icons.Filled.Star,
-                                unselectedIcon = Icons.Outlined.Star,
-                            )
-                        }
-                    }
+                NavigationBar {
+                    NavigationItem(
+                        selectedTab = selectedTab,
+                        tab = NewEmailsWaypointTag,
+                        selectedIcon = Icons.Filled.Email,
+                        unselectedIcon = Icons.Outlined.Email,
+                    )
+                    NavigationItem(
+                        selectedTab = selectedTab,
+                        tab = StarredEmailsWaypointTag,
+                        selectedIcon = Icons.Filled.Star,
+                        unselectedIcon = Icons.Outlined.Star,
+                    )
                 }
-        ) {}
+            }
+        }
     }
 
     @Composable

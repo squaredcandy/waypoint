@@ -12,9 +12,9 @@ import com.squaredcandy.waypoint.core.Waypoint
 import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
 import com.squaredcandy.waypoint.core.action.onAction
 import com.squaredcandy.waypoint.core.action.waypointActions
-import com.squaredcandy.waypoint.core.handle.LocalWaypoint
 import com.squaredcandy.waypoint.core.holder.WaypointNavigationType
 import com.squaredcandy.waypoint.core.holder.waypointHolder
+import com.squaredcandy.waypoint.core.route.LocalWaypoint
 import com.squaredcandy.waypoint.core.route.MainWaypointRoute
 import com.squaredcandy.waypoint.core.route.ModifierLocalWaypointRouteProvider
 import com.squaredcandy.waypoint.core.route.waypointRoutes

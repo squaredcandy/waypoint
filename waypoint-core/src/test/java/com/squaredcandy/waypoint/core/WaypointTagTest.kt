@@ -6,6 +6,7 @@ import com.google.common.truth.Truth
 import com.squaredcandy.waypoint.core.holder.DefaultWaypointHolder
 import com.squaredcandy.waypoint.core.holder.WaypointHolder
 import com.squaredcandy.waypoint.core.route.WaypointRoute
+import kotlinx.collections.immutable.toImmutableList
 import org.junit.Test
 
 class WaypointTagTest {
@@ -40,8 +41,10 @@ class WaypointTagTest {
     inner class TestWaypointRoute(private val waypointHolder: WaypointHolder) : WaypointRoute<TestWaypointRoute> {
         override val key: Identifier<TestWaypointRoute> = Identifier("test")
 
-        val waypointList by derivedStateOf {
+        override val waypointList by derivedStateOf {
             waypointHolder.waypointList.filter { it.tags.contains(WaypointTag("test_tag")) }
+                .toImmutableList()
         }
+        override val canBacktrack: Boolean = true
     }
 }

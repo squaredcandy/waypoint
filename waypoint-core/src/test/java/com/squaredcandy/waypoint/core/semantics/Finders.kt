@@ -54,14 +54,3 @@ fun SemanticsNodeInteractionsProvider.onWaypointRouteNode(
     )
 }
 //endregion
-
-//region Waypoint Handle
-fun SemanticsNodeInteractionsProvider.onWaypointHandleNode(
-    useUnmergedTree: Boolean = false,
-): SemanticsNodeInteraction {
-    return onNode(
-        matcher = hasWaypointHandleProvider(),
-        useUnmergedTree = useUnmergedTree,
-    )
-}
-//endregion

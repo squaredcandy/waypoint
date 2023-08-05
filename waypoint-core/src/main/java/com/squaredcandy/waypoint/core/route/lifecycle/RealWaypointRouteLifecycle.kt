@@ -1,13 +1,16 @@
 package com.squaredcandy.waypoint.core.route.lifecycle
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocal
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ProvidedValue
 import androidx.compose.runtime.saveable.SaveableStateHolder
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.modifier.ModifierLocalReadScope
 import com.squaredcandy.waypoint.core.Waypoint
-import com.squaredcandy.waypoint.core.handle.LocalCanBacktrack
-import com.squaredcandy.waypoint.core.handle.LocalWaypoint
 import com.squaredcandy.waypoint.core.holder.WaypointHolder
+import com.squaredcandy.waypoint.core.route.LocalCanBacktrack
+import com.squaredcandy.waypoint.core.route.LocalWaypoint
 import com.squaredcandy.waypoint.core.toWaypointRouteChangeList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -38,12 +41,18 @@ internal class RealWaypointRouteLifecycle(
         }
     }
 
+    context(ModifierLocalReadScope)
     @Composable
-    override fun WithLifecycle(waypoint: Waypoint, content: @Composable () -> Unit) {
+    override fun WithLifecycle(
+        waypoint: Waypoint,
+        vararg additionalProviders: ProvidedValue<*>,
+        content: @Composable () -> Unit,
+    ) {
         saveableStateHolder.SaveableStateProvider(waypoint.id) {
             CompositionLocalProvider(
                 LocalWaypoint provides waypoint,
                 LocalCanBacktrack provides canBacktrack,
+                *additionalProviders,
                 content = content,
             )
         }

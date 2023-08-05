@@ -25,18 +25,19 @@ import com.squaredcandy.waypoint.core.action.actions.BacktrackWaypointAction
 import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
 import com.squaredcandy.waypoint.core.content.WaypointContent
 import com.squaredcandy.waypoint.core.feature.transition.MaterialSharedAxisXScreenTransition
-import com.squaredcandy.waypoint.core.handle.DefaultWaypointHandle
-import com.squaredcandy.waypoint.core.handle.LocalCanBacktrack
-import com.squaredcandy.waypoint.core.handle.rememberWaypointHandle
-import com.squaredcandy.waypoint.core.handle.sendAction
+import com.squaredcandy.waypoint.core.action.LocalWaypointActionSender
+import com.squaredcandy.waypoint.core.action.invoke
+import com.squaredcandy.waypoint.core.route.LocalCanBacktrack
+import com.squaredcandy.waypoint.core.route.LocalWaypoint
 import com.squaredcandy.waypoint.util.rememberFunc
 import kotlinx.coroutines.delay
 
 class SimpleWaypointContent : WaypointContent {
     @Composable
     override fun Content() {
-        val handle = rememberWaypointHandle(::DefaultWaypointHandle)
         val canBacktrack = LocalCanBacktrack.current
+        val actionSender = LocalWaypointActionSender.current
+        val waypoint = LocalWaypoint.current
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
@@ -46,7 +47,7 @@ class SimpleWaypointContent : WaypointContent {
                         movableContentOf {
                             if (canBacktrack) {
                                 IconButton(
-                                    onClick = { handle.sendAction(BacktrackWaypointAction(handle.waypointId)) },
+                                    onClick = { actionSender(BacktrackWaypointAction(waypoint.id)) },
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.ArrowBack,
@@ -71,7 +72,7 @@ class SimpleWaypointContent : WaypointContent {
                     }
                 }
                 val onClick = rememberFunc {
-                    handle.sendAction(
+                    actionSender(
                         NavigateWaypointAction(
                             Waypoint(feature = SimpleWaypointFeature(MaterialSharedAxisXScreenTransition))
                         )

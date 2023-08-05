@@ -19,17 +19,14 @@ import com.squaredcandy.waypoint.bottom_nav.emails.LocalEmailRepository
 import com.squaredcandy.waypoint.bottom_nav.new_emails.NewEmailsWaypointFeature
 import com.squaredcandy.waypoint.bottom_nav.starred_emails.StarredEmailsWaypointFeature
 import com.squaredcandy.waypoint.core.Waypoint
+import com.squaredcandy.waypoint.core.action.LocalWaypointActionSender
 import com.squaredcandy.waypoint.core.action.actions.BacktrackWaypointAction
 import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
+import com.squaredcandy.waypoint.core.action.createWaypointActionSender
+import com.squaredcandy.waypoint.core.action.invoke
 import com.squaredcandy.waypoint.core.action.onAction
 import com.squaredcandy.waypoint.core.action.waypointActions
 import com.squaredcandy.waypoint.core.feature.transition.MaterialSharedAxisZScreenTransition
-import com.squaredcandy.waypoint.core.handle.DefaultWaypointHandle
-import com.squaredcandy.waypoint.core.handle.LocalWaypointHandleProvider
-import com.squaredcandy.waypoint.core.handle.ModifierLocalWaypointHandleProvider
-import com.squaredcandy.waypoint.core.handle.rememberWaypointHandle
-import com.squaredcandy.waypoint.core.handle.sendAction
-import com.squaredcandy.waypoint.core.handle.waypointHandleProvider
 import com.squaredcandy.waypoint.core.holder.WaypointNavigationType
 import com.squaredcandy.waypoint.core.holder.waypointHolder
 import com.squaredcandy.waypoint.core.route.ModifierLocalWaypointRouteProvider
@@ -81,10 +78,8 @@ fun BottomNavigationWaypoint() {
                 addRoute(::BottomNavigationWaypointRoute)
                 addRoute(::BottomNavigationItemWaypointRoute)
             }
-            .waypointHandleProvider()
             .waypointScaffold {
                 val waypointRouteProvider = ModifierLocalWaypointRouteProvider.current
-                val waypointHandleProvider = ModifierLocalWaypointHandleProvider.current
 
                 val emailRepository = rememberSaveable(
                     saver = EmailRepository.saver,
@@ -95,7 +90,6 @@ fun BottomNavigationWaypoint() {
 
                 CompositionLocalProvider(
                     LocalEmailRepository provides emailRepository,
-                    LocalWaypointHandleProvider provides waypointHandleProvider,
                 ) {
                     Navigation(
                         waypointRouteProvider = waypointRouteProvider
@@ -124,6 +118,7 @@ private fun WaypointScaffoldScope.Navigation(waypointRouteProvider: WaypointRout
             derivedStateOf { bottomNavigationWaypointList.last() }
         }
 
+        val actionSender = createWaypointActionSender()
         val routeLifecycle = rememberWaypointRouteLifecycle(bottomNavigationWaypointRoute)
 
         AnimatedContent(
@@ -138,10 +133,12 @@ private fun WaypointScaffoldScope.Navigation(waypointRouteProvider: WaypointRout
             },
             contentKey = (Waypoint::id),
         ) { waypoint ->
-            routeLifecycle.WithLifecycle(waypoint = waypoint) {
-                val handle = rememberWaypointHandle(::DefaultWaypointHandle)
+            routeLifecycle.WithLifecycle(
+                waypoint = waypoint,
+                LocalWaypointActionSender provides actionSender,
+            ) {
                 BackHandler(bottomNavigationWaypointRoute.canBacktrack) {
-                    handle.sendAction(BacktrackWaypointAction(waypoint.id))
+                    actionSender(BacktrackWaypointAction(waypoint.id))
                 }
                 waypoint.feature
                     .getContent()

@@ -5,11 +5,9 @@ import androidx.compose.ui.test.SemanticsMatcher
 import com.squaredcandy.waypoint.core.Identifier
 import com.squaredcandy.waypoint.core.Waypoint
 import com.squaredcandy.waypoint.core.action.WaypointAction
-import com.squaredcandy.waypoint.core.handle.WaypointHandle
 import com.squaredcandy.waypoint.core.holder.WaypointHolder
 import com.squaredcandy.waypoint.core.route.WaypointRoute
 import com.squaredcandy.waypoint.core.semantics.SemanticsProperties.WaypointActionProviderSemanticsKey
-import com.squaredcandy.waypoint.core.semantics.SemanticsProperties.WaypointHandleProviderSemanticKey
 import com.squaredcandy.waypoint.core.semantics.SemanticsProperties.WaypointHolderSemanticsKey
 import com.squaredcandy.waypoint.core.semantics.SemanticsProperties.WaypointRouteProviderSemanticsKey
 import kotlinx.collections.immutable.ImmutableList
@@ -101,27 +99,5 @@ fun <T: WaypointRoute<T>> hasWaypointRouteExactly(
     val waypointRouteProvider = semanticsNode
         .getSemanticsProperty(WaypointRouteProviderSemanticsKey)
     waypointRouteProvider?.getRoute(routeKey)?.routeWaypointList() == waypointList
-}
-//endregion
-
-//region Waypoint Handle
-fun hasWaypointHandleProvider() = SemanticsMatcher.keyIsDefined(WaypointHandleProviderSemanticKey)
-
-fun <T: WaypointHandle> hasWaypointHandleExactly(
-    clazz: KClass<T>,
-    waypoint: Waypoint,
-    constructor: (Identifier<Waypoint>, ModifierLocalReadScope) -> T,
-) = SemanticsMatcher("Has $clazz") { semanticsNode ->
-    val waypointHandleProvider = semanticsNode.getSemanticsProperty(WaypointHandleProviderSemanticKey)
-    waypointHandleProvider?.buildWaypointHandle(constructor, waypoint) != null
-}
-
-fun <T: WaypointHandle> hasNotWaypointHandle(
-    clazz: KClass<T>,
-    waypoint: Waypoint,
-    constructor: (Identifier<Waypoint>, ModifierLocalReadScope) -> T,
-) = SemanticsMatcher("Has $clazz") { semanticsNode ->
-    val waypointHandleProvider = semanticsNode.getSemanticsProperty(WaypointHandleProviderSemanticKey)
-    runCatching { waypointHandleProvider?.buildWaypointHandle(constructor, waypoint) }.isFailure
 }
 //endregion

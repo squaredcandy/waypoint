@@ -14,18 +14,17 @@ import androidx.compose.ui.Modifier
 import com.squaredcandy.waypoint.bottom_nav.emails.EmailLazyColumn
 import com.squaredcandy.waypoint.bottom_nav.emails.LocalEmailRepository
 import com.squaredcandy.waypoint.core.Waypoint
+import com.squaredcandy.waypoint.core.action.LocalWaypointActionSender
 import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
+import com.squaredcandy.waypoint.core.action.invoke
 import com.squaredcandy.waypoint.core.content.WaypointContent
-import com.squaredcandy.waypoint.core.handle.DefaultWaypointHandle
-import com.squaredcandy.waypoint.core.handle.rememberWaypointHandle
-import com.squaredcandy.waypoint.core.handle.sendAction
 import com.squaredcandy.waypoint.util.formatDate
 import com.squaredcandy.waypoint.util.rememberFunc
 
 class NewEmailsWaypointContent : WaypointContent {
     @Composable
     override fun Content() {
-        val handle = rememberWaypointHandle(::DefaultWaypointHandle)
+        val actionSender = LocalWaypointActionSender.current
         val emailRepository = LocalEmailRepository.current
         val emailListState = emailRepository.emailListStateFlow.collectAsState()
         val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -37,7 +36,7 @@ class NewEmailsWaypointContent : WaypointContent {
             method = emailRepository::updateEmailStarred,
         )
         val navigateTo = rememberFunc { waypoint: Waypoint ->
-            handle.sendAction(NavigateWaypointAction(waypoint))
+            actionSender(NavigateWaypointAction(waypoint))
         }
 
         Scaffold(

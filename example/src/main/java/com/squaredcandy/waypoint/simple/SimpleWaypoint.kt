@@ -5,7 +5,6 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,18 +14,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import com.squaredcandy.waypoint.core.Waypoint
+import com.squaredcandy.waypoint.core.action.LocalWaypointActionSender
 import com.squaredcandy.waypoint.core.action.actions.BacktrackWaypointAction
 import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
+import com.squaredcandy.waypoint.core.action.createWaypointActionSender
+import com.squaredcandy.waypoint.core.action.invoke
 import com.squaredcandy.waypoint.core.action.onAction
 import com.squaredcandy.waypoint.core.action.waypointActions
 import com.squaredcandy.waypoint.core.feature.transition.DefaultScreenTransition
 import com.squaredcandy.waypoint.core.feature.transition.WaypointTransition
-import com.squaredcandy.waypoint.core.handle.DefaultWaypointHandle
-import com.squaredcandy.waypoint.core.handle.LocalWaypointHandleProvider
-import com.squaredcandy.waypoint.core.handle.ModifierLocalWaypointHandleProvider
-import com.squaredcandy.waypoint.core.handle.rememberWaypointHandle
-import com.squaredcandy.waypoint.core.handle.sendAction
-import com.squaredcandy.waypoint.core.handle.waypointHandleProvider
 import com.squaredcandy.waypoint.core.holder.WaypointNavigationType
 import com.squaredcandy.waypoint.core.holder.waypointHolder
 import com.squaredcandy.waypoint.core.route.MainWaypointRoute
@@ -69,6 +65,7 @@ private fun WaypointScaffoldScope.MainWaypointRoute(
     }
 
     val routeLifecycle = rememberWaypointRouteLifecycle(mainWaypointRoute)
+    val actionSender = createWaypointActionSender()
 
     if (mainWaypointList.isNotEmpty()) {
         // To be used later own to decide what the user is focused on
@@ -96,10 +93,12 @@ private fun WaypointScaffoldScope.MainWaypointRoute(
             },
             contentKey = (Waypoint::id),
         ) { waypoint ->
-            routeLifecycle.WithLifecycle(waypoint) {
-                val handle = rememberWaypointHandle(::DefaultWaypointHandle)
+            routeLifecycle.WithLifecycle(
+                waypoint,
+                LocalWaypointActionSender provides actionSender,
+            ) {
                 BackHandler(enabled = mainWaypointRoute.canBacktrack) {
-                    handle.sendAction(BacktrackWaypointAction(waypoint.id))
+                    actionSender(BacktrackWaypointAction(waypoint.id))
                 }
                 waypoint.feature
                     .getContent()
@@ -119,12 +118,12 @@ private fun WaypointScaffoldScope.SideWaypointRoute(
     val sideWaypointList by remember {
         derivedStateOf { sideWaypointRoute.waypointList }
     }
+    val actionSender = createWaypointActionSender()
     val routeLifecycle = rememberWaypointRouteLifecycle(sideWaypointRoute)
     sideWaypointList.forEach { waypoint ->
         routeLifecycle.WithLifecycle(waypoint) {
-            val handle = rememberWaypointHandle(::DefaultWaypointHandle)
             BackHandler {
-                handle.sendAction(BacktrackWaypointAction(waypoint.id))
+                actionSender(BacktrackWaypointAction(waypoint.id))
             }
             waypoint.feature
                 .getContent()
@@ -154,19 +153,10 @@ fun SimpleWaypoint() {
                 addRoute(::MainWaypointRoute)
                 addRoute(::SideWaypointRoute)
             }
-            .waypointHandleProvider()
             .waypointScaffold {
                 val waypointRouteProvider = ModifierLocalWaypointRouteProvider.current
-                val waypointHandleProvider = ModifierLocalWaypointHandleProvider.current
 
-                CompositionLocalProvider(
-                    LocalWaypointHandleProvider provides waypointHandleProvider,
-                ) {
-                    Navigation(
-                        waypointRouteProvider = waypointRouteProvider
-                            ?: return@CompositionLocalProvider,
-                    )
-                }
+                Navigation(waypointRouteProvider = waypointRouteProvider ?: return@waypointScaffold)
             },
         content = {},
     )

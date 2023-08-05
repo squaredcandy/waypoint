@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.Flow
 class BottomNavigationItemWaypointRoute(
     private val waypointHolder: WaypointHolder,
 ) : WaypointRoute<BottomNavigationItemWaypointRoute>, WaypointRouteLifecycleProvider {
-    val waypointList: ImmutableList<Waypoint> by derivedStateOf {
+    override val waypointList: ImmutableList<Waypoint> by derivedStateOf {
         waypointHolder.waypointList.filter { waypoint ->
             waypoint.tags.contains(BottomNavigationItemWaypointTag)
         }
@@ -26,6 +26,8 @@ class BottomNavigationItemWaypointRoute(
     override val key: Identifier<BottomNavigationItemWaypointRoute> = Companion.key
 
     override val waypointListFlow: Flow<List<Waypoint>> = snapshotFlow { waypointList }
+
+    override val canBacktrack: Boolean = true
 
     companion object {
         val key: Identifier<BottomNavigationItemWaypointRoute> = Identifier("bottom_navigation_item")

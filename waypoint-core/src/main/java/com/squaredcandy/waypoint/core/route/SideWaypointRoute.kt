@@ -15,7 +15,7 @@ class SideWaypointRoute(
     waypointHolder: WaypointHolder,
 ) : WaypointRoute<SideWaypointRoute>,
     WaypointRouteLifecycleProvider {
-    val waypointList: ImmutableList<Waypoint> by derivedStateOf {
+    override val waypointList: ImmutableList<Waypoint> by derivedStateOf {
         waypointHolder.waypointList.subList(
             fromIndex = waypointHolder.waypointList
                 .indexOfLast { waypoint -> waypoint.feature is MainWaypointFeature } + 1,
@@ -26,6 +26,8 @@ class SideWaypointRoute(
     override val key: Identifier<SideWaypointRoute> = SideWaypointRoute.key
 
     override val waypointListFlow: Flow<List<Waypoint>> = snapshotFlow { waypointList }
+
+    override val canBacktrack: Boolean = true
 
     companion object {
         val key: Identifier<SideWaypointRoute> = Identifier("side")

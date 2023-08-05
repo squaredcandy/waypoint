@@ -5,7 +5,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import com.squaredcandy.waypoint.core.Identifier
 import com.squaredcandy.waypoint.core.Waypoint
-import com.squaredcandy.waypoint.core.WaypointChangeList
 import com.squaredcandy.waypoint.core.WaypointTag
 import com.squaredcandy.waypoint.core.holder.WaypointHolder
 import com.squaredcandy.waypoint.core.holder.WaypointNavigationType
@@ -19,7 +18,7 @@ import kotlinx.coroutines.flow.Flow
 class BottomNavigationWaypointRoute(
     private val waypointHolder: WaypointHolder,
 ) : WaypointRoute<BottomNavigationWaypointRoute>, WaypointRouteLifecycleProvider {
-    val waypointList: ImmutableList<Waypoint> by derivedStateOf {
+    override val waypointList: ImmutableList<Waypoint> by derivedStateOf {
         waypointHolder.waypointList.filter { waypoint ->
             waypoint.tags.contains(BottomNavigationWaypointTag)
         }
@@ -33,7 +32,7 @@ class BottomNavigationWaypointRoute(
 
     override val waypointListFlow: Flow<List<Waypoint>> = snapshotFlow { waypointList }
 
-    val canBacktrack: Boolean by derivedStateOf {
+    override val canBacktrack: Boolean by derivedStateOf {
         waypointHolder.waypointList
             .filter { waypoint -> waypoint.tags.contains(BottomNavigationWaypointTag) }
             .size > 1

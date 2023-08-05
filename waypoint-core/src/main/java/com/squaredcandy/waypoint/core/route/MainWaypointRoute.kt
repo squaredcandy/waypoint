@@ -17,7 +17,7 @@ class MainWaypointRoute(
     private val waypointHolder: WaypointHolder
 ) : WaypointRoute<MainWaypointRoute>,
     WaypointRouteLifecycleProvider {
-    val waypointList: ImmutableList<Waypoint> by derivedStateOf {
+    override val waypointList: ImmutableList<Waypoint> by derivedStateOf {
         listOfNotNull(
             waypointHolder.waypointList
                 .lastOrNull { waypoint -> waypoint.feature is MainWaypointFeature },
@@ -32,7 +32,7 @@ class MainWaypointRoute(
 
     override val waypointListFlow: Flow<List<Waypoint>> = snapshotFlow { waypointList }
 
-    val canBacktrack: Boolean by derivedStateOf {
+    override val canBacktrack: Boolean by derivedStateOf {
         waypointHolder.waypointList
             .filter { waypoint -> waypoint.feature is MainWaypointFeature }
             .size > 1

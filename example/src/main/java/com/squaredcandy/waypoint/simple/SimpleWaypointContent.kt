@@ -3,22 +3,30 @@ package com.squaredcandy.waypoint.simple
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.movableContentOf
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.squaredcandy.waypoint.core.Waypoint
+import com.squaredcandy.waypoint.core.action.actions.BacktrackWaypointAction
 import com.squaredcandy.waypoint.core.action.actions.NavigateWaypointAction
 import com.squaredcandy.waypoint.core.content.WaypointContent
 import com.squaredcandy.waypoint.core.feature.transition.MaterialSharedAxisXScreenTransition
 import com.squaredcandy.waypoint.core.handle.DefaultWaypointHandle
+import com.squaredcandy.waypoint.core.handle.LocalCanBacktrack
 import com.squaredcandy.waypoint.core.handle.rememberWaypointHandle
 import com.squaredcandy.waypoint.core.handle.sendAction
 import com.squaredcandy.waypoint.util.rememberFunc
@@ -28,23 +36,26 @@ class SimpleWaypointContent : WaypointContent {
     @Composable
     override fun Content() {
         val handle = rememberWaypointHandle(::DefaultWaypointHandle)
+        val canBacktrack = LocalCanBacktrack.current
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 TopAppBar(
                     title = { Text(text = "Test Title") },
-//                    navigationIcon = remember {
-//                        movableContentOf {
-//                            IconButton(
-//                                onClick = { handle.sendAction(BacktrackWaypointAction(waypointId)) },
-//                            ) {
-//                                Icon(
-//                                    imageVector = Icons.Default.ArrowBack,
-//                                    contentDescription = "Go Back",
-//                                )
-//                            }
-//                        }
-//                    },
+                    navigationIcon = remember {
+                        movableContentOf {
+                            if (canBacktrack) {
+                                IconButton(
+                                    onClick = { handle.sendAction(BacktrackWaypointAction(handle.waypointId)) },
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.ArrowBack,
+                                        contentDescription = "Go Back",
+                                    )
+                                }
+                            }
+                        }
+                    },
                 )
             }
         ) {

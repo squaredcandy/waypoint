@@ -16,6 +16,7 @@ abstract class WaypointHandle(
 val ModifierLocalWaypointHandleProvider = modifierLocalOf<WaypointHandleProvider> { error("Missing WaypointHandleProvider") }
 val LocalWaypointHandleProvider = compositionLocalOf<WaypointHandleProvider> { error("Missing WaypointHandleProvider") }
 val LocalWaypoint = compositionLocalOf<Waypoint> { error("Missing Waypoint") }
+val LocalCanBacktrack = compositionLocalOf { false }
 
 @Composable
 fun <T: WaypointHandle> rememberWaypointHandle(

@@ -5,4 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface WaypointRouteLifecycleProvider {
     val waypointListFlow: Flow<List<Waypoint>>
+    val canBacktrack: Boolean
 }

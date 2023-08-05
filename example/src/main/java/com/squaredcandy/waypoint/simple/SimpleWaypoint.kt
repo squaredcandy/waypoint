@@ -22,7 +22,6 @@ import com.squaredcandy.waypoint.core.action.waypointActions
 import com.squaredcandy.waypoint.core.feature.transition.DefaultScreenTransition
 import com.squaredcandy.waypoint.core.feature.transition.WaypointTransition
 import com.squaredcandy.waypoint.core.handle.DefaultWaypointHandle
-import com.squaredcandy.waypoint.core.handle.LocalWaypoint
 import com.squaredcandy.waypoint.core.handle.LocalWaypointHandleProvider
 import com.squaredcandy.waypoint.core.handle.ModifierLocalWaypointHandleProvider
 import com.squaredcandy.waypoint.core.handle.rememberWaypointHandle

@@ -21,8 +21,11 @@ fun ModifierLocalReadScope.createWaypointActionSender(): WaypointActionSender {
 private class RealWaypointActionSender(
     val readScope: ModifierLocalReadScope,
 ) : WaypointActionSender, ModifierLocalReadScope by readScope {
-    private val mutableWaypointHolder = ModifierLocalMutableWaypointHolder.current
-    private val waypointActionProvider = ModifierLocalWaypointActionProvider.current
+    private val mutableWaypointHolder
+        get() = ModifierLocalMutableWaypointHolder.current
+    private val waypointActionProvider
+        get() = ModifierLocalWaypointActionProvider.current
+
     override fun <T : WaypointAction> sendAction(
         waypointActionClass: KClass<T>,
         waypointAction: T,

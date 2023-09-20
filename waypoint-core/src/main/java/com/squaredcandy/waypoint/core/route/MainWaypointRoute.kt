@@ -5,10 +5,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import com.squaredcandy.waypoint.core.Identifier
 import com.squaredcandy.waypoint.core.Waypoint
-import com.squaredcandy.waypoint.core.feature.MainWaypointFeature
 import com.squaredcandy.waypoint.core.holder.WaypointHolder
 import com.squaredcandy.waypoint.core.holder.WaypointNavigationType
 import com.squaredcandy.waypoint.core.route.lifecycle.WaypointRouteLifecycleProvider
+import com.squaredcandy.waypoint.core.tags.MainWaypointTag
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +20,7 @@ class MainWaypointRoute(
     override val waypointList: ImmutableList<Waypoint> by derivedStateOf {
         listOfNotNull(
             waypointHolder.waypointList
-                .lastOrNull { waypoint -> waypoint.feature is MainWaypointFeature },
+                .lastOrNull { waypoint -> MainWaypointTag in waypoint.tags },
         )
             .toImmutableList()
     }
@@ -34,7 +34,7 @@ class MainWaypointRoute(
 
     override val canBacktrack: Boolean by derivedStateOf {
         waypointHolder.waypointList
-            .filter { waypoint -> waypoint.feature is MainWaypointFeature }
+            .filter { waypoint -> MainWaypointTag in waypoint.tags }
             .size > 1
     }
 

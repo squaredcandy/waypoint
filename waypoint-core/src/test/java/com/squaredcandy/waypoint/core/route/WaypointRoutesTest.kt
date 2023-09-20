@@ -70,7 +70,7 @@ class WaypointRoutesTest {
         }
 
         composeTestRule.onWaypointRouteNode()
-            .assertWaypointRouteDoesNotExist(SideWaypointRoute.key)
+            .assertWaypointRouteDoesNotExist(OverlayWaypointRoute.key)
     }
 
     @Test

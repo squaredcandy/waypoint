@@ -11,7 +11,7 @@ import org.junit.Test
 class WaypointFeatureTest {
     @Test
     fun `GIVEN empty waypoint feature THEN override transition is null`() = runTest {
-        val waypointFeature = object : MainWaypointFeature {
+        val waypointFeature = object : WaypointFeature {
             override fun getContent(): WaypointContent = EmptyWaypointContent
         }
 
@@ -20,7 +20,7 @@ class WaypointFeatureTest {
 
     @Test
     fun `GIVEN waypoint feature with transition THEN override transition is not null`() = runTest {
-        val waypointFeature = object : SideWaypointFeature {
+        val waypointFeature = object : WaypointFeature {
             override fun getContent(): WaypointContent = EmptyWaypointContent
             override fun overrideTransition(): WaypointTransition = FadeWaypointTransition
         }

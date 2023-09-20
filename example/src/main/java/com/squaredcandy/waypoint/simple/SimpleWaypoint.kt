@@ -27,7 +27,7 @@ import com.squaredcandy.waypoint.core.holder.WaypointNavigationType
 import com.squaredcandy.waypoint.core.holder.waypointHolder
 import com.squaredcandy.waypoint.core.route.MainWaypointRoute
 import com.squaredcandy.waypoint.core.route.ModifierLocalWaypointRouteProvider
-import com.squaredcandy.waypoint.core.route.SideWaypointRoute
+import com.squaredcandy.waypoint.core.route.OverlayWaypointRoute
 import com.squaredcandy.waypoint.core.route.WaypointRouteProvider
 import com.squaredcandy.waypoint.core.route.lifecycle.rememberWaypointRouteLifecycle
 import com.squaredcandy.waypoint.core.route.waypointRoutes
@@ -46,7 +46,7 @@ private fun WaypointScaffoldScope.Navigation(
             fallbackTransition = fallbackTransition,
         )
 
-        SideWaypointRoute(
+        OverlayWaypointRoute(
             waypointRouteProvider = waypointRouteProvider,
         )
     }
@@ -109,18 +109,18 @@ private fun WaypointScaffoldScope.MainWaypointRoute(
 }
 
 @Composable
-private fun WaypointScaffoldScope.SideWaypointRoute(
+private fun WaypointScaffoldScope.OverlayWaypointRoute(
     waypointRouteProvider: WaypointRouteProvider,
 ) {
-    val sideWaypointRoute by remember {
-        derivedStateOf { waypointRouteProvider.getRoute(SideWaypointRoute.key) }
+    val overlayWaypointRoute by remember {
+        derivedStateOf { waypointRouteProvider.getRoute(OverlayWaypointRoute.key) }
     }
-    val sideWaypointList by remember {
-        derivedStateOf { sideWaypointRoute.waypointList }
+    val overlayWaypointList by remember {
+        derivedStateOf { overlayWaypointRoute.waypointList }
     }
     val actionSender = createWaypointActionSender()
-    val routeLifecycle = rememberWaypointRouteLifecycle(sideWaypointRoute)
-    sideWaypointList.forEach { waypoint ->
+    val routeLifecycle = rememberWaypointRouteLifecycle(overlayWaypointRoute)
+    overlayWaypointList.forEach { waypoint ->
         routeLifecycle.WithLifecycle(waypoint) {
             BackHandler {
                 actionSender(BacktrackWaypointAction(waypoint.id))
@@ -151,7 +151,7 @@ fun SimpleWaypoint() {
             }
             .waypointRoutes {
                 addRoute(::MainWaypointRoute)
-                addRoute(::SideWaypointRoute)
+                addRoute(::OverlayWaypointRoute)
             }
     ) {
         val waypointRouteProvider = ModifierLocalWaypointRouteProvider.current

@@ -1,6 +1,6 @@
 [versions]
 # Gradle
-gradle-agp = "8.2.0-alpha14"
+gradle-agp = "8.3.0-alpha03"
 gradle-compile-min = "27"
 gradle-compile-target = "34"
 gradle-jvm-target = "17"

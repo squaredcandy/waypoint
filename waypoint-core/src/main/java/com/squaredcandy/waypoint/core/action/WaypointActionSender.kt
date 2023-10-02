@@ -1,6 +1,7 @@
 package com.squaredcandy.waypoint.core.action
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.modifier.ModifierLocalReadScope
@@ -9,6 +10,7 @@ import kotlin.reflect.KClass
 
 val LocalWaypointActionSender = compositionLocalOf<WaypointActionSender> { NoOpWaypointActionSender() }
 
+@Stable
 interface WaypointActionSender {
     fun <T: WaypointAction> sendAction(waypointActionClass: KClass<T>, waypointAction: T): Result<Unit>
 }
